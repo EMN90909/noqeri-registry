@@ -1,10 +1,29 @@
 {
-  "protocol": "v1",
-  "packageFormat": "nqpkg-1",
-  "packages": [
-    {"namespace":"noqeri","name":"core","description":"Freestanding core helpers for Noqeri.","versions":[{"version":"1.5.0","path":"packages/noqeri/core/1.5.0","yanked":false}]},
-    {"namespace":"noqeri","name":"std","description":"General-purpose standard-library modules layered above core.","versions":[{"version":"1.5.0","path":"packages/noqeri/std/1.5.0","yanked":false}]},
-    {"namespace":"noqeri","name":"security","description":"Auditable memory and validation helpers; cryptography remains provider-backed.","versions":[{"version":"1.5.0","path":"packages/noqeri/security/1.5.0","yanked":false}]},
-    {"namespace":"noqeri","name":"test","description":"Testing helpers for Noqeri packages.","versions":[{"version":"1.5.0","path":"packages/noqeri/test/1.5.0","yanked":false}]}
+  "protocol":"v1",
+  "packageFormat":"nqpkg-1",
+  "packages":[
+    {"namespace":"noqeri","name":"core","description":"Noqeri core foundations.","versions":[{"version":"1.0.0","path":"packages/noqeri/core/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"std","description":"Noqeri standard utilities.","versions":[{"version":"1.0.0","path":"packages/noqeri/std/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"security","description":"Memory clearing and validation helpers; cryptography remains provider-backed.","versions":[{"version":"1.0.0","path":"packages/noqeri/security/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"test","description":"Testing helpers.","versions":[{"version":"1.0.0","path":"packages/noqeri/test/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"json","description":"JSON validation and portable codec surface.","versions":[{"version":"1.0.0","path":"packages/noqeri/json/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"http","description":"HTTP method and response primitives.","versions":[{"version":"1.0.0","path":"packages/noqeri/http/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"http-server","description":"Host-neutral HTTP server and static-file capability surface.","versions":[{"version":"1.0.0","path":"packages/noqeri/http-server/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"url","description":"URL component encoding and decoding.","versions":[{"version":"1.0.0","path":"packages/noqeri/url/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"html","description":"HTML escaping helpers.","versions":[{"version":"1.0.0","path":"packages/noqeri/html/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"web","description":"Shared browser/server web capability declarations.","versions":[{"version":"1.0.0","path":"packages/noqeri/web/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"dom","description":"Typed DOM mutation helpers for .nqo browser modules.","versions":[{"version":"1.0.0","path":"packages/noqeri/dom/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"fetch","description":"Non-blocking fetch handle API for browser .nqo modules.","versions":[{"version":"1.0.0","path":"packages/noqeri/fetch/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"router","description":"Simple client/server route surface.","versions":[{"version":"1.0.0","path":"packages/noqeri/router/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"fs","description":"Host filesystem capability surface.","versions":[{"version":"1.0.0","path":"packages/noqeri/fs/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"env","description":"Environment capability surface.","versions":[{"version":"1.0.0","path":"packages/noqeri/env/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"crypto","description":"Provider-backed secure random and SHA-256 surface.","versions":[{"version":"1.0.0","path":"packages/noqeri/crypto/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"postgres","description":"PostgreSQL provider capability declarations.","versions":[{"version":"1.0.0","path":"packages/noqeri/postgres/1.0.0","yanked":false,"experimental":true}]},
+    {"namespace":"noqeri","name":"sqlite","description":"SQLite provider capability declarations for interoperability.","versions":[{"version":"1.0.0","path":"packages/noqeri/sqlite/1.0.0","yanked":false,"experimental":true}]},
+    {"namespace":"noqeri","name":"db","description":"NoqeriDB embedded database capability declarations.","versions":[{"version":"1.0.0","path":"packages/noqeri/db/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"time","description":"Portable wall-clock helpers.","versions":[{"version":"1.0.0","path":"packages/noqeri/time/1.0.0","yanked":false}]},
+    {"namespace":"noqeri","name":"net","description":"Network provider capability declarations.","versions":[{"version":"1.0.0","path":"packages/noqeri/net/1.0.0","yanked":false,"experimental":true}]},
+    {"namespace":"noqeri","name":"tls","description":"TLS provider capability declarations.","versions":[{"version":"1.0.0","path":"packages/noqeri/tls/1.0.0","yanked":false,"experimental":true}]},
+    {"namespace":"noqeri","name":"websocket","description":"WebSocket handle API for browser/server hosts.","versions":[{"version":"1.0.0","path":"packages/noqeri/websocket/1.0.0","yanked":false}]}
   ]
 }

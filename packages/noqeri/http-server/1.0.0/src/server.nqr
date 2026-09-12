@@ -1,0 +1,4 @@
+module noqeri.http_server
+extern function httpRouteText(method: string, path: string, status: int, body: string): bool
+extern function httpStatic(prefix: string, directory: string): bool
+extern function httpListen(port: int): bool

@@ -1,0 +1,4 @@
+module noqeri.json
+extern function jsonEncode(value: string): string
+extern function jsonDecode(text: string): string
+extern function jsonValid(text: string): bool

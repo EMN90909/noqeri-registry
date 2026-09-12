@@ -1,0 +1,1 @@
+package { name: "noqeri/db" version: "1.0.0" edition: "2026" entry: "src/db.nqr" profile: "library" target: "x86_64-unknown-none" }

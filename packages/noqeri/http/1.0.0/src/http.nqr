@@ -1,0 +1,6 @@
+module noqeri.http
+function httpOk(): int { return 200 }
+function httpCreated(): int { return 201 }
+function httpBadRequest(): int { return 400 }
+function httpNotFound(): int { return 404 }
+function httpServerError(): int { return 500 }

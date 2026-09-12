@@ -1,0 +1,5 @@
+module noqeri.net
+extern function netConnect(host: string, port: int): usize
+extern function netWrite(socket: usize, data: string): int
+extern function netRead(socket: usize): string
+extern function netClose(socket: usize): bool

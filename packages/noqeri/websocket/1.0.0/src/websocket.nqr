@@ -1,0 +1,5 @@
+module noqeri.websocket
+extern function websocketOpen(url: string): usize
+extern function websocketSend(socket: usize, text: string): bool
+extern function websocketMessage(socket: usize): string
+extern function websocketClose(socket: usize): bool

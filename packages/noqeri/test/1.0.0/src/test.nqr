@@ -1,0 +1,4 @@
+module noqeri.test
+
+function assertTrue(value: bool): int { if value { return 0 } return -1 }
+function assertEqualInt(left: int, right: int): int { if left == right { return 0 } return -1 }

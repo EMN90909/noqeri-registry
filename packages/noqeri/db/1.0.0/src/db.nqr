@@ -1,0 +1,3 @@
+module noqeri.db
+extern function dbOpen(path: string): usize
+extern function dbExec(database: usize, script: string): string

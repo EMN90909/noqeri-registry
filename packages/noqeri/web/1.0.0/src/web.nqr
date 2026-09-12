@@ -1,0 +1,4 @@
+module noqeri.web
+extern function routePath(): string
+extern function routeGo(path: string): void
+extern function timeNowMillis(): int

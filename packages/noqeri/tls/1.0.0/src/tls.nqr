@@ -1,0 +1,5 @@
+module noqeri.tls
+extern function tlsConnect(host: string, port: int): usize
+extern function tlsWrite(stream: usize, data: string): int
+extern function tlsRead(stream: usize): string
+extern function tlsClose(stream: usize): bool

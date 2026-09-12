@@ -1,0 +1,2 @@
+module noqeri.html
+extern function htmlEscape(value: string): string

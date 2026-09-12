@@ -1,0 +1,6 @@
+module noqeri.core
+
+function identity<T>(value: T): T { return value }
+function statusOk(status: isize): bool { return status >= 0 }
+function statusError(status: isize): bool { return status < 0 }
+function clampInt(value: int, low: int, high: int): int { if value < low { return low } if value > high { return high } return value }

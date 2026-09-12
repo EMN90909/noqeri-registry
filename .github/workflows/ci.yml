@@ -19,3 +19,10 @@ jobs:
           go-version: '1.23.x'
       - run: go test ./...
       - run: go vet ./...
+      - name: Build Noqeri 1.0 compiler
+        run: |
+          git clone --depth 1 https://github.com/EMN90909/Noqeri.git /tmp/Noqeri
+          cmake -S /tmp/Noqeri -B /tmp/Noqeri/build -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/Noqeri/build -j2
+      - name: Compile every published 1.0 package entrypoint
+        run: ./scripts/verify_packages.sh /tmp/Noqeri/build/noqeri

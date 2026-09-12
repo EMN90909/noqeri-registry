@@ -1,0 +1,4 @@
+module noqeri.router
+extern function routePath(): string
+extern function routeGo(path: string): void
+extern function httpRouteText(method: string, path: string, status: int, body: string): bool

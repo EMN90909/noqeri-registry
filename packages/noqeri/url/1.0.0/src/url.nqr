@@ -1,0 +1,3 @@
+module noqeri.url
+extern function urlEncode(value: string): string
+extern function urlDecode(value: string): string

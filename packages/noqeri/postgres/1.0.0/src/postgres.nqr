@@ -1,0 +1,4 @@
+module noqeri.postgres
+extern function postgresOpen(url: string): usize
+extern function postgresExec(connection: usize, query: string): string
+extern function postgresClose(connection: usize): bool

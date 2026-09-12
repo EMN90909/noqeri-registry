@@ -1,0 +1,6 @@
+module noqeri.fetch
+extern function fetchStart(url: string): usize
+extern function fetchReady(request: usize): bool
+extern function fetchOk(request: usize): bool
+extern function fetchStatus(request: usize): int
+extern function fetchText(request: usize): string

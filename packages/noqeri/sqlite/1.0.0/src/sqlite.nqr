@@ -1,0 +1,4 @@
+module noqeri.sqlite
+extern function sqliteOpen(path: string): usize
+extern function sqliteExec(connection: usize, query: string): string
+extern function sqliteClose(connection: usize): bool

@@ -1,0 +1,4 @@
+module noqeri.fs
+extern function fsReadText(path: string): string
+extern function fsWriteText(path: string, text: string): bool
+extern function fsExists(path: string): bool

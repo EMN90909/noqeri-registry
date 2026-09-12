@@ -1,0 +1,4 @@
+module noqeri.crypto
+// Implemented by the trusted host provider; algorithms are not reimplemented in userland.
+extern function cryptoRandomHex(bytes: usize): string
+extern function cryptoSha256(text: string): string

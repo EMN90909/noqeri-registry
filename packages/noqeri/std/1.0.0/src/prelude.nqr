@@ -1,0 +1,6 @@
+module noqeri.std.prelude
+
+function minInt(left: int, right: int): int { if left < right { return left } return right }
+function maxInt(left: int, right: int): int { if left > right { return left } return right }
+function clampInt(value: int, low: int, high: int): int { if value < low { return low } if value > high { return high } return value }
+function absInt(value: int): int { if value < 0 { return -value } return value }
