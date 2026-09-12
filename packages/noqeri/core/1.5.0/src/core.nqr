@@ -1,0 +1,13 @@
+module noqeri.core
+
+function identity<T>(value: T): T {
+    return value
+}
+
+function status_ok(status: isize): bool {
+    return status >= 0
+}
+
+function status_error(status: isize): bool {
+    return status < 0
+}

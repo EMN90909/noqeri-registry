@@ -1,0 +1,22 @@
+module noqeri.std.math
+
+function abs_i64(value: i64): i64 {
+    if value < 0 {
+        return -value
+    }
+    return value
+}
+
+function min_i64(a: i64, b: i64): i64 {
+    if a < b {
+        return a
+    }
+    return b
+}
+
+function max_i64(a: i64, b: i64): i64 {
+    if a > b {
+        return a
+    }
+    return b
+}
