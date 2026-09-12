@@ -82,7 +82,7 @@ func TestPublishedWebPackageCanDownload(t *testing.T) {
 	if rec.Body.Len() == 0 {
 		t.Fatal("json package archive was empty")
 	}
-	if got := rec.Header().Get("Content-Type"); got != "application/gzip" && got != "application/octet-stream" {
+	if got := rec.Header().Get("Content-Type"); got != "application/vnd.noqeri.package+gzip" {
 		t.Fatalf("unexpected archive content type %q", got)
 	}
 }
