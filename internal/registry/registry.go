@@ -186,7 +186,7 @@ func (h *Handler) archive(v Version) ([]byte, string, error) {
 		if err != nil {
 			return nil, "", err
 		}
-		header := &tar.Header{Name: rel, Mode: 0o644, Size: int64(len(data)), ModTime: zero, AccessTime: zero, ChangeTime: zero, Uid: 0, Gid: 0, Uname: "", Gname: "", Format: tar.FormatUSTAR}
+		header := &tar.Header{Name: rel, Mode: 0o644, Size: int64(len(data)), ModTime: zero, Uid: 0, Gid: 0, Uname: "", Gname: "", Format: tar.FormatUSTAR}
 		if err := tw.WriteHeader(header); err != nil {
 			return nil, "", err
 		}
