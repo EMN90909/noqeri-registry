@@ -17,12 +17,22 @@ func repoRoot(t *testing.T) string {
 	return root
 }
 
-func TestHealthAndSearch(t *testing.T) {
+func TestHealthSearchAndNewPackageFamilies(t *testing.T) {
 	h, err := New(repoRoot(t))
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, path := range []string{"/health", "/v1/index", "/v1/search?q=core", "/v1/packages/noqeri/core"} {
+	paths := []string{
+		"/health",
+		"/v1/index",
+		"/v1/search?q=core",
+		"/v1/search?q=http",
+		"/v1/packages/noqeri/core",
+		"/v1/packages/noqeri/json",
+		"/v1/packages/noqeri/dom",
+		"/v1/packages/noqeri/db",
+	}
+	for _, path := range paths {
 		rec := httptest.NewRecorder()
 		req := httptest.NewRequest(http.MethodGet, path, nil)
 		h.ServeHTTP(rec, req)
@@ -41,9 +51,9 @@ func TestArchiveIsDeterministic(t *testing.T) {
 	if !ok {
 		t.Fatal("core package missing")
 	}
-	v, ok := findVersion(pkg, "1.5.0")
+	v, ok := findVersion(pkg, "1.0.0")
 	if !ok {
-		t.Fatal("core version missing")
+		t.Fatal("core 1.0.0 version missing")
 	}
 	a, da, err := h.archive(v)
 	if err != nil {
@@ -55,5 +65,24 @@ func TestArchiveIsDeterministic(t *testing.T) {
 	}
 	if da != db || !bytes.Equal(a, b) {
 		t.Fatal("deterministic package archive changed between identical builds")
+	}
+}
+
+func TestPublishedWebPackageCanDownload(t *testing.T) {
+	h, err := New(repoRoot(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodGet, "/v1/packages/noqeri/json/1.0.0/download", nil)
+	h.ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("json package download: expected 200, got %d", rec.Code)
+	}
+	if rec.Body.Len() == 0 {
+		t.Fatal("json package archive was empty")
+	}
+	if got := rec.Header().Get("Content-Type"); got != "application/gzip" && got != "application/octet-stream" {
+		t.Fatalf("unexpected archive content type %q", got)
 	}
 }
