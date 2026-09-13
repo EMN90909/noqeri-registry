@@ -1,0 +1,114 @@
+module noqeri.mysql
+
+// The package is protocol/host neutral. A production host supplies the wire/TLS implementation;
+// ordinary Noqeri applications use the checked handles below and do not manipulate sockets.
+unsafe extern function mysqlHostConnect(dsn:string,timeoutMillis:i64):isize
+unsafe extern function mysqlHostClose(handle:usize):void
+unsafe extern function mysqlHostPing(handle:usize,timeoutMillis:i64):isize
+unsafe extern function mysqlHostPrepare(handle:usize,sql:string):isize
+unsafe extern function mysqlHostStatementClose(statement:usize):void
+unsafe extern function mysqlHostBindText(statement:usize,index:usize,value:string):isize
+unsafe extern function mysqlHostBindI64(statement:usize,index:usize,value:i64):isize
+unsafe extern function mysqlHostBindNull(statement:usize,index:usize):isize
+unsafe extern function mysqlHostExecute(statement:usize):isize
+unsafe extern function mysqlHostQuery(statement:usize):isize
+unsafe extern function mysqlHostRowsNext(rows:usize):bool
+unsafe extern function mysqlHostRowsText(rows:usize,column:usize):string
+unsafe extern function mysqlHostRowsI64(rows:usize,column:usize):i64
+unsafe extern function mysqlHostRowsIsNull(rows:usize,column:usize):bool
+unsafe extern function mysqlHostRowsColumnCount(rows:usize):usize
+unsafe extern function mysqlHostRowsClose(rows:usize):void
+unsafe extern function mysqlHostBegin(handle:usize):isize
+unsafe extern function mysqlHostCommit(handle:usize):isize
+unsafe extern function mysqlHostRollback(handle:usize):isize
+
+record Connection {
+    handle: usize
+}
+
+record Statement {
+    handle: usize
+    parameters: usize
+}
+
+record Rows {
+    handle: usize
+}
+
+export function default_timeout_millis():i64{return 30000 as i64}
+export function mysql_default_port():u16{return 3306 as u16}
+export function mariadb_default_port():u16{return 3306 as u16}
+
+export function dsn_supported(dsn:string):bool{
+    if len(dsn)<8 as usize{return false}
+    // mysql:// and mariadb:// are accepted. Hosts remain responsible for credential parsing.
+    let bytes:[]u8=slice(dsn)
+    if len(bytes)>=8 as usize&&bytes[0]==109 as u8&&bytes[1]==121 as u8&&bytes[2]==115 as u8&&bytes[3]==113 as u8&&bytes[4]==108 as u8&&bytes[5]==58 as u8&&bytes[6]==47 as u8&&bytes[7]==47 as u8{return true}
+    if len(bytes)>=10 as usize&&bytes[0]==109 as u8&&bytes[1]==97 as u8&&bytes[2]==114 as u8&&bytes[3]==105 as u8&&bytes[4]==97 as u8&&bytes[5]==100 as u8&&bytes[6]==98 as u8&&bytes[7]==58 as u8&&bytes[8]==47 as u8&&bytes[9]==47 as u8{return true}
+    return false
+}
+
+export function count_parameters(sql:string):usize{
+    let value:[]u8=slice(sql)
+    let count:usize=0 as usize
+    let index:usize=0 as usize
+    let single:bool=false
+    let double:bool=false
+    while index<len(value){
+        let c:u8=value[index]
+        if c==39 as u8&&!double{single=!single}
+        else if c==34 as u8&&!single{double=!double}
+        else if c==63 as u8&&!single&&!double{count=count+1 as usize}
+        index=index+1 as usize
+    }
+    return count
+}
+
+export function connect(dsn:string):Connection{return connect_timeout(dsn,default_timeout_millis())}
+
+export function connect_timeout(dsn:string,timeoutMillis:i64):Connection{
+    if !dsn_supported(dsn)||timeoutMillis<0 as i64{return Connection{handle:0 as usize}}
+    let result:isize=0 as isize
+    unsafe{result=mysqlHostConnect(dsn,timeoutMillis)}
+    if result<0 as isize{return Connection{handle:0 as usize}}
+    return Connection{handle:result as usize}
+}
+
+export function connection_valid(connection:Connection):bool{return connection.handle!=0 as usize}
+export function close(connection:Connection):void{if connection_valid(connection){unsafe{mysqlHostClose(connection.handle)}}}
+export function ping(connection:Connection):isize{if !connection_valid(connection){return -2 as isize}unsafe{return mysqlHostPing(connection.handle,default_timeout_millis())}}
+
+export function prepare(connection:Connection,sql:string):Statement{
+    if !connection_valid(connection)||len(sql)==0 as usize{return Statement{handle:0 as usize,parameters:0 as usize}}
+    let result:isize=0 as isize
+    unsafe{result=mysqlHostPrepare(connection.handle,sql)}
+    if result<0 as isize{return Statement{handle:0 as usize,parameters:0 as usize}}
+    return Statement{handle:result as usize,parameters:count_parameters(sql)}
+}
+
+export function statement_valid(statement:Statement):bool{return statement.handle!=0 as usize}
+export function statement_close(statement:Statement):void{if statement_valid(statement){unsafe{mysqlHostStatementClose(statement.handle)}}}
+export function bind_text(statement:Statement,index:usize,value:string):isize{if !statement_valid(statement)||index>=statement.parameters{return -2 as isize}unsafe{return mysqlHostBindText(statement.handle,index,value)}}
+export function bind_i64(statement:Statement,index:usize,value:i64):isize{if !statement_valid(statement)||index>=statement.parameters{return -2 as isize}unsafe{return mysqlHostBindI64(statement.handle,index,value)}}
+export function bind_null(statement:Statement,index:usize):isize{if !statement_valid(statement)||index>=statement.parameters{return -2 as isize}unsafe{return mysqlHostBindNull(statement.handle,index)}}
+export function execute(statement:Statement):isize{if !statement_valid(statement){return -2 as isize}unsafe{return mysqlHostExecute(statement.handle)}}
+
+export function query(statement:Statement):Rows{
+    if !statement_valid(statement){return Rows{handle:0 as usize}}
+    let result:isize=0 as isize
+    unsafe{result=mysqlHostQuery(statement.handle)}
+    if result<0 as isize{return Rows{handle:0 as usize}}
+    return Rows{handle:result as usize}
+}
+
+export function rows_valid(rows:Rows):bool{return rows.handle!=0 as usize}
+export function rows_next(rows:Rows):bool{if !rows_valid(rows){return false}unsafe{return mysqlHostRowsNext(rows.handle)}}
+export function rows_text(rows:Rows,column:usize):string{if !rows_valid(rows){return ""}unsafe{return mysqlHostRowsText(rows.handle,column)}}
+export function rows_i64(rows:Rows,column:usize):i64{if !rows_valid(rows){return 0 as i64}unsafe{return mysqlHostRowsI64(rows.handle,column)}}
+export function rows_is_null(rows:Rows,column:usize):bool{if !rows_valid(rows){return true}unsafe{return mysqlHostRowsIsNull(rows.handle,column)}}
+export function rows_column_count(rows:Rows):usize{if !rows_valid(rows){return 0 as usize}unsafe{return mysqlHostRowsColumnCount(rows.handle)}}
+export function rows_close(rows:Rows):void{if rows_valid(rows){unsafe{mysqlHostRowsClose(rows.handle)}}}
+
+export function begin(connection:Connection):isize{if !connection_valid(connection){return -2 as isize}unsafe{return mysqlHostBegin(connection.handle)}}
+export function commit(connection:Connection):isize{if !connection_valid(connection){return -2 as isize}unsafe{return mysqlHostCommit(connection.handle)}}
+export function rollback(connection:Connection):isize{if !connection_valid(connection){return -2 as isize}unsafe{return mysqlHostRollback(connection.handle)}}
