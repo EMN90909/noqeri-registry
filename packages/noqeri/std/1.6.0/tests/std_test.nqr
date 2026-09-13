@@ -1,0 +1,14 @@
+import "../src/std.nqr"
+
+function main(): int {
+    if std_version_major() != 1 || std_version_minor() != 6 { return 1 }
+    if !std_aggregate_generics() || !std_safe_collections_default() { return 2 }
+    if std_encode_error(7 as isize) != -8 as isize { return 3 }
+    if std_checked_error_code(-8 as isize) != 7 as isize { return 4 }
+    if !std_index_valid(2 as usize, 3 as usize) { return 5 }
+    if std_index_valid(3 as usize, 3 as usize) { return 6 }
+    if !std_range_valid(3 as usize, 4 as usize, 7 as usize) { return 7 }
+    if !std_aes_key_bits_valid(256 as usize) || std_aes_key_bits_valid(512 as usize) { return 8 }
+    if !std_rsa_key_bits_valid(3072 as usize) || std_rsa_key_bits_valid(1024 as usize) { return 9 }
+    return 0
+}
