@@ -1,0 +1,6 @@
+import "../src/hex.nqr"
+
+function main(): int {
+    if !(hexByte(65 as u8, 70 as u8) == 175) { return 1 }
+    return 0
+}

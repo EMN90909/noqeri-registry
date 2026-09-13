@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.toml
+export function tomlBareKeyChar(value: u8): bool { return (value >= 65 as u8 && value <= 90 as u8) || (value >= 97 as u8 && value <= 122 as u8) || (value >= 48 as u8 && value <= 57 as u8) || value == 45 as u8 || value == 95 as u8 }
+export function tomlDepthValid(depth: usize): bool { return depth <= 64 as usize }
+export function tomlArrayLengthValid(count: usize): bool { return count <= 1000000 as usize }
+export function tomlDocumentBytesValid(bytes: usize): bool { return bytes <= 16 as usize * 1024 as usize * 1024 as usize }

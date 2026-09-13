@@ -1,0 +1,5 @@
+import package "noqeri/toml"
+
+function main(): int {
+    return 0
+}

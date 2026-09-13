@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.csv
+export function csvNeedsQuote(value: []u8): bool { let i: usize = 0 as usize while i < len(value) { let c: u8 = value[i] if c == 44 as u8 || c == 34 as u8 || c == 10 as u8 || c == 13 as u8 { return true } i = i + 1 as usize } return false }
+export function csvColumnCountValid(count: usize): bool { return count > 0 as usize && count <= 4096 as usize }
+export function csvRowBytesValid(bytes: usize): bool { return bytes <= 4 as usize * 1024 as usize * 1024 as usize }
+export function csvDelimiterValid(value: u8): bool { return value == 44 as u8 || value == 59 as u8 || value == 9 as u8 }

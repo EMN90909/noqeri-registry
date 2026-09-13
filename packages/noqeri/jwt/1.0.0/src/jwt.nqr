@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.jwt
+export function jwtSegmentCountValid(count: usize): bool { return count == 3 as usize }
+export function jwtTokenBytesValid(bytes: usize): bool { return bytes > 0 as usize && bytes <= 16384 as usize }
+export function jwtAlgorithmAllowed(code: int): bool { return code == 1 || code == 2 || code == 3 }
+export function jwtExpired(nowSeconds: i64, expiresSeconds: i64, skewSeconds: i64): bool { return nowSeconds - skewSeconds >= expiresSeconds }
+export function jwtNotBeforeValid(nowSeconds: i64, notBeforeSeconds: i64, skewSeconds: i64): bool { return nowSeconds + skewSeconds >= notBeforeSeconds }

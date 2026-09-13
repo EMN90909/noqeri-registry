@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.hex
+export function hexNibble(value: u8): int { if value >= 48 as u8 && value <= 57 as u8 { return (value - 48 as u8) as int } if value >= 65 as u8 && value <= 70 as u8 { return (value - 65 as u8 + 10 as u8) as int } if value >= 97 as u8 && value <= 102 as u8 { return (value - 97 as u8 + 10 as u8) as int } return -1 }
+export function hexCharValid(value: u8): bool { return hexNibble(value) >= 0 }
+export function hexEncodedLength(bytes: usize): usize { return bytes * 2 as usize }
+export function hexDecodedLength(chars: usize): usize { if chars % 2 as usize != 0 as usize { return 0 as usize } return chars / 2 as usize }
+export function hexByte(high: u8, low: u8): int { let a: int = hexNibble(high) let b: int = hexNibble(low) if a < 0 || b < 0 { return -1 } return a * 16 + b }

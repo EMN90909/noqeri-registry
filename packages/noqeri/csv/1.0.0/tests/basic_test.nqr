@@ -1,0 +1,6 @@
+import "../src/csv.nqr"
+
+function main(): int {
+    if !(csvDelimiterValid(44 as u8)) { return 1 }
+    return 0
+}

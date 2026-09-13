@@ -1,0 +1,6 @@
+import "../src/jwt.nqr"
+
+function main(): int {
+    if !(jwtSegmentCountValid(3 as usize)) { return 1 }
+    return 0
+}

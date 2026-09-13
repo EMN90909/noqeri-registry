@@ -1,0 +1,6 @@
+import "../src/toml.nqr"
+
+function main(): int {
+    if !(tomlBareKeyChar(95 as u8)) { return 1 }
+    return 0
+}

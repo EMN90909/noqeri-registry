@@ -1,0 +1,5 @@
+import package "noqeri/csv"
+
+function main(): int {
+    return 0
+}

@@ -1,0 +1,5 @@
+import package "noqeri/hex"
+
+function main(): int {
+    return 0
+}

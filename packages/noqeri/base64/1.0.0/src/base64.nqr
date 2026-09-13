@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.base64
+export function base64EncodedLength(bytes: usize): usize { return ((bytes + 2 as usize) / 3 as usize) * 4 as usize }
+export function base64DecodedMaxLength(chars: usize): usize { return (chars / 4 as usize) * 3 as usize }
+export function base64AlphabetValue(value: u8): int { if value >= 65 as u8 && value <= 90 as u8 { return (value - 65 as u8) as int } if value >= 97 as u8 && value <= 122 as u8 { return (value - 97 as u8 + 26 as u8) as int } if value >= 48 as u8 && value <= 57 as u8 { return (value - 48 as u8 + 52 as u8) as int } if value == 43 as u8 { return 62 } if value == 47 as u8 { return 63 } return -1 }
+export function base64CharValid(value: u8): bool { return base64AlphabetValue(value) >= 0 || value == 61 as u8 }
+export function base64LengthValid(chars: usize): bool { return chars % 4 as usize == 0 as usize }

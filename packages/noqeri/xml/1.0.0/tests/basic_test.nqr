@@ -1,0 +1,6 @@
+import "../src/xml.nqr"
+
+function main(): int {
+    if !(xmlNameStart(65 as u8)) { return 1 }
+    return 0
+}
