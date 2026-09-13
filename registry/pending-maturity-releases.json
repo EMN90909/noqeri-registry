@@ -1,0 +1,31 @@
+{
+  "purpose": "Merge-safe release records to fold into registry/index.json after rebasing maturity-foundation-2026-09 onto current main.",
+  "packages": [
+    {
+      "namespace": "noqeri",
+      "name": "concurrency",
+      "description": "Tasks, channels, cancellation, timeouts, mutexes and RW locks for the Noqeri concurrency runtime.",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "path": "packages/noqeri/concurrency/1.0.0",
+          "yanked": false,
+          "experimental": true
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "mysql",
+      "description": "MySQL and MariaDB provider API with query-row and transaction support.",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "path": "packages/noqeri/mysql/1.0.0",
+          "yanked": false,
+          "experimental": true
+        }
+      ]
+    }
+  ]
+}
