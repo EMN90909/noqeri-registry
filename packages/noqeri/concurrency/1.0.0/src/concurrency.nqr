@@ -29,30 +29,30 @@ extern function rwlockReadUnlock(lock: isize): isize
 extern function rwlockWriteLock(lock: isize): isize
 extern function rwlockWriteUnlock(lock: isize): isize
 
-export function spawn(entry: string): isize { return taskSpawn(entry) }
-export function join(task: isize): isize { return taskJoin(task) }
-export function cancel(task: isize): isize { return taskCancel(task) }
-export function cancelled(task: isize): bool { return taskIsCancelled(task) }
-export function sleep(milliseconds: i64): isize { return taskSleepMillis(milliseconds) }
-export function join_timeout(task: isize, milliseconds: i64): isize { return taskJoinTimeout(task, milliseconds) }
+export function spawn(entry: string): isize { unsafe { return taskSpawn(entry) } }
+export function join(task: isize): isize { unsafe { return taskJoin(task) } }
+export function cancel(task: isize): isize { unsafe { return taskCancel(task) } }
+export function cancelled(task: isize): bool { unsafe { return taskIsCancelled(task) } }
+export function sleep(milliseconds: i64): isize { unsafe { return taskSleepMillis(milliseconds) } }
+export function join_timeout(task: isize, milliseconds: i64): isize { unsafe { return taskJoinTimeout(task, milliseconds) } }
 
-export function channel(capacity: usize): isize { return channelCreate(capacity) }
-export function send(ch: isize, value: isize): isize { return channelSend(ch, value) }
-export function receive(ch: isize): isize { return channelReceive(ch) }
-export function send_timeout(ch: isize, value: isize, milliseconds: i64): isize { return channelSendTimeout(ch, value, milliseconds) }
-export function receive_timeout(ch: isize, milliseconds: i64): isize { return channelReceiveTimeout(ch, milliseconds) }
-export function close(ch: isize): isize { return channelClose(ch) }
+export function channel(capacity: usize): isize { unsafe { return channelCreate(capacity) } }
+export function send(ch: isize, value: isize): isize { unsafe { return channelSend(ch, value) } }
+export function receive(ch: isize): isize { unsafe { return channelReceive(ch) } }
+export function send_timeout(ch: isize, value: isize, milliseconds: i64): isize { unsafe { return channelSendTimeout(ch, value, milliseconds) } }
+export function receive_timeout(ch: isize, milliseconds: i64): isize { unsafe { return channelReceiveTimeout(ch, milliseconds) } }
+export function close(ch: isize): isize { unsafe { return channelClose(ch) } }
 
-export function mutex(): isize { return mutexCreate() }
-export function lock(mutex_handle: isize): isize { return mutexLock(mutex_handle) }
-export function try_lock(mutex_handle: isize): bool { return mutexTryLock(mutex_handle) }
-export function unlock(mutex_handle: isize): isize { return mutexUnlock(mutex_handle) }
+export function mutex(): isize { unsafe { return mutexCreate() } }
+export function lock(mutex_handle: isize): isize { unsafe { return mutexLock(mutex_handle) } }
+export function try_lock(mutex_handle: isize): bool { unsafe { return mutexTryLock(mutex_handle) } }
+export function unlock(mutex_handle: isize): isize { unsafe { return mutexUnlock(mutex_handle) } }
 
-export function rwlock(): isize { return rwlockCreate() }
-export function read_lock(lock_handle: isize): isize { return rwlockReadLock(lock_handle) }
-export function read_unlock(lock_handle: isize): isize { return rwlockReadUnlock(lock_handle) }
-export function write_lock(lock_handle: isize): isize { return rwlockWriteLock(lock_handle) }
-export function write_unlock(lock_handle: isize): isize { return rwlockWriteUnlock(lock_handle) }
+export function rwlock(): isize { unsafe { return rwlockCreate() } }
+export function read_lock(lock_handle: isize): isize { unsafe { return rwlockReadLock(lock_handle) } }
+export function read_unlock(lock_handle: isize): isize { unsafe { return rwlockReadUnlock(lock_handle) } }
+export function write_lock(lock_handle: isize): isize { unsafe { return rwlockWriteLock(lock_handle) } }
+export function write_unlock(lock_handle: isize): isize { unsafe { return rwlockWriteUnlock(lock_handle) } }
 
 export function ok(status: isize): bool { return status >= 0 as isize }
 export function is_timeout(status: isize): bool { return status == -2 as isize }
