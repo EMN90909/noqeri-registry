@@ -1,0 +1,26 @@
+{
+  "format": "noqeri-package-quality-v1",
+  "default": "experimental",
+  "levels": {
+    "noqeri/core": "core",
+    "noqeri/std": "core",
+    "noqeri/test": "preview",
+    "noqeri/json": "preview",
+    "noqeri/http": "preview",
+    "noqeri/fs": "preview",
+    "noqeri/db": "preview",
+    "noqeri/time": "preview",
+    "noqeri/security": "preview",
+    "noqeri/uuid": "stable",
+    "noqeri/retry": "stable",
+    "noqeri/rate-limit": "stable",
+    "noqeri/postgres": "experimental",
+    "noqeri/mysql": "experimental",
+    "noqeri/sqlite": "experimental",
+    "noqeri/concurrency": "experimental",
+    "noqeri/net": "experimental",
+    "noqeri/tls": "experimental",
+    "noqeri/http-client": "experimental"
+  },
+  "rule": "Provider stubs and APIs without executable advertised hosts remain experimental regardless of semantic version."
+}
