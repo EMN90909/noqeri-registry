@@ -1,5 +1,5 @@
 {
-  "format": "noqeri-package-quality-v1",
+  "format": "noqeri-package-quality-v2",
   "default": "experimental",
   "levels": {
     "noqeri/core": "core",
@@ -22,5 +22,9 @@
     "noqeri/tls": "experimental",
     "noqeri/http-client": "experimental"
   },
-  "rule": "Provider stubs and APIs without executable advertised hosts remain experimental regardless of semantic version."
+  "versionLevels": {
+    "noqeri/concurrency@1.0.0": "experimental",
+    "noqeri/concurrency@2.0.0": "preview"
+  },
+  "rule": "Version-specific quality overrides coordinate defaults. Provider stubs and APIs without executable advertised hosts remain experimental regardless of semantic version. Preview requires an executable reference implementation and regression evidence; stable/core require the stronger published compatibility gates."
 }
