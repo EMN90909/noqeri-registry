@@ -1,0 +1,9 @@
+package {
+    name: "noqeri/std"
+    version: "1.6.0"
+    edition: "2026"
+    entry: "src/std.nqr"
+    profile: "library"
+    target: "portable"
+    license: "GPL-3.0-only"
+}
