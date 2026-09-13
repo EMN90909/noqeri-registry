@@ -6,11 +6,60 @@ function main(): int {
     if !registryQualityLevelValid(registryQualityExperimental()) { return 1 }
     if !registryQualityLevelValid(registryQualityCore()) { return 2 }
     if registryQualityLevelValid(99) { return 3 }
-    if registryCanPublishStable(registryQualityStable(), true, true, true, true) { return 4 }
-    if !registryCanPublishStable(registryQualityStable(), true, true, true, false) { return 5 }
-    if registryCanPublishCore(registryQualityCore(), 1 as usize, true, true, true) { return 6 }
-    if !registryCanPublishCore(registryQualityCore(), 2 as usize, true, true, true) { return 7 }
-    if registryAuditExitCode(false, 0 as usize) != 2 { return 8 }
-    if registryAuditExitCode(true, 1 as usize) != 1 { return 9 }
+
+    if !registryEvidenceStateValid(registryEvidencePlanned()) { return 4 }
+    if !registryEvidenceStateValid(registryEvidenceRegressionGated()) { return 5 }
+    if registryEvidenceStateValid(99) { return 6 }
+    if registryEvidenceAtLeast(registryEvidenceTestContract(), registryEvidenceVerified()) { return 7 }
+    if !registryEvidenceAtLeast(registryEvidenceMeasured(), registryEvidenceVerified()) { return 8 }
+
+    if registryQualityLevelValid(-1) { return 9 }
+    if registryCanPublishStable(registryQualityStable(), true, true, true, true) { return 10 }
+    if !registryCanPublishStable(registryQualityStable(), true, true, true, false) { return 11 }
+
+    if registryCanPublishStableEvidence(
+        registryQualityStable(), true, true, true, false,
+        true, registryEvidenceTestContract(), false, registryEvidencePlanned()) { return 12 }
+
+    if !registryCanPublishStableEvidence(
+        registryQualityStable(), true, true, true, false,
+        true, registryEvidenceVerified(), false, registryEvidencePlanned()) { return 13 }
+
+    if registryCanPublishStableEvidence(
+        registryQualityStable(), true, true, true, false,
+        true, registryEvidenceVerified(), true, registryEvidenceTestContract()) { return 14 }
+
+    if !registryCanPublishStableEvidence(
+        registryQualityStable(), true, true, true, false,
+        true, registryEvidenceVerified(), true, registryEvidenceMeasured()) { return 15 }
+
+    if registryCanPublishPreviewEvidence(true, true, true, true, false, registryEvidenceVerified()) { return 16 }
+    if !registryCanPublishPreviewEvidence(true, true, true, true, true, registryEvidenceTestContract()) { return 17 }
+
+    if registryDepthEvidenceValid(100 as usize, 6 as usize, 3 as usize, false) { return 18 }
+    if !registryDepthEvidenceValid(4096 as usize, 80 as usize, 12 as usize, false) { return 19 }
+    if registryDepthEvidenceValid(4096 as usize, 80 as usize, 12 as usize, true) { return 20 }
+
+    if registryPerformanceEvidenceSufficient(registryEvidenceTestContract(), true) { return 21 }
+    if !registryPerformanceEvidenceSufficient(registryEvidenceMeasured(), true) { return 22 }
+    if !registryPerformanceEvidenceSufficient(registryEvidencePlanned(), false) { return 23 }
+
+    if registryClaimSafetyAllowed(registryEvidenceTestContract(), true, true) { return 24 }
+    if !registryClaimSafetyAllowed(registryEvidenceVerified(), true, true) { return 25 }
+    if registryClaimPerformanceAllowed(registryEvidenceVerified(), true, true, true) { return 26 }
+    if !registryClaimPerformanceAllowed(registryEvidenceMeasured(), true, true, true) { return 27 }
+
+    if registryPromotionReasonCode(false, registryEvidenceVerified(), false, registryEvidencePlanned()) != 1 { return 28 }
+    if registryPromotionReasonCode(true, registryEvidenceTestContract(), false, registryEvidencePlanned()) != 2 { return 29 }
+    if registryPromotionReasonCode(true, registryEvidenceVerified(), true, registryEvidenceVerified()) != 3 { return 30 }
+    if registryPromotionReasonCode(true, registryEvidenceVerified(), true, registryEvidenceMeasured()) != 0 { return 31 }
+
+    if registryCanPublishCore(registryQualityCore(), 1 as usize, true, true, true) { return 32 }
+    if !registryCanPublishCore(registryQualityCore(), 2 as usize, true, true, true) { return 33 }
+    if registryCanPublishCoreEvidence(registryQualityCore(), 2 as usize, true, true, true, false, 2 as usize) { return 34 }
+    if !registryCanPublishCoreEvidence(registryQualityCore(), 2 as usize, true, true, true, true, 2 as usize) { return 35 }
+
+    if registryAuditExitCode(false, 0 as usize) != 2 { return 36 }
+    if registryAuditExitCode(true, 1 as usize) != 1 { return 37 }
     return 0
 }
