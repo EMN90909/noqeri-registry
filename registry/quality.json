@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "default_level": "experimental",
+  "levels": ["experimental", "preview", "stable", "core"],
+  "policy": {
+    "experimental": "May be incomplete, provider-dependent, or changing. No compatibility promise.",
+    "preview": "Implemented with real source depth, tests, examples and documentation, but API/support may still change.",
+    "stable": "Preview requirements plus negative tests, security notes and verified compatibility across every supported compiler release.",
+    "core": "Stable requirements plus at least two stable release cycles, migration policy, verified offline installation and an identified maintainer."
+  },
+  "packages": {},
+  "note": "The conservative default is intentional. Packages are promoted explicitly only after tools/package-quality.mjs shows the requested level is supported by evidence."
+}
