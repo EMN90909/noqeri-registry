@@ -1,5 +1,5 @@
 {
-  "purpose": "Merge-safe release records to fold into registry/index.json after rebasing maturity-foundation-2026-09 onto current main.",
+  "purpose": "Merge-safe release records to fold into registry/index.json after rebasing maturity-finish-2026-09 onto current main.",
   "packages": [
     {
       "namespace": "noqeri",
@@ -7,10 +7,20 @@
       "description": "Tasks, channels, cancellation, timeouts, mutexes and RW locks for the Noqeri concurrency runtime.",
       "versions": [
         {
+          "version": "2.0.0",
+          "path": "packages/noqeri/concurrency/2.0.0",
+          "yanked": false,
+          "quality": "preview",
+          "experimental": false,
+          "runtime": "canonical taskHost/channelHost/mutexHost/rwlockHost ABI"
+        },
+        {
           "version": "1.0.0",
           "path": "packages/noqeri/concurrency/1.0.0",
           "yanked": false,
-          "experimental": true
+          "quality": "experimental",
+          "experimental": true,
+          "runtime": "legacy provider ABI"
         }
       ]
     },
