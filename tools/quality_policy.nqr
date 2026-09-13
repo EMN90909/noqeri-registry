@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 module noqeri.registry.quality_policy
 
+// Package quality levels describe support promises.
 export function registryQualityExperimental(): int { return 0 }
 export function registryQualityPreview(): int { return 1 }
 export function registryQualityStable(): int { return 2 }
@@ -10,17 +11,92 @@ export function registryQualityLevelValid(level: int): bool {
     return level >= registryQualityExperimental() && level <= registryQualityCore()
 }
 
+// Evidence states describe what has actually been proved for a particular
+// commit/target/backend. They intentionally do not reuse quality-level values.
+export function registryEvidencePlanned(): int { return 0 }
+export function registryEvidenceImplemented(): int { return 1 }
+export function registryEvidenceTestContract(): int { return 2 }
+export function registryEvidenceVerified(): int { return 3 }
+export function registryEvidenceMeasured(): int { return 4 }
+export function registryEvidenceRegressionGated(): int { return 5 }
+
+export function registryEvidenceStateValid(state: int): bool {
+    return state >= registryEvidencePlanned() && state <= registryEvidenceRegressionGated()
+}
+
+export function registryEvidenceAtLeast(state: int, required: int): bool {
+    if !registryEvidenceStateValid(state) || !registryEvidenceStateValid(required) { return false }
+    return state >= required
+}
+
+export function registryPerformanceEvidenceSufficient(state: int, performanceClaimed: bool): bool {
+    if !performanceClaimed { return true }
+    return registryEvidenceAtLeast(state, registryEvidenceMeasured())
+}
+
+export function registryTestsExecuted(state: int): bool {
+    return registryEvidenceAtLeast(state, registryEvidenceVerified())
+}
+
+export function registryDepthEvidenceValid(sourceBytes: usize, codeLines: usize, exportedApiCount: usize, obviousPlaceholder: bool): bool {
+    if obviousPlaceholder { return false }
+    if sourceBytes == 0 as usize || codeLines == 0 as usize || exportedApiCount == 0 as usize { return false }
+    // This is deliberately a floor, not a "30 KiB means mature" rule. Broad
+    // packages should normally be much deeper, while complete narrow
+    // algorithms can legitimately remain smaller.
+    if codeLines < 20 as usize && exportedApiCount < 5 as usize { return false }
+    return true
+}
+
 export function registryCanPublishPreview(hasImplementation: bool, hasTests: bool, hasExample: bool, hasErrorDocs: bool): bool {
     return hasImplementation && hasTests && hasExample && hasErrorDocs
 }
 
+export function registryCanPublishPreviewEvidence(hasImplementation: bool, hasTests: bool, hasExample: bool, hasErrorDocs: bool, depthPassed: bool, testEvidenceState: int): bool {
+    if !registryCanPublishPreview(hasImplementation, hasTests, hasExample, hasErrorDocs) { return false }
+    if !depthPassed { return false }
+    return registryEvidenceAtLeast(testEvidenceState, registryEvidenceTestContract())
+}
+
+// Compatibility entry point retained for older publisher code. New publisher
+// code should use registryCanPublishStableEvidence so executed-test and
+// performance evidence cannot be accidentally omitted from the decision.
 export function registryCanPublishStable(level: int, hasNegativeTests: bool, compatibilityPassed: bool, hasSecurityNotes: bool, isProviderStub: bool): bool {
     if level < registryQualityStable() { return false }
     if isProviderStub { return false }
     return hasNegativeTests && compatibilityPassed && hasSecurityNotes
 }
 
+export function registryCanPublishStableEvidence(level: int, hasNegativeTests: bool, compatibilityPassed: bool, hasSecurityNotes: bool, isProviderStub: bool, depthPassed: bool, testEvidenceState: int, performanceClaimed: bool, performanceEvidenceState: int): bool {
+    if !registryCanPublishStable(level, hasNegativeTests, compatibilityPassed, hasSecurityNotes, isProviderStub) { return false }
+    if !depthPassed { return false }
+    if !registryTestsExecuted(testEvidenceState) { return false }
+    if !registryPerformanceEvidenceSufficient(performanceEvidenceState, performanceClaimed) { return false }
+    return true
+}
+
 export function registryCanPublishCore(level: int, stableReleaseCycles: usize, hasMigrationPolicy: bool, offlineInstallPassed: bool, hasMaintainer: bool): bool {
     if level != registryQualityCore() { return false }
     return stableReleaseCycles >= 2 as usize && hasMigrationPolicy && offlineInstallPassed && hasMaintainer
+}
+
+export function registryCanPublishCoreEvidence(level: int, stableReleaseCycles: usize, hasMigrationPolicy: bool, offlineInstallPassed: bool, hasMaintainer: bool, stableGatePassed: bool, compatibilityReleaseCount: usize): bool {
+    if !stableGatePassed { return false }
+    if !registryCanPublishCore(level, stableReleaseCycles, hasMigrationPolicy, offlineInstallPassed, hasMaintainer) { return false }
+    return compatibilityReleaseCount >= 2 as usize
+}
+
+export function registryClaimSafetyAllowed(testEvidenceState: int, targetRecorded: bool, safetyModeRecorded: bool): bool {
+    return registryTestsExecuted(testEvidenceState) && targetRecorded && safetyModeRecorded
+}
+
+export function registryClaimPerformanceAllowed(performanceEvidenceState: int, targetRecorded: bool, samplesRecorded: bool, methodologyRecorded: bool): bool {
+    return registryEvidenceAtLeast(performanceEvidenceState, registryEvidenceMeasured()) && targetRecorded && samplesRecorded && methodologyRecorded
+}
+
+export function registryPromotionReasonCode(depthPassed: bool, testEvidenceState: int, performanceClaimed: bool, performanceEvidenceState: int): int {
+    if !depthPassed { return 1 }
+    if !registryTestsExecuted(testEvidenceState) { return 2 }
+    if !registryPerformanceEvidenceSufficient(performanceEvidenceState, performanceClaimed) { return 3 }
+    return 0
 }
