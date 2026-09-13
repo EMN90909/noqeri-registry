@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.rate_limit
+
+export function rateLimitRefill(tokens: i64, capacity: i64, elapsedMillis: i64, tokensPerSecond: i64): i64 {
+    if capacity <= 0 as i64 || elapsedMillis <= 0 as i64 || tokensPerSecond <= 0 as i64 { return tokens }
+    let added: i64 = (elapsedMillis * tokensPerSecond) / 1000 as i64
+    let next: i64 = tokens + added
+    if next > capacity { return capacity }
+    return next
+}
+
+export function rateLimitAllowed(tokens: i64, cost: i64): bool {
+    return cost > 0 as i64 && tokens >= cost
+}
+
+export function rateLimitConsume(tokens: i64, cost: i64): i64 {
+    if !rateLimitAllowed(tokens, cost) { return tokens }
+    return tokens - cost
+}
+
+export function rateLimitRetryAfterMillis(tokens: i64, cost: i64, tokensPerSecond: i64): i64 {
+    if rateLimitAllowed(tokens, cost) { return 0 as i64 }
+    if tokensPerSecond <= 0 as i64 { return -1 as i64 }
+    let missing: i64 = cost - tokens
+    return (missing * 1000 as i64 + tokensPerSecond - 1 as i64) / tokensPerSecond
+}

@@ -1,0 +1,7 @@
+import "../src/retry.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(retryStatusTransient(429))
+require(!retryStatusTransient(400))
+require(retryDelayMillis(3 as usize, 100 as i64, 5000 as i64) == 800 as i64)
+require(retryDelayMillis(10 as usize, 1000 as i64, 5000 as i64) == 5000 as i64)
+print("retry package tests: OK")

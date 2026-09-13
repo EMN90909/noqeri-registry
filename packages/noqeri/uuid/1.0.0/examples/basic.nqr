@@ -1,0 +1,3 @@
+import package "noqeri/uuid"
+let id: [u8; 36] = [48 as u8,49 as u8,56 as u8,57 as u8,48 as u8,101 as u8,57 as u8,52 as u8,45 as u8,56 as u8,101 as u8,102 as u8,99 as u8,45 as u8,52 as u8,99 as u8,50 as u8,55 as u8,45 as u8,98 as u8,51 as u8,50 as u8,50 as u8,45 as u8,52 as u8,100 as u8,48 as u8,102 as u8,45 as u8,98 as u8,100 as u8,52 as u8,52 as u8,45 as u8,97 as u8,49 as u8]
+print(uuidTextValid(slice(id)))
