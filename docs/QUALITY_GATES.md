@@ -14,13 +14,30 @@ For exploration. APIs may change without migration guarantees. Minimum: valid ma
 
 For real evaluation. Requires meaningful implementation, input validation, automated tests, at least one runnable example, documented error behaviour, and an explicit supported target/compiler range. Breaking changes are allowed but require release notes.
 
+The minimum test evidence is `test-contract`: executable tests exist, but they do not need to be represented as having passed on every release target yet.
+
 ### stable
 
 For normal production use. Requires preview evidence plus negative/failure tests, compatibility-matrix passes for every claimed supported Noqeri release, versioned API notes, deprecation policy, security notes for sensitive packages, and reproducible performance methodology when performance is part of the package's purpose. A stable package cannot be a provider-shaped stub.
 
+The minimum test evidence is `verified`: the relevant tests have actually passed for the stated release configuration. If the package makes a performance claim, that claim additionally requires `measured` performance evidence.
+
 ### core
 
 For ecosystem-critical packages whose compatibility/support burden is intentionally higher. Requires stable evidence plus multiple release cycles of compatibility, maintained security response, migration coverage for deprecations, deterministic/offline install evidence, and explicit maintainership. `core` is a support promise, not a popularity badge.
+
+## Evidence states
+
+Quality level and evidence state answer different questions. Quality level is a support promise; evidence state says what has been proved for a particular configuration.
+
+- `planned` — accepted direction, no implementation claim;
+- `implemented` — source implementation exists and is reviewable;
+- `test-contract` — executable positive/negative tests exist but no passing result bundle is attached for the current release environment;
+- `verified` — relevant tests passed for a stated commit/compiler/backend/target/mode;
+- `measured` — benchmark samples and environment metadata are published;
+- `regression-gated` — a comparable baseline and threshold are automatically enforced.
+
+A checked-in test file is never enough to label a package `verified` by itself.
 
 ## Depth rule
 
@@ -76,7 +93,9 @@ A package seeking `stable` status publishes:
 - negative/failure behavior;
 - migration/deprecation notes where relevant;
 - benchmark method for performance-sensitive packages;
-- security notes for parsers, crypto, networking, serialization, database and concurrency packages.
+- security notes for parsers, crypto, networking, serialization, database and concurrency packages;
+- test evidence state for the exact release configuration;
+- performance evidence state when performance is advertised.
 
 ## Safety-sensitive packages
 
@@ -106,12 +125,48 @@ A result is evidence for the measured configuration, not a universal property of
 
 Performance-sensitive packages should publish one of these evidence states so the website never turns an unmeasured expectation into a marketing claim:
 
-- `unmeasured`: benchmark fixture exists but has not been executed for the release;
-- `measured-local`: reproducible local samples include machine and compiler metadata;
-- `measured-release`: release-tagged samples are published with raw data and methodology;
-- `regression-gated`: a documented threshold is enforced against a pinned baseline on comparable hardware.
+- `unmeasured` / evidence below `measured`: benchmark fixture exists but has not been executed for the release;
+- `measured`: reproducible samples include machine/compiler/backend/target metadata and raw data;
+- `regression-gated`: a documented threshold is enforced against a pinned comparable baseline.
 
 Changing algorithmic complexity, storage layout, safety mode, backend, compiler version or target invalidates comparisons unless the report calls out that change explicitly.
+
+## Executable policy helpers
+
+`tools/quality_policy.nqr` encodes the promotion contract used by registry-side tooling and tests. It now separates quality levels from evidence states and exposes stricter promotion helpers:
+
+- `registryCanPublishPreviewEvidence(...)` requires real depth plus at least a `test-contract`;
+- `registryCanPublishStableEvidence(...)` requires verified test evidence and measured performance whenever a performance claim is made;
+- `registryCanPublishCoreEvidence(...)` layers release-cycle/offline/maintainer requirements on top of the stable gate;
+- claim helpers prevent safety/performance labels from being emitted without the corresponding evidence state and metadata.
+
+`tests/quality_policy.nqr` is the executable contract for these rules.
+
+## Package-depth audit
+
+`tools/package-depth-audit.mjs` scans every package version under `packages/` and reports source depth independently from manifest claims.
+
+It checks:
+
+- total source bytes and nonblank code lines;
+- exported API count, records/private functions and control flow;
+- tests and runnable examples;
+- README and manifest entry presence;
+- GPL-3.0-only package metadata;
+- obvious placeholder patterns;
+- the requested 30 KiB source target as an informational field only.
+
+Run:
+
+```sh
+node tools/package-depth-audit.mjs
+node tools/package-depth-audit.mjs --json
+node tools/package-depth-audit.mjs --strict
+```
+
+`--strict` exits non-zero while obvious placeholder package versions remain. A package becomes `reviewable` in the audit only when it has real source depth, tests, examples, README, a valid entry path and GPL-3.0-only metadata.
+
+The audit is intentionally conservative: passing it is necessary evidence of implementation depth, not an automatic `stable` promotion.
 
 ## Promotion checklist
 
@@ -131,6 +186,8 @@ Before promotion to stable/core, reviewers should answer yes to the relevant que
 12. Can a user vendor the package for an offline build?
 13. Do foundational structures satisfy the deep-module evidence contract rather than merely a source-size target?
 14. Are safety guarantees exercised by tests in the configuration in which they are advertised?
+15. Is the package evidence state high enough for the requested quality level?
+16. If performance is advertised, are raw measured samples attached for that exact release configuration?
 
 ## Compatibility dashboard
 
