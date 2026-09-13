@@ -5,7 +5,8 @@ package {
     edition: "2026"
     profile: "library"
     entry: "src/prelude.nqr"
-    license: "MIT"
+    target: "portable"
+    license: "GPL-3.0-only"
 }
 
 dependencies {

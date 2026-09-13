@@ -5,5 +5,10 @@ package {
     edition: "2026"
     profile: "library"
     entry: "src/test.nqr"
-    license: "MIT"
+    target: "portable"
+    license: "GPL-3.0-only"
+}
+
+dependencies {
+    core: "noqeri/core@^1.5"
 }

@@ -1,8 +1,14 @@
 package {
-    name: "noqeri/security"
+    namespace: "noqeri"
+    name: "security"
     version: "1.5.0"
     edition: "2026"
-    entry: "src/memory.nqr"
     profile: "library"
-    target: "x86_64-unknown-none"
+    entry: "src/memory.nqr"
+    target: "portable"
+    license: "GPL-3.0-only"
+}
+
+dependencies {
+    core: "noqeri/core@^1.5"
 }

@@ -1,1 +1,9 @@
-package { name: "noqeri/router" version: "1.0.0" edition: "2026" entry: "src/router.nqr" profile: "library" target: "x86_64-unknown-none" }
+package {
+    name: "noqeri/router"
+    version: "1.0.0"
+    edition: "2026"
+    entry: "src/router.nqr"
+    profile: "library"
+    target: "portable"
+    license: "GPL-3.0-only"
+}
