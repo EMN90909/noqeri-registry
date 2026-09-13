@@ -1,10 +1,103 @@
 // SPDX-License-Identifier: GPL-3.0-only
 module noqeri.sqlite
 
-extern function sqliteOpen(path: string): usize
-extern function sqliteExec(database: usize, sql: string): isize
-extern function sqliteClose(database: usize): bool
+extern function sqliteHostOpen(path: string): usize
+extern function sqliteHostExec(database: usize, sql: string): isize
+extern function sqliteHostQuery(database: usize, sql: string): usize
+extern function sqliteHostRowsNext(rows: usize): bool
+extern function sqliteHostRowsColumnCount(rows: usize): usize
+extern function sqliteHostRowsText(rows: usize, column: usize): string
+extern function sqliteHostRowsClose(rows: usize): void
+extern function sqliteHostPrepare(database: usize, sql: string): usize
+extern function sqliteHostBindText(statement: usize, index: usize, value: string): isize
+extern function sqliteHostStep(statement: usize): int
+extern function sqliteHostColumnCount(statement: usize): usize
+extern function sqliteHostColumnText(statement: usize, column: usize): string
+extern function sqliteHostReset(statement: usize): isize
+extern function sqliteHostFinalize(statement: usize): isize
+extern function sqliteHostClose(database: usize): bool
 
 export function sqliteHandleValid(database: usize): bool { return database != 0 as usize }
+export function sqliteRowsHandleValid(rows: usize): bool { return rows != 0 as usize }
+export function sqliteStatementValid(statement: usize): bool { return statement != 0 as usize }
 export function sqliteResultOk(code: int): bool { return code == 0 || code == 100 || code == 101 }
 export function sqliteBusy(code: int): bool { return code == 5 || code == 6 }
+
+export function sqliteOpen(path: string): usize {
+    unsafe { return sqliteHostOpen(path) }
+}
+
+export function sqliteExec(database: usize, sql: string): isize {
+    if !sqliteHandleValid(database) { return -1 }
+    unsafe { return sqliteHostExec(database, sql) }
+}
+
+export function sqliteQuery(database: usize, sql: string): usize {
+    if !sqliteHandleValid(database) { return 0 as usize }
+    unsafe { return sqliteHostQuery(database, sql) }
+}
+
+export function sqliteRowsNext(rows: usize): bool {
+    if !sqliteRowsHandleValid(rows) { return false }
+    unsafe { return sqliteHostRowsNext(rows) }
+}
+
+export function sqliteRowsColumnCount(rows: usize): usize {
+    if !sqliteRowsHandleValid(rows) { return 0 as usize }
+    unsafe { return sqliteHostRowsColumnCount(rows) }
+}
+
+export function sqliteRowsText(rows: usize, column: usize): string {
+    if !sqliteRowsHandleValid(rows) { return "" }
+    unsafe { return sqliteHostRowsText(rows, column) }
+}
+
+export function sqliteRowsClose(rows: usize): void {
+    if sqliteRowsHandleValid(rows) {
+        unsafe { sqliteHostRowsClose(rows) }
+    }
+}
+
+export function sqlitePrepare(database: usize, sql: string): usize {
+    if !sqliteHandleValid(database) { return 0 as usize }
+    unsafe { return sqliteHostPrepare(database, sql) }
+}
+
+export function sqliteBindText(statement: usize, index: usize, value: string): isize {
+    if !sqliteStatementValid(statement) { return -1 }
+    unsafe { return sqliteHostBindText(statement, index, value) }
+}
+
+export function sqliteStep(statement: usize): int {
+    if !sqliteStatementValid(statement) { return -1 }
+    unsafe { return sqliteHostStep(statement) }
+}
+
+export function sqliteColumnCount(statement: usize): usize {
+    if !sqliteStatementValid(statement) { return 0 as usize }
+    unsafe { return sqliteHostColumnCount(statement) }
+}
+
+export function sqliteColumnText(statement: usize, column: usize): string {
+    if !sqliteStatementValid(statement) { return "" }
+    unsafe { return sqliteHostColumnText(statement, column) }
+}
+
+export function sqliteReset(statement: usize): isize {
+    if !sqliteStatementValid(statement) { return -1 }
+    unsafe { return sqliteHostReset(statement) }
+}
+
+export function sqliteFinalize(statement: usize): isize {
+    if !sqliteStatementValid(statement) { return -1 }
+    unsafe { return sqliteHostFinalize(statement) }
+}
+
+export function sqliteBegin(database: usize): isize { return sqliteExec(database, "BEGIN") }
+export function sqliteCommit(database: usize): isize { return sqliteExec(database, "COMMIT") }
+export function sqliteRollback(database: usize): isize { return sqliteExec(database, "ROLLBACK") }
+
+export function sqliteClose(database: usize): bool {
+    if !sqliteHandleValid(database) { return false }
+    unsafe { return sqliteHostClose(database) }
+}
