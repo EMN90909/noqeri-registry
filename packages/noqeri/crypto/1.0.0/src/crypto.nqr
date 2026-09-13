@@ -1,4 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.crypto
-// Implemented by the trusted host provider; algorithms are not reimplemented in userland.
-extern function cryptoRandomHex(bytes: usize): string
-extern function cryptoSha256(text: string): string
+
+extern function cryptoRandomFill(output: []u8): bool
+extern function cryptoSha256(input: []u8, output: []u8): bool
+
+export function cryptoSha256OutputSize(): usize { return 32 as usize }
+export function cryptoCanSha256(output: []u8): bool { return len(output) >= cryptoSha256OutputSize() }
+export function cryptoRandomNonEmpty(output: []u8): bool { if len(output) == 0 as usize { return true } return cryptoRandomFill(output) }
+export function cryptoDigest(input: []u8, output: []u8): bool { if !cryptoCanSha256(output) { return false } return cryptoSha256(input, output) }

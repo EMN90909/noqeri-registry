@@ -1,2 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.time
-extern function timeNowMillis(): int
+
+extern function timeNowMillis(): u64
+
+export function secondsToMillis(seconds: u64): u64 { return seconds * 1000 as u64 }
+export function minutesToMillis(minutes: u64): u64 { return secondsToMillis(minutes * 60 as u64) }
+export function hoursToMillis(hours: u64): u64 { return minutesToMillis(hours * 60 as u64) }
+export function elapsedMillis(start: u64, finish: u64): u64 { if finish < start { return 0 as u64 } return finish - start }

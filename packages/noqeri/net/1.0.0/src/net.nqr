@@ -1,5 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.net
+
 extern function netConnect(host: string, port: int): usize
-extern function netWrite(socket: usize, data: string): int
-extern function netRead(socket: usize): string
 extern function netClose(socket: usize): bool
+
+export function netPortValid(port: int): bool { return port > 0 && port <= 65535 }
+export function netSocketValid(socket: usize): bool { return socket != 0 as usize }
+export function ipv4OctetValid(value: int): bool { return value >= 0 && value <= 255 }
+export function ipv4Valid(a: int, b: int, c: int, d: int): bool { return ipv4OctetValid(a) && ipv4OctetValid(b) && ipv4OctetValid(c) && ipv4OctetValid(d) }

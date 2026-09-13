@@ -1,6 +1,7 @@
-module noqeri.std.prelude
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.std
 
-function minInt(left: int, right: int): int { if left < right { return left } return right }
-function maxInt(left: int, right: int): int { if left > right { return left } return right }
-function clampInt(value: int, low: int, high: int): int { if value < low { return low } if value > high { return high } return value }
-function absInt(value: int): int { if value < 0 { return -value } return value }
+export function nqIsAsciiSpace(value: u8): bool { return value == 32 as u8 || value == 9 as u8 || value == 10 as u8 || value == 13 as u8 }
+export function nqIsAsciiDigit(value: u8): bool { return value >= 48 as u8 && value <= 57 as u8 }
+export function nqIsAsciiAlpha(value: u8): bool { return (value >= 65 as u8 && value <= 90 as u8) || (value >= 97 as u8 && value <= 122 as u8) }
+export function nqByteCount(value: []u8, target: u8): usize { let count: usize = 0 as usize let i: usize = 0 as usize while i < len(value) { if value[i] == target { count = count + 1 } i = i + 1 } return count }

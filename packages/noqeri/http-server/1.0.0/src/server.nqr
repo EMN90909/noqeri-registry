@@ -1,4 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.http_server
-extern function httpRouteText(method: string, path: string, status: int, body: string): bool
-extern function httpStatic(prefix: string, directory: string): bool
-extern function httpListen(port: int): bool
+
+extern function httpServerListen(port: int): usize
+extern function httpServerClose(server: usize): bool
+
+export function httpPortValid(port: int): bool { return port > 0 && port <= 65535 }
+export function httpBodyAllowed(status: int): bool { return status != 204 && status != 304 && (status < 100 || status >= 200) }
+export function httpDefaultPort(tls: bool): int { if tls { return 443 } return 80 }
+export function httpServerStart(port: int): usize { if !httpPortValid(port) { return 0 as usize } return httpServerListen(port) }

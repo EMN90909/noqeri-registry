@@ -1,4 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.web
-extern function routePath(): string
-extern function routeGo(path: string): void
-extern function timeNowMillis(): int
+
+extern function webNavigate(url: string): bool
+extern function webNowMillis(): u64
+
+export function webStatusOk(status: int): bool { return status >= 200 && status <= 299 }
+export function webStatusRetryable(status: int): bool { return status == 408 || status == 425 || status == 429 || status >= 500 }
+export function webClampPercent(value: int): int { if value < 0 { return 0 } if value > 100 { return 100 } return value }

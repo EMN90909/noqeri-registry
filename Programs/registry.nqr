@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/registry.nqr"
+
+function main(): int {
+    let status: isize = registryServe(8080)
+    if status < 0 { return 1 }
+    return 0
+}

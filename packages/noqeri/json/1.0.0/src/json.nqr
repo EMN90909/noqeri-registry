@@ -1,4 +1,7 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.json
-extern function jsonEncode(value: string): string
-extern function jsonDecode(text: string): string
-extern function jsonValid(text: string): bool
+
+export function jsonIsWhitespace(value: u8): bool { return value == 32 as u8 || value == 9 as u8 || value == 10 as u8 || value == 13 as u8 }
+export function jsonIsDigit(value: u8): bool { return value >= 48 as u8 && value <= 57 as u8 }
+export function jsonIsStructural(value: u8): bool { return value == 123 as u8 || value == 125 as u8 || value == 91 as u8 || value == 93 as u8 || value == 58 as u8 || value == 44 as u8 }
+export function jsonLooksComplete(value: []u8): bool { if len(value) == 0 as usize { return false } let first: u8 = value[0] let last: u8 = value[len(value) - 1] return (first == 123 as u8 && last == 125 as u8) || (first == 91 as u8 && last == 93 as u8) }

@@ -1,4 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.fs
+
 extern function fsReadText(path: string): string
-extern function fsWriteText(path: string, text: string): bool
+extern function fsWriteText(path: string, data: string): bool
 extern function fsExists(path: string): bool
+extern function fsRemove(path: string): bool
+
+export function fsPathByteUnsafe(value: u8): bool { return value == 0 as u8 }
+export function fsPathHasTraversal(path: []u8): bool { let i: usize = 0 as usize while i + 1 < len(path) { if path[i] == 46 as u8 && path[i + 1] == 46 as u8 { return true } i = i + 1 } return false }

@@ -1,4 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.sqlite
+
 extern function sqliteOpen(path: string): usize
-extern function sqliteExec(connection: usize, query: string): string
-extern function sqliteClose(connection: usize): bool
+extern function sqliteExec(database: usize, sql: string): isize
+extern function sqliteClose(database: usize): bool
+
+export function sqliteHandleValid(database: usize): bool { return database != 0 as usize }
+export function sqliteResultOk(code: int): bool { return code == 0 || code == 100 || code == 101 }
+export function sqliteBusy(code: int): bool { return code == 5 || code == 6 }

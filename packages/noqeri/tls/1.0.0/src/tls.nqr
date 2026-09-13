@@ -1,5 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.tls
+
 extern function tlsConnect(host: string, port: int): usize
-extern function tlsWrite(stream: usize, data: string): int
-extern function tlsRead(stream: usize): string
-extern function tlsClose(stream: usize): bool
+extern function tlsClose(handle: usize): bool
+
+export function tlsHandleValid(handle: usize): bool { return handle != 0 as usize }
+export function tlsContentTypeValid(value: u8): bool { return value == 20 as u8 || value == 21 as u8 || value == 22 as u8 || value == 23 as u8 }
+export function tlsLegacyVersionValid(major: u8, minor: u8): bool { return major == 3 as u8 && minor >= 1 as u8 && minor <= 4 as u8 }

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.url
-extern function urlEncode(value: string): string
-extern function urlDecode(value: string): string
+
+export function urlIsUnreserved(value: u8): bool { return (value >= 65 as u8 && value <= 90 as u8) || (value >= 97 as u8 && value <= 122 as u8) || (value >= 48 as u8 && value <= 57 as u8) || value == 45 as u8 || value == 46 as u8 || value == 95 as u8 || value == 126 as u8 }
+export function urlHexValue(value: u8): int { if value >= 48 as u8 && value <= 57 as u8 { return (value - 48 as u8) as int } if value >= 65 as u8 && value <= 70 as u8 { return (value - 55 as u8) as int } if value >= 97 as u8 && value <= 102 as u8 { return (value - 87 as u8) as int } return -1 }
+export function urlNeedsEscape(value: u8): bool { return !urlIsUnreserved(value) }

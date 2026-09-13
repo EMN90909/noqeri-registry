@@ -1,6 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.fetch
+
 extern function fetchStart(url: string): usize
-extern function fetchReady(request: usize): bool
-extern function fetchOk(request: usize): bool
-extern function fetchStatus(request: usize): int
-extern function fetchText(request: usize): string
+extern function fetchStatus(handle: usize): int
+extern function fetchText(handle: usize): string
+extern function fetchCancel(handle: usize): bool
+
+export function fetchHandleValid(handle: usize): bool { return handle != 0 as usize }
+export function fetchDone(handle: usize): bool { let status: int = fetchStatus(handle) return status >= 200 || status < 0 }
+export function fetchSuccessful(handle: usize): bool { let status: int = fetchStatus(handle) return status >= 200 && status <= 299 }

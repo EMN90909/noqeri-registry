@@ -1,4 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.router
-extern function routePath(): string
-extern function routeGo(path: string): void
-extern function httpRouteText(method: string, path: string, status: int, body: string): bool
+
+export function routeByteEqual(left: u8, right: u8): bool { return left == right }
+export function routeExact(path: []u8, pattern: []u8): bool { if len(path) != len(pattern) { return false } let i: usize = 0 as usize while i < len(path) { if path[i] != pattern[i] { return false } i = i + 1 } return true }
+export function routeStartsWith(path: []u8, prefix: []u8): bool { if len(prefix) > len(path) { return false } let i: usize = 0 as usize while i < len(prefix) { if path[i] != prefix[i] { return false } i = i + 1 } return true }

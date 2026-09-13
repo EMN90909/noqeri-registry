@@ -1,6 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.http
-function httpOk(): int { return 200 }
-function httpCreated(): int { return 201 }
-function httpBadRequest(): int { return 400 }
-function httpNotFound(): int { return 404 }
-function httpServerError(): int { return 500 }
+
+export function httpStatusClass(status: int): int { if status < 100 || status > 599 { return 0 } return status / 100 }
+export function httpIsSuccess(status: int): bool { return status >= 200 && status <= 299 }
+export function httpIsRedirect(status: int): bool { return status >= 300 && status <= 399 }
+export function httpIsClientError(status: int): bool { return status >= 400 && status <= 499 }
+export function httpIsServerError(status: int): bool { return status >= 500 && status <= 599 }
+export function httpMethodIsSafe(method: int): bool { return method == 1 || method == 2 }

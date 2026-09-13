@@ -1,4 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.postgres
-extern function postgresOpen(url: string): usize
-extern function postgresExec(connection: usize, query: string): string
+
+extern function postgresOpen(connection: string): usize
+extern function postgresExec(connection: usize, sql: string): isize
 extern function postgresClose(connection: usize): bool
+
+export function postgresHandleValid(connection: usize): bool { return connection != 0 as usize }
+export function postgresProtocolVersion(): int { return 196608 }
+export function postgresMessageLengthValid(length: int): bool { return length >= 4 && length <= 16777216 }

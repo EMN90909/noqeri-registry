@@ -1,5 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.websocket
+
 extern function websocketOpen(url: string): usize
 extern function websocketSend(socket: usize, text: string): bool
 extern function websocketMessage(socket: usize): string
 extern function websocketClose(socket: usize): bool
+
+export function websocketHandleValid(socket: usize): bool { return socket != 0 as usize }
+export function websocketOpcodeValid(opcode: u8): bool { return opcode == 0 as u8 || opcode == 1 as u8 || opcode == 2 as u8 || opcode == 8 as u8 || opcode == 9 as u8 || opcode == 10 as u8 }
+export function websocketControlOpcode(opcode: u8): bool { return opcode >= 8 as u8 && opcode <= 10 as u8 }
+export function websocketPayloadLengthValid(opcode: u8, length: usize): bool { if websocketControlOpcode(opcode) { return length <= 125 as usize } return true }
+export function websocketCloseCodeValid(code: int): bool { if code < 1000 || code >= 5000 { return false } if code == 1004 || code == 1005 || code == 1006 || code == 1015 { return false } return true }

@@ -1,2 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.html
-extern function htmlEscape(value: string): string
+
+export function htmlNeedsEscape(value: u8): bool { return value == 38 as u8 || value == 60 as u8 || value == 62 as u8 || value == 34 as u8 || value == 39 as u8 }
+export function htmlEscapeLength(value: u8): usize { if value == 38 as u8 { return 5 as usize } if value == 60 as u8 || value == 62 as u8 { return 4 as usize } if value == 34 as u8 { return 6 as usize } if value == 39 as u8 { return 5 as usize } return 1 as usize }
+export function htmlEscapedLength(input: []u8): usize { let total: usize = 0 as usize let i: usize = 0 as usize while i < len(input) { total = total + htmlEscapeLength(input[i]) i = i + 1 } return total }

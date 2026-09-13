@@ -1,5 +1,6 @@
-module noqeri.security.memory
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.security
 
-export function zeroMemory(memory: *volatile u8, count: usize): void { let index: usize = 0 while index < count { memory[index] = 0 as u8 index = index + 1 } }
-export function validRange(offset: usize, length: usize, total: usize): bool { if offset > total { return false } return length <= total - offset }
-export function validIndex(index: usize, total: usize): bool { return index < total }
+export function nqConstantTimeEqual(left: []u8, right: []u8): bool { if len(left) != len(right) { return false } let diff: u8 = 0 as u8 let i: usize = 0 as usize while i < len(left) { if left[i] != right[i] { diff = 1 as u8 } i = i + 1 } return diff == 0 as u8 }
+export function nqClearBytes(value: []u8): void { let i: usize = 0 as usize while i < len(value) { value[i] = 0 as u8 i = i + 1 } }
+export function nqAllZero(value: []u8): bool { let i: usize = 0 as usize while i < len(value) { if value[i] != 0 as u8 { return false } i = i + 1 } return true }

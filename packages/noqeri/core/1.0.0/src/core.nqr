@@ -1,6 +1,8 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.core
 
-function identity<T>(value: T): T { return value }
-function statusOk(status: isize): bool { return status >= 0 }
-function statusError(status: isize): bool { return status < 0 }
-function clampInt(value: int, low: int, high: int): int { if value < low { return low } if value > high { return high } return value }
+export function nqMin(left: int, right: int): int { if left < right { return left } return right }
+export function nqMax(left: int, right: int): int { if left > right { return left } return right }
+export function nqClamp(value: int, low: int, high: int): int { if value < low { return low } if value > high { return high } return value }
+export function nqAbs(value: int): int { if value < 0 { return 0 - value } return value }
+export function nqBoolToInt(value: bool): int { if value { return 1 } return 0 }

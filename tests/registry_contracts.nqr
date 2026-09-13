@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/registry.nqr"
+
+function main(): int {
+    if !registryPortValid(80) { return 1 }
+    if registryPortValid(0) { return 2 }
+    if registryPortValid(70000) { return 3 }
+    return 0
+}

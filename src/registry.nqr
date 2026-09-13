@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.registry
+
+extern function registryHostServe(indexPath: string, packagesRoot: string, port: int): isize
+
+export function registryNameByteValid(value: u8): bool {
+    return (value >= 97 as u8 && value <= 122 as u8) || (value >= 48 as u8 && value <= 57 as u8) || value == 45 as u8
+}
+
+export function registryNameValid(value: []u8): bool {
+    if len(value) == 0 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(value) {
+        if !registryNameByteValid(value[i]) { return false }
+        i = i + 1
+    }
+    return true
+}
+
+export function registryVersionByteValid(value: u8): bool {
+    return (value >= 48 as u8 && value <= 57 as u8) || (value >= 65 as u8 && value <= 90 as u8) || (value >= 97 as u8 && value <= 122 as u8) || value == 46 as u8 || value == 45 as u8 || value == 43 as u8
+}
+
+export function registryVersionValid(value: []u8): bool {
+    if len(value) < 5 as usize { return false }
+    let dots: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i < len(value) {
+        if !registryVersionByteValid(value[i]) { return false }
+        if value[i] == 46 as u8 { dots = dots + 1 }
+        i = i + 1
+    }
+    return dots >= 2 as usize
+}
+
+export function registryPortValid(port: int): bool { return port > 0 && port <= 65535 }
+
+export function registryServe(port: int): isize {
+    if !registryPortValid(port) { return -1 }
+    return registryHostServe("registry/index.json", "packages", port)
+}

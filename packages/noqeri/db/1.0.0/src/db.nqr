@@ -1,3 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.db
-extern function dbOpen(path: string): usize
-extern function dbExec(database: usize, script: string): string
+
+extern function noqeriDbOpen(path: string): usize
+extern function noqeriDbExecute(database: usize, statement: string): isize
+extern function noqeriDbClose(database: usize): bool
+
+export function dbHandleValid(database: usize): bool { return database != 0 as usize }
+export function dbResultOk(code: isize): bool { return code >= 0 }
+export function dbResultError(code: isize): bool { return code < 0 }

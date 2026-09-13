@@ -1,6 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.dom
-extern function domText(selector: string, value: string): bool
-extern function domHtml(selector: string, value: string): bool
-extern function domAttr(selector: string, name: string, value: string): bool
-extern function domAddClass(selector: string, name: string): bool
-extern function domRemoveClass(selector: string, name: string): bool
+
+extern function domFind(selector: string): usize
+extern function domSetText(node: usize, text: string): bool
+extern function domSetAttribute(node: usize, name: string, value: string): bool
+extern function domRemove(node: usize): bool
+
+export function domHandleValid(node: usize): bool { return node != 0 as usize }
+export function domSetTextIfPresent(node: usize, text: string): bool { if !domHandleValid(node) { return false } return domSetText(node, text) }

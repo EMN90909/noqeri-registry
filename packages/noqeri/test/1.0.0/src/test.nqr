@@ -1,4 +1,7 @@
+// SPDX-License-Identifier: GPL-3.0-only
 module noqeri.test
 
-function assertTrue(value: bool): int { if value { return 0 } return -1 }
-function assertEqualInt(left: int, right: int): int { if left == right { return 0 } return -1 }
+export function assertTrue(value: bool): isize { if value { return 0 } return -1 }
+export function assertFalse(value: bool): isize { if value { return -1 } return 0 }
+export function assertIntEqual(actual: int, expected: int): isize { if actual == expected { return 0 } return -1 }
+export function assertUsizeEqual(actual: usize, expected: usize): isize { if actual == expected { return 0 } return -1 }
