@@ -1,0 +1,6 @@
+import "../src/std.nqr"
+function main(): int {
+    let values: [int;3] = [10,20,30]
+    if std_generic_contains(slice(values),20) { return 0 }
+    return 1
+}

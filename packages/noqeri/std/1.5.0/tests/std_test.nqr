@@ -1,0 +1,12 @@
+import "../src/std.nqr"
+function main(): int {
+    if std_version_major() != 1 || std_version_minor() != 5 { return 1 }
+    if std_module_floor() < 100 as usize { return 2 }
+    if !std_checked_status_ok(0 as isize) || !std_checked_status_error(-1 as isize) { return 3 }
+    if !std_range_valid(2 as usize,3 as usize,5 as usize) { return 4 }
+    if std_range_valid(4 as usize,2 as usize,5 as usize) { return 5 }
+    if !std_port_valid(443 as u32) || std_port_valid(0 as u32) { return 6 }
+    let values: [int;4] = [4,7,9,12]
+    if !std_generic_contains(slice(values),9) { return 7 }
+    return 0
+}
