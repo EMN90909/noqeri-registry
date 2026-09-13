@@ -1,11 +1,64 @@
 {
-  "schema": 1,
+  "schema": 2,
   "levels": {
-    "experimental": {"rank": 0, "production": false, "compatibility_required": false},
-    "preview": {"rank": 1, "production": false, "compatibility_required": true},
-    "stable": {"rank": 2, "production": true, "compatibility_required": true},
-    "core": {"rank": 3, "production": true, "compatibility_required": true}
+    "experimental": {
+      "rank": 0,
+      "production": false,
+      "compatibility_required": false,
+      "minimum_test_evidence": "planned",
+      "depth_required": false,
+      "examples_required": false,
+      "negative_tests_required": false
+    },
+    "preview": {
+      "rank": 1,
+      "production": false,
+      "compatibility_required": true,
+      "minimum_test_evidence": "test-contract",
+      "depth_required": true,
+      "examples_required": true,
+      "negative_tests_required": false
+    },
+    "stable": {
+      "rank": 2,
+      "production": true,
+      "compatibility_required": true,
+      "minimum_test_evidence": "verified",
+      "depth_required": true,
+      "examples_required": true,
+      "negative_tests_required": true,
+      "measured_performance_required_when_claimed": true,
+      "security_notes_required_when_sensitive": true
+    },
+    "core": {
+      "rank": 3,
+      "production": true,
+      "compatibility_required": true,
+      "minimum_test_evidence": "verified",
+      "depth_required": true,
+      "examples_required": true,
+      "negative_tests_required": true,
+      "measured_performance_required_when_claimed": true,
+      "security_notes_required_when_sensitive": true,
+      "minimum_stable_release_cycles": 2,
+      "offline_install_required": true,
+      "maintainer_required": true
+    }
+  },
+  "evidence_states": {
+    "planned": 0,
+    "implemented": 1,
+    "test-contract": 2,
+    "verified": 3,
+    "measured": 4,
+    "regression-gated": 5
   },
   "default": "experimental",
-  "rule": "A missing level is experimental. Provider stubs and packages without runnable tests cannot be stable or core."
+  "rules": [
+    "A missing quality level is experimental.",
+    "Provider stubs and packages without runnable tests cannot be stable or core.",
+    "Source size alone never satisfies the depth requirement.",
+    "A performance claim requires measured evidence for the claimed release configuration.",
+    "A checked-in test fixture is test-contract evidence, not verified evidence until it has actually passed for the stated configuration."
+  ]
 }
