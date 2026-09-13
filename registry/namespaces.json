@@ -1,0 +1,10 @@
+{
+  "format": "noqeri-namespace-ownership-v1",
+  "namespaces": [
+    {
+      "namespace": "noqeri",
+      "owners": ["EMN90909"],
+      "status": "active"
+    }
+  ]
+}
