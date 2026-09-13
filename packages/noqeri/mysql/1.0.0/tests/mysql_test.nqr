@@ -1,0 +1,13 @@
+import "../src/mysql.nqr"
+
+function main(): int {
+    if mysqlHandleValid(0 as usize) { return 1 }
+    if mysqlRowsHandleValid(0 as usize) { return 2 }
+    if mysqlDefaultPort() != 3306 { return 3 }
+    if mariadbDefaultPort() != 3306 { return 4 }
+    if !mysqlPacketLengthValid(0) { return 5 }
+    if !mysqlPacketLengthValid(16777215) { return 6 }
+    if mysqlPacketLengthValid(16777216) { return 7 }
+    if mysqlPacketLengthValid(-1) { return 8 }
+    return 0
+}
