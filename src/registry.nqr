@@ -33,9 +33,37 @@ export function registryVersionValid(value: []u8): bool {
     return dots >= 2 as usize
 }
 
+export function registryHexByteValid(value: u8): bool {
+    return (value >= 48 as u8 && value <= 57 as u8) || (value >= 97 as u8 && value <= 102 as u8) || (value >= 65 as u8 && value <= 70 as u8)
+}
+
+// Registry checksums use the exact wire form `sha256:<64 hex digits>`.
+// Keeping this validation inside Noqeri makes malformed metadata rejectable
+// before any package bytes are trusted by a host adapter.
+export function registrySha256Valid(value: []u8): bool {
+    if len(value) != 71 as usize { return false }
+    if value[0 as usize] != 115 as u8 { return false }
+    if value[1 as usize] != 104 as u8 { return false }
+    if value[2 as usize] != 97 as u8 { return false }
+    if value[3 as usize] != 50 as u8 { return false }
+    if value[4 as usize] != 53 as u8 { return false }
+    if value[5 as usize] != 54 as u8 { return false }
+    if value[6 as usize] != 58 as u8 { return false }
+    let i: usize = 7 as usize
+    while i < len(value) {
+        if !registryHexByteValid(value[i]) { return false }
+        i = i + 1
+    }
+    return true
+}
+
 export function registryPortValid(port: int): bool { return port > 0 && port <= 65535 }
+export function registryReleaseMutable(yanked: bool): bool { return false }
+export function registryReleaseDownloadable(yanked: bool): bool { return !yanked }
 
 export function registryServe(port: int): isize {
     if !registryPortValid(port) { return -1 }
-    return registryHostServe("registry/index.json", "packages", port)
+    unsafe {
+        return registryHostServe("registry/index.json", "packages", port)
+    }
 }
