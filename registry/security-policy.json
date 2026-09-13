@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "integrity": {
+    "algorithm": "sha256",
+    "covers": "sorted package paths and bytes",
+    "requiredForNewReleases": true
+  },
+  "namespaces": {
+    "noqeri": {
+      "owners": ["EMN90909"],
+      "protected": true
+    }
+  },
+  "releases": {
+    "immutable": true,
+    "allowYank": true,
+    "allowOverwrite": false,
+    "reproducibleArchives": true
+  },
+  "reporting": {
+    "securityAdvisories": "https://github.com/EMN90909/noqeri-registry/security/advisories/new",
+    "maliciousPackageIssues": "https://github.com/EMN90909/noqeri-registry/issues/new"
+  },
+  "transparency": {
+    "plannedService": "https://sum.noqeri.dev",
+    "model": "append-only Merkle log",
+    "status": "planned"
+  }
+}
