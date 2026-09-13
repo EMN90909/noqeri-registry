@@ -1,0 +1,20 @@
+import "../src/concurrency.nqr"
+
+function main(): int {
+    if valid_handle(0 as usize) { return 1 }
+    if !valid_handle(1 as usize) { return 2 }
+    if !valid_timeout(0 as i64) { return 3 }
+    if !valid_timeout(60000 as i64) { return 4 }
+    if valid_timeout(-1 as i64) { return 5 }
+    if !is_timeout(-2 as isize) { return 6 }
+    if is_timeout(-3 as isize) { return 7 }
+    if !is_cancelled(-3 as isize) { return 8 }
+    if !ok(0 as isize) { return 9 }
+    if ok(-1 as isize) { return 10 }
+    if task_pending() != 0 { return 11 }
+    if task_running() != 1 { return 12 }
+    if task_ready() != 2 { return 13 }
+    if task_failed() != 3 { return 14 }
+    if task_cancelled_state() != 4 { return 15 }
+    return 0
+}
