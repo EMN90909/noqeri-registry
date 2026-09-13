@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.registry.quality_policy
+
+export function registryQualityExperimental(): int { return 0 }
+export function registryQualityPreview(): int { return 1 }
+export function registryQualityStable(): int { return 2 }
+export function registryQualityCore(): int { return 3 }
+
+export function registryQualityLevelValid(level: int): bool {
+    return level >= registryQualityExperimental() && level <= registryQualityCore()
+}
+
+export function registryCanPublishPreview(hasImplementation: bool, hasTests: bool, hasExample: bool, hasErrorDocs: bool): bool {
+    return hasImplementation && hasTests && hasExample && hasErrorDocs
+}
+
+export function registryCanPublishStable(level: int, hasNegativeTests: bool, compatibilityPassed: bool, hasSecurityNotes: bool, isProviderStub: bool): bool {
+    if level < registryQualityStable() { return false }
+    if isProviderStub { return false }
+    return hasNegativeTests && compatibilityPassed && hasSecurityNotes
+}
+
+export function registryCanPublishCore(level: int, stableReleaseCycles: usize, hasMigrationPolicy: bool, offlineInstallPassed: bool, hasMaintainer: bool): bool {
+    if level != registryQualityCore() { return false }
+    return stableReleaseCycles >= 2 as usize && hasMigrationPolicy && offlineInstallPassed && hasMaintainer
+}

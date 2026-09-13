@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.registry.advisory_policy
+
+export function registrySeverityLow(): int { return 1 }
+export function registrySeverityModerate(): int { return 2 }
+export function registrySeverityHigh(): int { return 3 }
+export function registrySeverityCritical(): int { return 4 }
+
+export function registrySeverityValid(value: int): bool {
+    return value >= registrySeverityLow() && value <= registrySeverityCritical()
+}
+
+export function registryAdvisoryPublishable(hasIdentifier: bool, hasAffectedRange: bool, hasSummary: bool, severity: int, hasFixedOrWorkaround: bool): bool {
+    return hasIdentifier && hasAffectedRange && hasSummary && registrySeverityValid(severity) && hasFixedOrWorkaround
+}
+
+export function registryAuditExitCode(advisoryDataAvailable: bool, vulnerableCount: usize): int {
+    if !advisoryDataAvailable { return 2 }
+    if vulnerableCount > 0 as usize { return 1 }
+    return 0
+}

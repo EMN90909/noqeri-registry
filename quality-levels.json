@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "levels": {
+    "experimental": {"rank": 0, "production": false, "compatibility_required": false},
+    "preview": {"rank": 1, "production": false, "compatibility_required": true},
+    "stable": {"rank": 2, "production": true, "compatibility_required": true},
+    "core": {"rank": 3, "production": true, "compatibility_required": true}
+  },
+  "default": "experimental",
+  "rule": "A missing level is experimental. Provider stubs and packages without runnable tests cannot be stable or core."
+}

@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../tools/quality_policy.nqr"
+import "../tools/advisory_policy.nqr"
+
+function main(): int {
+    if !registryQualityLevelValid(registryQualityExperimental()) { return 1 }
+    if !registryQualityLevelValid(registryQualityCore()) { return 2 }
+    if registryQualityLevelValid(99) { return 3 }
+    if registryCanPublishStable(registryQualityStable(), true, true, true, true) { return 4 }
+    if !registryCanPublishStable(registryQualityStable(), true, true, true, false) { return 5 }
+    if registryCanPublishCore(registryQualityCore(), 1 as usize, true, true, true) { return 6 }
+    if !registryCanPublishCore(registryQualityCore(), 2 as usize, true, true, true) { return 7 }
+    if registryAuditExitCode(false, 0 as usize) != 2 { return 8 }
+    if registryAuditExitCode(true, 1 as usize) != 1 { return 9 }
+    return 0
+}

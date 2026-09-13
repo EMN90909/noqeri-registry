@@ -1,68 +1,82 @@
 # Noqeri Registry Quality Gates
 
-The registry should reward packages that are useful, testable and teachable rather than packages that merely occupy a namespace.
+The registry rewards packages that are useful, testable, teachable, compatible and supportable rather than packages that merely occupy a namespace.
 
-## Package maturity levels
+## Official package quality levels
 
-### Prototype
+Every published package version has one explicit level. A provider stub must never be labelled `stable` or `core`.
 
-A prototype may explore an API, but it must be labelled as such. It should not be presented as standard-library-equivalent maturity.
+### experimental
 
-### Usable
+For exploration. APIs may change without migration guarantees. Minimum: valid manifest, real source (not filler), license, bounded package size, and a clear statement of what works and what does not.
 
-A usable package has a coherent purpose, documented normal path, meaningful implementation, input validation, focused tests and at least one runnable example.
+### preview
 
-### Verified
+For real evaluation. Requires meaningful implementation, input validation, automated tests, at least one runnable example, documented error behaviour, and an explicit supported target/compiler range. Breaking changes are allowed but require release notes.
 
-A verified package additionally has negative/failure tests, target compatibility evidence, versioned API notes and performance/security evidence where relevant.
+### stable
+
+For normal production use. Requires preview evidence plus negative/failure tests, compatibility-matrix passes for every claimed supported Noqeri release, versioned API notes, deprecation policy, security notes for sensitive packages, and reproducible performance methodology when performance is part of the package's purpose. A stable package cannot be a provider-shaped stub.
+
+### core
+
+For ecosystem-critical packages whose compatibility/support burden is intentionally higher. Requires stable evidence plus multiple release cycles of compatibility, maintained security response, migration coverage for deprecations, deterministic/offline install evidence, and explicit maintainership. `core` is a support promise, not a popularity badge.
 
 ## Depth rule
 
-Source size is a signal, not a quality target. A package is rejected from `verified` status if it is made artificially large through aliases, duplicate wrappers, repeated constants or filler comments.
+Source size is a signal, not a quality target. A package is rejected from stable/core status if it is made artificially large through aliases, duplicate wrappers, repeated constants, generated filler, or comments that substitute for implementation.
 
-For packages representing broad abstractions, reviewers should expect substantial implementation depth. Small modules are allowed when their useful domain is genuinely small.
+Broad abstractions should normally have substantial implementation depth. Small modules remain acceptable when their useful domain is genuinely small.
 
 ## Required package evidence
 
-A package seeking `verified` status should publish:
+A package seeking `stable` status publishes:
 
-- package name and version;
-- compatible Noqeri edition/version;
-- entry module;
-- license;
-- supported targets;
+- package name, version, edition and quality level;
+- compatible Noqeri compiler range;
+- entry module and license;
+- supported targets/platform conditions;
 - public API overview;
-- tests and test command;
-- example program(s);
-- failure/error behaviour;
+- tests and exact local test command;
+- runnable example(s);
+- negative/failure behavior;
+- migration/deprecation notes where relevant;
 - benchmark method for performance-sensitive packages;
-- security notes for parsers, crypto, networking, serialization and concurrency packages.
+- security notes for parsers, crypto, networking, serialization, database and concurrency packages.
 
 ## Safety-sensitive packages
 
-Packages that expose raw memory, FFI, volatile IO, inline assembly or unchecked operations must clearly identify their unsafe surface. The long-term Noqeri rule is that safe callers should not need to understand raw pointer invariants for normal use; wrappers should validate inputs and confine unsafe operations to the smallest possible implementation boundary.
+Packages exposing raw memory, FFI, volatile IO, inline assembly or unchecked operations must identify their unsafe surface. Safe callers should not need pointer invariants for normal use; wrappers validate inputs and confine unsafe operations to the smallest implementation boundary.
+
+Parser/network/database packages should be enrolled in fuzz targets before stable promotion. Concurrency packages require race-mode coverage. Arithmetic packages whose behavior depends on overflow require checked-overflow coverage.
 
 ## Performance claims
 
-The registry must not accept unqualified claims such as “2x faster” or “zero overhead”. Evidence should include commit SHA, target, backend, hardware where available, safety/overflow mode, input size, warmup/sample counts, median and tail statistic, and the exact benchmark source.
+The registry rejects unqualified claims such as “2x faster”, “zero overhead”, or “faster than Rust/Zig”. Evidence must include source revision, target/backend, compiler versions/flags, hardware/OS, safety/overflow mode, input size, warm-up/sample counts, raw samples, median, and a tail statistic.
 
-A benchmark result is evidence for the measured configuration, not a universal property of the package.
+A result is evidence for the measured configuration, not a universal property of a package.
 
-## Standard-library promotion checklist
+## Promotion checklist
 
-Before a registry package is considered for inclusion in `std`, reviewers should be able to answer yes to these questions:
+Before promotion to stable/core, reviewers should answer yes to the relevant questions:
 
 1. Is there one obvious normal path for a new user?
 2. Does the package contain real implementation rather than an API-shaped stub?
 3. Are invalid inputs handled deliberately?
-4. Are common mistakes covered by tests?
-5. Is the API named consistently with neighboring `std` modules?
+4. Are common mistakes and negative paths tested?
+5. Is the API consistent with neighboring packages?
 6. Does it avoid unnecessary platform coupling?
-7. Are safety-sensitive operations isolated and documented?
-8. Is performance measured when performance is part of the package's purpose?
-9. Can another maintainer understand the implementation without private context?
+7. Are unsafe operations isolated/documented?
+8. Is performance measured when it is a stated property?
+9. Does the compatibility dashboard pass for every claimed compiler version?
 10. Are README examples executable rather than pseudocode presented as working code?
+11. Are known security advisories reflected in the advisory feed?
+12. Can a user vendor the package for an offline build?
 
-## Current ecosystem priority
+## Compatibility dashboard
 
-The immediate depth queue includes foundational packages such as binary encoding, bitsets, bloom filters, caches, deques/heaps/priority queues, parser/lexer support, encoding, calendar/time helpers, channels/events/futures/pools and metrics. Promotion should happen module-by-module after tests demonstrate depth; creating hundreds of shallow package directories is not progress.
+`tools/compatibility-dashboard.mjs` scans all package versions and emits a machine-readable matrix against `compatibility/releases.json`. A row only becomes `pass` after the package's test command has actually been executed with that compiler version; discovery alone is reported as `untested`.
+
+## Ecosystem priority
+
+Foundational packages—binary encoding, bitsets, bloom filters, caches, deques/heaps/priority queues, parser/lexer support, encoding, calendar/time, channels/events/futures/pools and metrics—should be promoted module-by-module after tests demonstrate depth. Creating hundreds of shallow package directories is not progress.
