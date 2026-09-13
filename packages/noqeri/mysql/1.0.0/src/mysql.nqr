@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.mysql
+
+// Host adapters own TLS, socket I/O and native client-library integration.
+// Noqeri code keeps the public handle and query contract stable across hosts.
+extern function mysqlHostOpen(connection: string): usize
+extern function mysqlHostExec(connection: usize, sql: string): isize
+extern function mysqlHostQuery(connection: usize, sql: string): usize
+extern function mysqlHostRowsNext(rows: usize): bool
+extern function mysqlHostRowsText(rows: usize, column: usize): string
+extern function mysqlHostRowsClose(rows: usize): void
+extern function mysqlHostClose(connection: usize): bool
+
+export function mysqlHandleValid(connection: usize): bool {
+    return connection != 0 as usize
+}
+
+export function mysqlRowsHandleValid(rows: usize): bool {
+    return rows != 0 as usize
+}
+
+export function mysqlDefaultPort(): int { return 3306 }
+
+export function mysqlPacketLengthValid(length: int): bool {
+    return length >= 0 && length <= 16777215
+}
+
+export function mysqlConnect(connection: string): usize {
+    unsafe { return mysqlHostOpen(connection) }
+}
+
+export function mysqlExec(connection: usize, sql: string): isize {
+    if !mysqlHandleValid(connection) { return -1 }
+    unsafe { return mysqlHostExec(connection, sql) }
+}
+
+export function mysqlQuery(connection: usize, sql: string): usize {
+    if !mysqlHandleValid(connection) { return 0 as usize }
+    unsafe { return mysqlHostQuery(connection, sql) }
+}
+
+export function mysqlRowsNext(rows: usize): bool {
+    if !mysqlRowsHandleValid(rows) { return false }
+    unsafe { return mysqlHostRowsNext(rows) }
+}
+
+export function mysqlRowsText(rows: usize, column: usize): string {
+    unsafe { return mysqlHostRowsText(rows, column) }
+}
+
+export function mysqlRowsClose(rows: usize): void {
+    if mysqlRowsHandleValid(rows) {
+        unsafe { mysqlHostRowsClose(rows) }
+    }
+}
+
+export function mysqlClose(connection: usize): bool {
+    if !mysqlHandleValid(connection) { return false }
+    unsafe { return mysqlHostClose(connection) }
+}
+
+// MariaDB speaks the MySQL client protocol for this provider surface.
+export function mariadbDefaultPort(): int { return 3306 }
