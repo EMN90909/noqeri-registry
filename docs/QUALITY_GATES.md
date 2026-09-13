@@ -28,6 +28,40 @@ Source size is a signal, not a quality target. A package is rejected from stable
 
 Broad abstractions should normally have substantial implementation depth. Small modules remain acceptable when their useful domain is genuinely small.
 
+### Deep-module evidence contract
+
+For foundational modules, reviewers should evaluate capability depth rather than a byte target. A module is considered meaningfully deep only when the implementation demonstrates all applicable evidence below:
+
+- a real data model or algorithm rather than four generic convenience helpers;
+- explicit invariants for capacity, indexing, state transitions or protocol state;
+- a normal-path API that can be explained with a small example;
+- deliberate behavior for empty, full, invalid, null, malformed or out-of-range inputs;
+- positive behavioral tests and negative/failure tests;
+- tests that import the public module instead of copying the implementation into fixtures;
+- at least one realistic multi-operation scenario, not only single-function assertions;
+- safety notes when raw pointers, borrowing, overflow, concurrency, parsing or external input are involved;
+- benchmark methodology and representative workloads when latency, throughput or memory efficiency are part of the value proposition;
+- no generated repetition, alias farms, duplicated constants or comments used to manufacture line/byte counts.
+
+A broad module may naturally exceed 30 KB as features, tests and documentation mature, but `30 KB` is never accepted as proof by itself. Conversely, a compact algorithm can qualify when its domain is intrinsically small and its tests show complete behavior.
+
+### Foundational-structure baseline
+
+Containers and low-level structures such as bitsets, Bloom filters, deques, heaps, priority queues, queues, maps, sets, pools and rings should normally demonstrate:
+
+1. initialization and invariant validation;
+2. length/capacity/empty/full state where relevant;
+3. primary mutation and lookup operations;
+4. boundary behavior for zero capacity and full capacity;
+5. invalid-index/null handling at safe API boundaries;
+6. deterministic ordering semantics where ordering matters;
+7. bulk/copy or iteration support when useful;
+8. behavior tests covering sequences of operations;
+9. a documented allocation/ownership model;
+10. a performance fixture for operations advertised as performance-sensitive.
+
+A module that only exposes `len`, `is_empty`, `first` and `last` does not satisfy this baseline, regardless of package metadata or documentation volume.
+
 ## Required package evidence
 
 A package seeking `stable` status publishes:
@@ -50,11 +84,34 @@ Packages exposing raw memory, FFI, volatile IO, inline assembly or unchecked ope
 
 Parser/network/database packages should be enrolled in fuzz targets before stable promotion. Concurrency packages require race-mode coverage. Arithmetic packages whose behavior depends on overflow require checked-overflow coverage.
 
+### Language-safety evidence
+
+Packages that rely on Noqeri's safety guarantees should state which guarantees their tests exercise. For the 2026 language line this can include:
+
+- runtime bounds checks for dynamic safe indexing;
+- runtime null checks before raw-pointer use;
+- explicit `unsafe {}` boundaries around operations that bypass ordinary guarantees;
+- aggregate/field-sensitive and interprocedural borrow analysis;
+- checked-overflow execution when arithmetic overflow is security- or correctness-relevant.
+
+A package must not claim that one of these protections is active merely because the compiler supports it; the package or ecosystem test suite must exercise the relevant path for the claimed configuration.
+
 ## Performance claims
 
 The registry rejects unqualified claims such as “2x faster”, “zero overhead”, or “faster than Rust/Zig”. Evidence must include source revision, target/backend, compiler versions/flags, hardware/OS, safety/overflow mode, input size, warm-up/sample counts, raw samples, median, and a tail statistic.
 
 A result is evidence for the measured configuration, not a universal property of a package.
+
+### Performance evidence levels
+
+Performance-sensitive packages should publish one of these evidence states so the website never turns an unmeasured expectation into a marketing claim:
+
+- `unmeasured`: benchmark fixture exists but has not been executed for the release;
+- `measured-local`: reproducible local samples include machine and compiler metadata;
+- `measured-release`: release-tagged samples are published with raw data and methodology;
+- `regression-gated`: a documented threshold is enforced against a pinned baseline on comparable hardware.
+
+Changing algorithmic complexity, storage layout, safety mode, backend, compiler version or target invalidates comparisons unless the report calls out that change explicitly.
 
 ## Promotion checklist
 
@@ -72,6 +129,8 @@ Before promotion to stable/core, reviewers should answer yes to the relevant que
 10. Are README examples executable rather than pseudocode presented as working code?
 11. Are known security advisories reflected in the advisory feed?
 12. Can a user vendor the package for an offline build?
+13. Do foundational structures satisfy the deep-module evidence contract rather than merely a source-size target?
+14. Are safety guarantees exercised by tests in the configuration in which they are advertised?
 
 ## Compatibility dashboard
 
@@ -80,3 +139,13 @@ Before promotion to stable/core, reviewers should answer yes to the relevant que
 ## Ecosystem priority
 
 Foundational packages—binary encoding, bitsets, bloom filters, caches, deques/heaps/priority queues, parser/lexer support, encoding, calendar/time, channels/events/futures/pools and metrics—should be promoted module-by-module after tests demonstrate depth. Creating hundreds of shallow package directories is not progress.
+
+The preferred expansion sequence is:
+
+1. structures and numeric primitives;
+2. text/encoding/parsing foundations;
+3. time, scheduling and concurrency primitives;
+4. IO, networking and protocol layers;
+5. higher-level provider integrations.
+
+Each tranche should leave behind executable tests, teaching examples and performance fixtures before the next tranche is promoted.
