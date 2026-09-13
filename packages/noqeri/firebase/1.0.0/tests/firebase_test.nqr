@@ -1,0 +1,5 @@
+import "../src/firebase.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(firebaseDocumentUrl("p", "users/1") == "https://firestore.googleapis.com/v1/projects/p/databases/(default)/documents/users/1")
+require(firebaseCredentialPresent("abcdefgh"))
+print("firebase package tests: OK")

@@ -1,0 +1,9 @@
+package {
+    name: "noqeri/vercel"
+    version: "1.0.0"
+    edition: "2026"
+    entry: "src/vercel.nqr"
+    profile: "library"
+    target: "portable"
+    license: "GPL-3.0-only"
+}

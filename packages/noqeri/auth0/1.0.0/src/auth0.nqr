@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.auth0
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function auth0ApiSuffix(): string { return "/api/v2" }
+export function auth0CredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function auth0LastStatus(): int { return providerHttpStatus() }
+export function auth0ManagementUrl(domain: string, path: string): string { return "https://" + domain + "/api/v2/" + path }
+export function auth0Get(token: string, domain: string, path: string): string { if !auth0CredentialPresent(token) { return "" } return providerHttpJson("GET", auth0ManagementUrl(domain, path), "bearer", token, "", "", "") }
+export function auth0Post(token: string, domain: string, path: string, body: string): string { return providerHttpJson("POST", auth0ManagementUrl(domain, path), "bearer", token, "", "", body) }

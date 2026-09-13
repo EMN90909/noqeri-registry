@@ -1,0 +1,9 @@
+package {
+    name: "noqeri/convex"
+    version: "1.0.0"
+    edition: "2026"
+    entry: "src/convex.nqr"
+    profile: "library"
+    target: "portable"
+    license: "GPL-3.0-only"
+}

@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.vercel
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function vercelApiRoot(): string { return "https://api.vercel.com" }
+export function vercelCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function vercelLastStatus(): int { return providerHttpStatus() }
+export function vercelProjectsUrl(): string { return vercelApiRoot() + "/v9/projects" }
+export function vercelDeploymentsUrl(): string { return vercelApiRoot() + "/v6/deployments" }
+export function vercelListProjects(token: string): string { if !vercelCredentialPresent(token) { return "" } return providerHttpJson("GET", vercelProjectsUrl(), "bearer", token, "", "", "") }

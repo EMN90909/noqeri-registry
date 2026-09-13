@@ -1,0 +1,2 @@
+import package "noqeri/github"
+print(githubRepoUrl("EMN90909", "Noqeri"))

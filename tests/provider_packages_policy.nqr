@@ -1,0 +1,10 @@
+import "../tools/package_policy.nqr"
+
+function require(ok: bool): void {
+    if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) }
+}
+
+require(registryPackageLimitsValid(5 as usize, 4096 as usize))
+require(!registryPackageLimitsValid(500 as usize, 4096 as usize))
+require(registryMaxDependencyDepth() == 32 as usize)
+print("registry package policy tests: OK")

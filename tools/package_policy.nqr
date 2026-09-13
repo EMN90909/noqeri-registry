@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.registry.package_policy
+
+export function registryMaxPackageFiles(): usize { return 256 as usize }
+export function registryMaxPackageBytes(): usize { return 8388608 as usize }
+export function registryMaxDependencyDepth(): usize { return 32 as usize }
+
+export function registryPackageLimitsValid(files: usize, bytes: usize): bool {
+    return files > 0 as usize && files <= registryMaxPackageFiles() &&
+           bytes > 0 as usize && bytes <= registryMaxPackageBytes()
+}
+
+export function registryCoordinateByteValid(value: u8): bool {
+    return (value >= 65 as u8 && value <= 90 as u8) ||
+           (value >= 97 as u8 && value <= 122 as u8) ||
+           (value >= 48 as u8 && value <= 57 as u8) ||
+           value == 45 as u8 || value == 95 as u8 || value == 47 as u8
+}

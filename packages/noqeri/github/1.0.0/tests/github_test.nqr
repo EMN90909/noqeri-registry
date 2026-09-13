@@ -1,0 +1,4 @@
+import "../src/github.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(githubRepoUrl("a", "b") == "https://api.github.com/repos/a/b")
+print("github package tests: OK")

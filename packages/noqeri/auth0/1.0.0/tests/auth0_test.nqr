@@ -1,0 +1,4 @@
+import "../src/auth0.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(auth0ManagementUrl("x.auth0.com", "users") == "https://x.auth0.com/api/v2/users")
+print("auth0 package tests: OK")

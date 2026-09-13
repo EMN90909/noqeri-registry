@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.tailwind
+
+extern function tailwindHostBuild(inputCss: string, outputCss: string, minify: bool): isize
+extern function tailwindHostWatch(inputCss: string, outputCss: string): isize
+
+export function tailwindPathLooksValid(path: string): bool { return textLength(path) > 4 }
+export function tailwindBuild(inputCss: string, outputCss: string, minify: bool): isize {
+    if !tailwindPathLooksValid(inputCss) || !tailwindPathLooksValid(outputCss) { return -1 as isize }
+    return tailwindHostBuild(inputCss, outputCss, minify)
+}
+export function tailwindWatch(inputCss: string, outputCss: string): isize {
+    if !tailwindPathLooksValid(inputCss) || !tailwindPathLooksValid(outputCss) { return -1 as isize }
+    return tailwindHostWatch(inputCss, outputCss)
+}

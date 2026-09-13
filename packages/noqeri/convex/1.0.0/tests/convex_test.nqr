@@ -1,0 +1,5 @@
+import "../src/convex.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(convexQueryUrl("https://x.convex.cloud") == "https://x.convex.cloud/api/query")
+require(convexMutationUrl("https://x.convex.cloud") == "https://x.convex.cloud/api/mutation")
+print("convex package tests: OK")

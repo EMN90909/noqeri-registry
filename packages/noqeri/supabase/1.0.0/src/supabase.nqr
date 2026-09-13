@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.supabase
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function supabaseApiRoot(): string { return "https://supabase.co" }
+export function supabaseCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function supabaseLastStatus(): int { return providerHttpStatus() }
+export function supabaseRestUrl(projectUrl: string, table: string): string { return projectUrl + "/rest/v1/" + table }
+export function supabaseAuthUrl(projectUrl: string, path: string): string { return projectUrl + "/auth/v1/" + path }
+export function supabaseStorageUrl(projectUrl: string, path: string): string { return projectUrl + "/storage/v1/" + path }
+export function supabaseSelect(projectUrl: string, apiKey: string, accessToken: string, table: string, query: string): string {
+    if !supabaseCredentialPresent(apiKey) { return "" }
+    return providerHttpJson("GET", supabaseRestUrl(projectUrl, table) + "?" + query, "bearer", accessToken, "apikey", apiKey, "")
+}
+export function supabaseInsert(projectUrl: string, apiKey: string, accessToken: string, table: string, body: string): string {
+    if !supabaseCredentialPresent(apiKey) { return "" }
+    return providerHttpJson("POST", supabaseRestUrl(projectUrl, table), "bearer", accessToken, "apikey", apiKey, body)
+}

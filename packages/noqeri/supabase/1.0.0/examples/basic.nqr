@@ -1,0 +1,3 @@
+import package "noqeri/supabase"
+let endpoint: string = supabaseRestUrl("https://demo.supabase.co", "profiles")
+print(endpoint)

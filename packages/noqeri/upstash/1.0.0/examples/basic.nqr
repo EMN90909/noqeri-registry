@@ -1,0 +1,2 @@
+import package "noqeri/upstash"
+print(upstashCommandUrl("https://example.upstash.io", "get/key"))

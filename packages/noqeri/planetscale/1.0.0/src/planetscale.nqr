@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.planetscale
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function planetscaleApiRoot(): string { return "https://api.planetscale.com/v1" }
+export function planetscaleCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function planetscaleLastStatus(): int { return providerHttpStatus() }
+export function planetscaleOrganizationsUrl(): string { return planetscaleApiRoot() + "/organizations" }
+export function planetscaleServiceAuthorization(tokenId: string, token: string): string { return tokenId + ":" + token }
+export function planetscaleListOrganizations(tokenId: string, token: string): string { let auth: string = planetscaleServiceAuthorization(tokenId, token) return providerHttpJson("GET", planetscaleOrganizationsUrl(), "raw", auth, "", "", "") }

@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.upstash
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function upstashRestNote(): string { return "https://*.upstash.io" }
+export function upstashCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function upstashLastStatus(): int { return providerHttpStatus() }
+export function upstashCommandUrl(restUrl: string, commandPath: string): string { return restUrl + "/" + commandPath }
+export function upstashCommand(restUrl: string, token: string, commandPath: string): string { if !upstashCredentialPresent(token) { return "" } return providerHttpJson("GET", upstashCommandUrl(restUrl, commandPath), "bearer", token, "", "", "") }
+export function upstashJsonCommand(restUrl: string, token: string, body: string): string { return providerHttpJson("POST", restUrl, "bearer", token, "", "", body) }

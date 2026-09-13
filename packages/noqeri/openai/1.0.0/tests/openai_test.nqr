@@ -1,0 +1,5 @@
+import "../src/openai.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(openaiResponsesUrl() == "https://api.openai.com/v1/responses")
+require(openaiCredentialPresent("sk-example"))
+print("openai package tests: OK")

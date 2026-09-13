@@ -1,0 +1,3 @@
+import package "noqeri/http-client"
+let response: string = httpClientJson("GET", "https://example.com/api", "server-token", "")
+print(response)

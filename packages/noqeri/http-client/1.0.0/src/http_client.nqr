@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.http_client
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function httpClientMethodValid(method: string): bool {
+    return method == "GET" || method == "POST" || method == "PUT" || method == "PATCH" || method == "DELETE"
+}
+
+export function httpClientHttpsUrlLooksValid(url: string): bool { return textLength(url) >= 9 }
+export function httpClientCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function httpClientStatusSuccess(status: int): bool { return status >= 200 && status <= 299 }
+
+export function httpClientJson(method: string, url: string, bearer: string, body: string): string {
+    if !httpClientMethodValid(method) || !httpClientHttpsUrlLooksValid(url) { return "" }
+    return providerHttpJson(method, url, "bearer", bearer, "", "", body)
+}

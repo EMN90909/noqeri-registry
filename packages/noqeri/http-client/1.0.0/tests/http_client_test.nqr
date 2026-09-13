@@ -1,0 +1,7 @@
+import "../src/http_client.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(httpClientMethodValid("GET"))
+require(!httpClientMethodValid("TRACE"))
+require(httpClientStatusSuccess(204))
+require(!httpClientStatusSuccess(500))
+print("http-client package tests: OK")

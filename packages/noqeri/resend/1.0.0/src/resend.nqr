@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.resend
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function resendApiRoot(): string { return "https://api.resend.com" }
+export function resendCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function resendLastStatus(): int { return providerHttpStatus() }
+export function resendEmailsUrl(): string { return resendApiRoot() + "/emails" }
+export function resendSendEmail(apiKey: string, body: string): string { if !resendCredentialPresent(apiKey) { return "" } return providerHttpJson("POST", resendEmailsUrl(), "bearer", apiKey, "", "", body) }
+export function resendGetEmail(apiKey: string, emailId: string): string { return providerHttpJson("GET", resendEmailsUrl() + "/" + emailId, "bearer", apiKey, "", "", "") }

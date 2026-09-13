@@ -1,0 +1,5 @@
+import "../src/vercel.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(vercelProjectsUrl() == "https://api.vercel.com/v9/projects")
+require(vercelCredentialPresent("token_1234"))
+print("vercel package tests: OK")

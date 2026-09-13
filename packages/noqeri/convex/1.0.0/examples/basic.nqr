@@ -1,0 +1,2 @@
+import package "noqeri/convex"
+print(convexQueryUrl("https://demo.convex.cloud"))
