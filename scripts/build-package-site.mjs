@@ -21,7 +21,13 @@ function dependencies(manifest){
   return out
 }
 
-async function loadPackages(securityReports, downloads){
+function qualityFor(quality,coordinate,version){
+  const exact=quality.versionLevels?.[`${coordinate}@${version}`]
+  if(exact)return exact
+  return quality.levels?.[coordinate]||quality.default||'experimental'
+}
+
+async function loadPackages(securityReports, downloads, quality){
   const packages=[]
   for(const ns of (await readdir(packagesRoot,{withFileTypes:true})).filter(x=>x.isDirectory()).sort((a,b)=>compareText(a.name,b.name))){
     const nsPath=join(packagesRoot,ns.name)
@@ -47,6 +53,7 @@ async function loadPackages(securityReports, downloads){
         const examples=await listExampleNames(join(versionPath,'examples'))
         packages.push({
           coordinate,version:actualVersion,entry,edition,target,profile,license,
+          quality:qualityFor(quality,coordinate,actualVersion),
           dependencies:dependencies(manifest),examples,
           downloads:Number(downloads[`${coordinate}@${actualVersion}`]||downloads[coordinate]||0),
           securityStatus,
@@ -71,20 +78,21 @@ function plainMarkdown(markdown){
 
 const securityReports=await optionalJson(join(root,'registry','security-reports.json'),{reports:[]})
 const downloads=await optionalJson(join(root,'registry','downloads.json'),{})
-const packages=await loadPackages(securityReports,downloads)
+const quality=await optionalJson(join(root,'registry','quality.json'),{default:'experimental',levels:{},versionLevels:{}})
+const packages=await loadPackages(securityReports,downloads,quality)
 await mkdir(outputRoot,{recursive:true})
 const latest=new Map()
 for(const pkg of packages)if(!latest.has(pkg.coordinate))latest.set(pkg.coordinate,pkg)
-const cards=[...latest.values()].map(pkg=>`<li><a href="${escapeHtml(pkg.coordinate)}/${escapeHtml(pkg.version)}/index.html"><strong>${escapeHtml(pkg.coordinate)}</strong></a><br><small>${escapeHtml(pkg.version)} · ${escapeHtml(pkg.license)} · ${pkg.downloads} downloads · security: ${escapeHtml(pkg.securityStatus)}</small></li>`).join('\n')
+const cards=[...latest.values()].map(pkg=>`<li><a href="${escapeHtml(pkg.coordinate)}/${escapeHtml(pkg.version)}/index.html"><strong>${escapeHtml(pkg.coordinate)}</strong></a><br><small>${escapeHtml(pkg.version)} · ${escapeHtml(pkg.quality)} · ${escapeHtml(pkg.license)} · ${pkg.downloads} downloads · security: ${escapeHtml(pkg.securityStatus)}</small></li>`).join('\n')
 const index=`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Noqeri packages</title><style>body{font:16px system-ui,sans-serif;max-width:960px;margin:48px auto;padding:0 20px;color:#18181b}a{color:inherit}li{margin:0 0 18px}code{background:#f4f4f5;padding:2px 5px;border-radius:5px}small{color:#71717a}</style><h1>Noqeri packages</h1><p>Generated package documentation index. Production deployment target: <code>pkg.noqeri.dev</code>.</p><ul>${cards}</ul>`
 await writeFile(join(outputRoot,'index.html'),index)
-await writeFile(join(outputRoot,'index.json'),JSON.stringify({format:'noqeri-pkg-index-v1',packages},null,2)+'\n')
+await writeFile(join(outputRoot,'index.json'),JSON.stringify({format:'noqeri-pkg-index-v2',packages},null,2)+'\n')
 for(const pkg of packages){
   const dir=join(outputRoot,...pkg.coordinate.split('/'),pkg.version)
   await mkdir(dir,{recursive:true})
   const dependencyHtml=pkg.dependencies.length?`<ul>${pkg.dependencies.map(dep=>`<li><code>${escapeHtml(dep.coordinate)}</code>${dep.version?` @ ${escapeHtml(dep.version)}`:''}</li>`).join('')}</ul>`:'<p>None declared.</p>'
   const exampleHtml=pkg.examples.length?`<ul>${pkg.examples.map(example=>`<li><code>${escapeHtml(example)}</code></li>`).join('')}</ul>`:'<p>No examples directory entries.</p>'
-  const html=`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>${escapeHtml(pkg.coordinate)} ${escapeHtml(pkg.version)}</title><style>body{font:16px system-ui,sans-serif;max-width:840px;margin:48px auto;padding:0 20px;color:#18181b}code{background:#f4f4f5;padding:2px 5px;border-radius:5px}pre{overflow:auto}dt{font-weight:700}dd{margin-bottom:8px}</style><p><a href="../../../../index.html">← packages</a></p><h1>${escapeHtml(pkg.coordinate)}</h1><dl><dt>Version</dt><dd>${escapeHtml(pkg.version)}</dd><dt>License</dt><dd>${escapeHtml(pkg.license)}</dd><dt>Entry</dt><dd><code>${escapeHtml(pkg.entry)}</code></dd><dt>Compatibility</dt><dd>edition ${escapeHtml(pkg.edition||'unspecified')} · target ${escapeHtml(pkg.target||'unspecified')} · profile ${escapeHtml(pkg.profile||'unspecified')}</dd><dt>Downloads</dt><dd>${pkg.downloads}</dd><dt>Security</dt><dd>${escapeHtml(pkg.securityStatus)}</dd><dt>Source</dt><dd><a href="${escapeHtml(pkg.source)}">repository source</a></dd></dl><h2>Dependencies</h2>${dependencyHtml}<h2>Examples</h2>${exampleHtml}${pkg.readme?plainMarkdown(pkg.readme):'<p><em>No README supplied.</em></p>'}`
+  const html=`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>${escapeHtml(pkg.coordinate)} ${escapeHtml(pkg.version)}</title><style>body{font:16px system-ui,sans-serif;max-width:840px;margin:48px auto;padding:0 20px;color:#18181b}code{background:#f4f4f5;padding:2px 5px;border-radius:5px}pre{overflow:auto}dt{font-weight:700}dd{margin-bottom:8px}</style><p><a href="../../../../index.html">← packages</a></p><h1>${escapeHtml(pkg.coordinate)}</h1><dl><dt>Version</dt><dd>${escapeHtml(pkg.version)}</dd><dt>Quality</dt><dd>${escapeHtml(pkg.quality)}</dd><dt>License</dt><dd>${escapeHtml(pkg.license)}</dd><dt>Entry</dt><dd><code>${escapeHtml(pkg.entry)}</code></dd><dt>Compatibility</dt><dd>edition ${escapeHtml(pkg.edition||'unspecified')} · target ${escapeHtml(pkg.target||'unspecified')} · profile ${escapeHtml(pkg.profile||'unspecified')}</dd><dt>Downloads</dt><dd>${pkg.downloads}</dd><dt>Security</dt><dd>${escapeHtml(pkg.securityStatus)}</dd><dt>Source</dt><dd><a href="${escapeHtml(pkg.source)}">repository source</a></dd></dl><h2>Dependencies</h2>${dependencyHtml}<h2>Examples</h2>${exampleHtml}${pkg.readme?plainMarkdown(pkg.readme):'<p><em>No README supplied.</em></p>'}`
   await writeFile(join(dir,'index.html'),html)
 }
 console.log(`package site: ${packages.length} package versions, ${latest.size} packages`)
