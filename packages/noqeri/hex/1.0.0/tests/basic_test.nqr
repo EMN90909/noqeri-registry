@@ -1,6 +1,28 @@
 import "../src/hex.nqr"
 
 function main(): int {
-    if !(hexByte(65 as u8, 70 as u8) == 175) { return 1 }
+    let source: [u8; 4] = [0 as u8,15 as u8,160 as u8,255 as u8]
+    let encoded: [u8; 8] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    let decoded: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    if hexEncode(slice(source), slice(encoded), false) != 8 as isize { return 1 }
+    let expected: [u8; 8] = [48 as u8,48 as u8,48 as u8,102 as u8,97 as u8,48 as u8,102 as u8,102 as u8]
+    let i: usize = 0 as usize
+    while i < 8 as usize { if encoded[i] != expected[i] { return 2 } i = i + 1 as usize }
+    if !hexValid(slice(encoded)) { return 3 }
+    if hexDecode(slice(encoded), slice(decoded)) != 4 as isize { return 4 }
+    i = 0 as usize
+    while i < 4 as usize { if decoded[i] != source[i] { return 5 } i = i + 1 as usize }
+
+    let number_text: [u8; 4] = [100 as u8,101 as u8,97 as u8,100 as u8]
+    let number: u64 = 0 as u64
+    if !hexParseU64(slice(number_text), &number) || number != 57005 as u64 { return 6 }
+    let formatted: [u8; 8] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    if hexFormatU64(57005 as u64, slice(formatted), true, 6 as usize) != 6 as isize { return 7 }
+    let formatted_expected: [u8; 6] = [48 as u8,48 as u8,68 as u8,69 as u8,65 as u8,68 as u8]
+    i = 0 as usize
+    while i < 6 as usize { if formatted[i] != formatted_expected[i] { return 8 } i = i + 1 as usize }
+
+    let bad: [u8; 2] = [122 as u8,122 as u8]
+    if hexValid(slice(bad)) || hexDecode(slice(bad), slice(decoded)) >= 0 as isize { return 9 }
     return 0
 }
