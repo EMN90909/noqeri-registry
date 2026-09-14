@@ -42,15 +42,9 @@ export function csvNextField(record: []u8, start: usize, delimiter: u8, field: *
         let closed: bool = false
         while index < len(record) && !closed {
             if record[index] == 34 as u8 {
-                if index + 1 as usize < len(record) && record[index + 1 as usize] == 34 as u8 {
-                    index = index + 2 as usize
-                } else {
-                    index = index + 1 as usize
-                    closed = true
-                }
-            } else {
-                index = index + 1 as usize
-            }
+                if index + 1 as usize < len(record) && record[index + 1 as usize] == 34 as u8 { index = index + 2 as usize }
+                else { index = index + 1 as usize closed = true }
+            } else { index = index + 1 as usize }
         }
         if !closed { return false }
         if index < len(record) && record[index] != delimiter { return false }
@@ -99,10 +93,7 @@ export function csvUnescapedLength(field: []u8): isize {
             if i + 1 as usize >= len(field) - 1 as usize || field[i + 1 as usize] != 34 as u8 { return -1 as isize }
             output = output + 1 as usize
             i = i + 2 as usize
-        } else {
-            output = output + 1 as usize
-            i = i + 1 as usize
-        }
+        } else { output = output + 1 as usize i = i + 1 as usize }
     }
     return output as isize
 }
@@ -116,13 +107,8 @@ export function csvUnescape(field: []u8, destination: []u8): isize {
     if field[0 as usize] == 34 as u8 { input = 1 as usize end = len(field) - 1 as usize }
     let output: usize = 0 as usize
     while input < end {
-        if field[input] == 34 as u8 && input + 1 as usize < end && field[input + 1 as usize] == 34 as u8 {
-            destination[output] = 34 as u8
-            input = input + 2 as usize
-        } else {
-            destination[output] = field[input]
-            input = input + 1 as usize
-        }
+        if field[input] == 34 as u8 && input + 1 as usize < end && field[input + 1 as usize] == 34 as u8 { destination[output] = 34 as u8 input = input + 2 as usize }
+        else { destination[output] = field[input] input = input + 1 as usize }
         output = output + 1 as usize
     }
     return output as isize
@@ -132,61 +118,48 @@ export function csvEscapedLengthWithDelimiter(value: []u8, delimiter: u8): usize
     if !csvNeedsQuoteWithDelimiter(value, delimiter) { return len(value) }
     let size: usize = 2 as usize
     let i: usize = 0 as usize
-    while i < len(value) {
-        if value[i] == 34 as u8 { size = size + 2 as usize } else { size = size + 1 as usize }
-        i = i + 1 as usize
-    }
+    while i < len(value) { if value[i] == 34 as u8 { size = size + 2 as usize } else { size = size + 1 as usize } i = i + 1 as usize }
     return size
 }
 
 export function csvEscapedLength(value: []u8): usize { return csvEscapedLengthWithDelimiter(value, 44 as u8) }
 
-export function csvEscapeWithDelimiter(value: []u8, destination: []u8, delimiter: u8): isize {
-    if !csvDelimiterValid(delimiter) { return -1 as isize }
+function csvEscapeAt(value: []u8, destination: []u8, offset: usize, delimiter: u8): isize {
+    if !csvDelimiterValid(delimiter) || offset > len(destination) { return -1 as isize }
     let required: usize = csvEscapedLengthWithDelimiter(value, delimiter)
-    if len(destination) < required { return -1 as isize }
+    if required > len(destination) - offset { return -1 as isize }
     if !csvNeedsQuoteWithDelimiter(value, delimiter) {
         let i: usize = 0 as usize
-        while i < len(value) { destination[i] = value[i] i = i + 1 as usize }
-        return len(value) as isize
+        while i < len(value) { destination[offset + i] = value[i] i = i + 1 as usize }
+        return required as isize
     }
-    destination[0 as usize] = 34 as u8
-    let output: usize = 1 as usize
+    let output: usize = offset
+    destination[output] = 34 as u8
+    output = output + 1 as usize
     let input: usize = 0 as usize
     while input < len(value) {
         if value[input] == 34 as u8 {
             destination[output] = 34 as u8
             destination[output + 1 as usize] = 34 as u8
             output = output + 2 as usize
-        } else {
-            destination[output] = value[input]
-            output = output + 1 as usize
-        }
+        } else { destination[output] = value[input] output = output + 1 as usize }
         input = input + 1 as usize
     }
     destination[output] = 34 as u8
-    return (output + 1 as usize) as isize
+    return required as isize
 }
 
+export function csvEscapeWithDelimiter(value: []u8, destination: []u8, delimiter: u8): isize { return csvEscapeAt(value, destination, 0 as usize, delimiter) }
 export function csvEscape(value: []u8, destination: []u8): isize { return csvEscapeWithDelimiter(value, destination, 44 as u8) }
 
-// Writes a complete row from pre-escaped field bytes supplied as parallel
-// pointers/lengths. This low-level form avoids allocations and keeps ownership
-// with the caller.
 export function csvJoin2(first: []u8, second: []u8, destination: []u8, delimiter: u8): isize {
     if !csvDelimiterValid(delimiter) { return -1 as isize }
     let first_len: usize = csvEscapedLengthWithDelimiter(first, delimiter)
     let second_len: usize = csvEscapedLengthWithDelimiter(second, delimiter)
     let required: usize = first_len + 1 as usize + second_len
     if len(destination) < required { return -1 as isize }
-    let first_written: isize = csvEscapeWithDelimiter(first, destination, delimiter)
-    if first_written < 0 as isize { return -1 as isize }
-    destination[first_written as usize] = delimiter
-    let temp: [u8; 4096] = [0 as u8]
-    if second_len > 4096 as usize { return -1 as isize }
-    let second_written: isize = csvEscapeWithDelimiter(second, slice(temp), delimiter)
-    if second_written < 0 as isize { return -1 as isize }
-    let i: usize = 0 as usize
-    while i < second_written as usize { destination[first_written as usize + 1 as usize + i] = temp[i] i = i + 1 as usize }
+    if csvEscapeAt(first, destination, 0 as usize, delimiter) < 0 as isize { return -1 as isize }
+    destination[first_len] = delimiter
+    if csvEscapeAt(second, destination, first_len + 1 as usize, delimiter) < 0 as isize { return -1 as isize }
     return required as isize
 }
