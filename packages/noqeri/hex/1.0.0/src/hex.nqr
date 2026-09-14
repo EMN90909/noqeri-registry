@@ -1,7 +1,120 @@
 // SPDX-License-Identifier: GPL-3.0-only
 module noqeri.hex
-export function hexNibble(value: u8): int { if value >= 48 as u8 && value <= 57 as u8 { return (value - 48 as u8) as int } if value >= 65 as u8 && value <= 70 as u8 { return (value - 65 as u8 + 10 as u8) as int } if value >= 97 as u8 && value <= 102 as u8 { return (value - 97 as u8 + 10 as u8) as int } return -1 }
+
+export function hexNibble(value: u8): int {
+    if value >= 48 as u8 && value <= 57 as u8 { return (value - 48 as u8) as int }
+    if value >= 65 as u8 && value <= 70 as u8 { return (value - 65 as u8) as int + 10 }
+    if value >= 97 as u8 && value <= 102 as u8 { return (value - 97 as u8) as int + 10 }
+    return -1
+}
+
 export function hexCharValid(value: u8): bool { return hexNibble(value) >= 0 }
 export function hexEncodedLength(bytes: usize): usize { return bytes * 2 as usize }
-export function hexDecodedLength(chars: usize): usize { if chars % 2 as usize != 0 as usize { return 0 as usize } return chars / 2 as usize }
-export function hexByte(high: u8, low: u8): int { let a: int = hexNibble(high) let b: int = hexNibble(low) if a < 0 || b < 0 { return -1 } return a * 16 + b }
+export function hexDecodedLength(chars: usize): isize { if chars % 2 as usize != 0 as usize { return -1 as isize } return (chars / 2 as usize) as isize }
+
+export function hexDigitLower(value: u8): u8 {
+    if value < 10 as u8 { return 48 as u8 + value }
+    if value < 16 as u8 { return 87 as u8 + value }
+    return 63 as u8
+}
+
+export function hexDigitUpper(value: u8): u8 {
+    if value < 10 as u8 { return 48 as u8 + value }
+    if value < 16 as u8 { return 55 as u8 + value }
+    return 63 as u8
+}
+
+export function hexByte(high: u8, low: u8): int {
+    let a: int = hexNibble(high)
+    let b: int = hexNibble(low)
+    if a < 0 || b < 0 { return -1 }
+    return a * 16 + b
+}
+
+export function hexValid(source: []u8): bool {
+    if len(source) % 2 as usize != 0 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(source) { if !hexCharValid(source[i]) { return false } i = i + 1 as usize }
+    return true
+}
+
+export function hexEncode(source: []u8, destination: []u8, uppercase: bool): isize {
+    let required: usize = hexEncodedLength(len(source))
+    if len(destination) < required { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(source) {
+        let high: u8 = source[i] / 16 as u8
+        let low: u8 = source[i] % 16 as u8
+        if uppercase {
+            destination[i * 2 as usize] = hexDigitUpper(high)
+            destination[i * 2 as usize + 1 as usize] = hexDigitUpper(low)
+        } else {
+            destination[i * 2 as usize] = hexDigitLower(high)
+            destination[i * 2 as usize + 1 as usize] = hexDigitLower(low)
+        }
+        i = i + 1 as usize
+    }
+    return required as isize
+}
+
+export function hexDecode(source: []u8, destination: []u8): isize {
+    let required: isize = hexDecodedLength(len(source))
+    if required < 0 as isize || required as usize > len(destination) { return -1 as isize }
+    let input: usize = 0 as usize
+    let output: usize = 0 as usize
+    while input < len(source) {
+        let value: int = hexByte(source[input], source[input + 1 as usize])
+        if value < 0 { return -1 as isize }
+        destination[output] = value as u8
+        input = input + 2 as usize
+        output = output + 1 as usize
+    }
+    return output as isize
+}
+
+export function hexParseU64(source: []u8, out: *u64): bool {
+    if out == null || len(source) == 0 as usize || len(source) > 16 as usize { return false }
+    let value: u64 = 0 as u64
+    let i: usize = 0 as usize
+    while i < len(source) {
+        let digit: int = hexNibble(source[i])
+        if digit < 0 { return false }
+        value = value * 16 as u64 + digit as u64
+        i = i + 1 as usize
+    }
+    unsafe { *out = value }
+    return true
+}
+
+export function hexFormatU64(value: u64, destination: []u8, uppercase: bool, minDigits: usize): isize {
+    let digits: usize = 1 as usize
+    let current: u64 = value
+    while current >= 16 as u64 { current = current / 16 as u64 digits = digits + 1 as usize }
+    if digits < minDigits { digits = minDigits }
+    if len(destination) < digits { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < digits {
+        let shift: usize = digits - 1 as usize - i
+        let divisor: u64 = 1 as u64
+        let j: usize = 0 as usize
+        while j < shift { divisor = divisor * 16 as u64 j = j + 1 as usize }
+        let nibble: u8 = ((value / divisor) % 16 as u64) as u8
+        if uppercase { destination[i] = hexDigitUpper(nibble) } else { destination[i] = hexDigitLower(nibble) }
+        i = i + 1 as usize
+    }
+    return digits as isize
+}
+
+export function hexHasPrefix(source: []u8): bool {
+    return len(source) >= 2 as usize && source[0 as usize] == 48 as u8 && (source[1 as usize] == 120 as u8 || source[1 as usize] == 88 as u8)
+}
+
+export function hexParsePrefixedU64(source: []u8, out: *u64): bool {
+    if !hexHasPrefix(source) { return hexParseU64(source, out) }
+    let body: [u8; 16] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    let count: usize = len(source) - 2 as usize
+    if count == 0 as usize || count > 16 as usize { return false }
+    let i: usize = 0 as usize
+    while i < count { body[i] = source[i + 2 as usize] i = i + 1 as usize }
+    return hexParseU64(slice(body), out)
+}
