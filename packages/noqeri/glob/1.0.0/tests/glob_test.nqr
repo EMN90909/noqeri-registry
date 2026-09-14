@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/glob.nqr"
+
+function main(): int {
+    let pattern: [u8; 9] = [115 as u8,114 as u8,99 as u8,47 as u8,42 as u8,46 as u8,110 as u8,113 as u8,114 as u8]
+    let ok: [u8; 12] = [115 as u8,114 as u8,99 as u8,47 as u8,109 as u8,97 as u8,105 as u8,110 as u8,46 as u8,110 as u8,113 as u8,114 as u8]
+    let nested: [u8; 16] = [115 as u8,114 as u8,99 as u8,47 as u8,108 as u8,105 as u8,98 as u8,47 as u8,109 as u8,97 as u8,105 as u8,110 as u8,46 as u8,110 as u8,113 as u8,114 as u8]
+    if !glob_has_magic(slice(pattern)) { return 1 }
+    if !glob_match_path(slice(pattern), slice(ok)) { return 2 }
+    if glob_match_path(slice(pattern), slice(nested)) { return 3 }
+    return 0
+}

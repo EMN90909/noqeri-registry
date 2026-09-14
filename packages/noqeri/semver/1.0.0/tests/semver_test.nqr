@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/semver.nqr"
+
+function main(): int {
+    let stable: [u8; 5] = [50 as u8,46 as u8,49 as u8,46 as u8,48 as u8]
+    let pre: [u8; 10] = [50 as u8,46 as u8,49 as u8,46 as u8,48 as u8,45 as u8,114 as u8,99 as u8,46 as u8,49 as u8]
+    let bad: [u8; 6] = [48 as u8,50 as u8,46 as u8,49 as u8,46 as u8,48 as u8]
+    if !semver_valid(slice(stable)) { return 1 }
+    if !semver_valid(slice(pre)) || semver_compare(slice(pre), slice(stable)) != -1 { return 2 }
+    if semver_valid(slice(bad)) { return 3 }
+    if semver_major(slice(stable), 0 as u64) != 2 as u64 { return 4 }
+    return 0
+}
