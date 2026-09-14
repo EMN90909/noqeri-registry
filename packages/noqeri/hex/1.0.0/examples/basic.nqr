@@ -1,5 +1,11 @@
-import package "noqeri/hex"
+import "../src/hex.nqr"
 
 function main(): int {
+    let bytes: [u8; 2] = [222 as u8,173 as u8]
+    let text: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    if hexEncode(slice(bytes), slice(text), true) != 4 as isize { return 1 }
+    if text[0 as usize] != 68 as u8 || text[1 as usize] != 69 as u8 || text[2 as usize] != 65 as u8 || text[3 as usize] != 68 as u8 { return 2 }
+    let value: u64 = 0 as u64
+    if !hexParseU64(slice(text), &value) || value != 57005 as u64 { return 3 }
     return 0
 }
