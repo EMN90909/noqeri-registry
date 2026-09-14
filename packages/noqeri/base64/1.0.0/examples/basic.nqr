@@ -1,5 +1,16 @@
-import package "noqeri/base64"
+import "../src/base64.nqr"
 
 function main(): int {
+    let message: [u8; 3] = [77 as u8,97 as u8,110 as u8]
+    let encoded: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    let decoded: [u8; 3] = [0 as u8,0 as u8,0 as u8]
+
+    if base64Encode(slice(message), slice(encoded)) != 4 as isize { return 1 }
+    if base64Decode(slice(encoded), slice(decoded)) != 3 as isize { return 2 }
+    let i: usize = 0 as usize
+    while i < 3 as usize {
+        if decoded[i] != message[i] { return 3 }
+        i = i + 1 as usize
+    }
     return 0
 }
