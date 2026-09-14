@@ -1,6 +1,27 @@
 import "../src/base64.nqr"
 
 function main(): int {
-    if !(base64EncodedLength(3 as usize) == 4 as usize) { return 1 }
+    let source: [u8; 6] = [79 as u8,112 as u8,101 as u8,110 as u8,65 as u8,73 as u8]
+    let encoded: [u8; 16] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    let decoded: [u8; 8] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+
+    if base64EncodedLength(6 as usize) != 8 as usize { return 1 }
+    if base64Encode(slice(source), slice(encoded)) != 8 as isize { return 2 }
+    let expected: [u8; 8] = [84 as u8,51 as u8,66 as u8,108 as u8,98 as u8,107 as u8,70 as u8,74 as u8]
+    let i: usize = 0 as usize
+    while i < 8 as usize { if encoded[i] != expected[i] { return 3 } i = i + 1 as usize }
+    if !base64Valid(slice(expected)) { return 4 }
+    if base64Decode(slice(expected), slice(decoded)) != 6 as isize { return 5 }
+    i = 0 as usize
+    while i < 6 as usize { if decoded[i] != source[i] { return 6 } i = i + 1 as usize }
+
+    let one: [u8; 1] = [255 as u8]
+    let url: [u8; 8] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    if base64EncodeUrl(slice(one), slice(url), false) != 2 as isize { return 7 }
+    if url[0 as usize] != 95 as u8 || url[1 as usize] != 119 as u8 { return 8 }
+    if base64DecodeUrl(slice(url), slice(decoded)) != 1 as isize || decoded[0 as usize] != 255 as u8 { return 9 }
+
+    let invalid: [u8; 4] = [65 as u8,61 as u8,65 as u8,65 as u8]
+    if base64Valid(slice(invalid)) { return 10 }
     return 0
 }
