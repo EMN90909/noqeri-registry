@@ -50,3 +50,9 @@ Compiler-dependent checks:
 NOQERI_BIN=/path/to/verified/noqeri node scripts/check-all-v040.mjs
 ```
 See [candidate release report](docs/RELEASE_0_4_0_CANDIDATE.md). No GitHub Actions are used.
+
+## Main-branch merge verification (2026-10-17)
+
+The 0.4.0 package refresh was merged through PR #2. A post-merge GitHub tree and catalog consistency check found all 54 package entries with an active 0.4.0 release, manifests, source directories, release notes, and smoke fixtures. The Noqeri package manager was changed in commit `5796161168283dfed15f2b926e64148869fbc6de` to allow explicit historical-version requests even when those versions are yanked; **that compatibility change has not passed an integrated resolver test**. Earlier candidate warnings about pin breakage describe the pre-fix resolver; keep pinned-install tests as a release gate.
+
+An actual local checkout still cannot be completed on the available worker because DNS resolution of github.com fails. No full 54-package compiler run was executed and no stable quality classification is implied by this merge. The registered 0.4.0 packages remain candidates pending compiler and provider-integration checks. No GitHub Actions were used.
