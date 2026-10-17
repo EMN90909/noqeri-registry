@@ -36,7 +36,7 @@ The registry includes historical releases marked `1.0.0`; this **does not** prov
 
 ## 0.4.0 candidate refresh (release branch)
 
-A coordinated **0.4.0 release candidate for all 54 existing packages** is staged on the `release/0.4.0-package-refresh` branch. Each package has a source manifest, retained source implementation, release notes, and a new smoke fixture. Specific code changes harden `core`, `test`, `std`, `base64`, and `rate-limit`; the other packages are repackaged with verification scaffolding, not falsely described as fully rewritten.
+A coordinated **0.4.0 release candidate for all 54 existing packages** is staged on the `release/0.4.0-package-refresh` branch. Each package has a source manifest, retained source implementation, release notes, and a new smoke fixture. Specific code changes harden `core`, `test`, `security`, `std`, `base64`, and `rate-limit`; the other packages are repackaged with verification scaffolding, not falsely described as fully rewritten.
 
 **Do not deploy this branch directly:** the candidate index yanks existing 1.x releases to select 0.4.0 by default. The current Noqeri resolver filters yanked versions even for explicit pins, so this would break some existing installations. Resolve that migration hazard and pass full package/compiler compatibility tests before merging or publishing.
 
