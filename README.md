@@ -26,3 +26,9 @@ GitHub Actions is intentionally not required. Run checks on your own machine wit
 noqeri check Programs/registry.nqr
 noqeri check tests/registry_contracts.nqr
 ```
+
+## Registry release verification (October 2026)
+
+Use `node scripts/verify-index.mjs` to validate index schema, coordinate uniqueness, semver syntax, duplicate versions, yanked flags and canonical release paths **without network access or GitHub Actions**. This is an index-contract check, not a package execution test or authenticity proof. Also run `noqeri check Programs/registry.nqr` and `noqeri check tests/registry_contracts.nqr` with a working verified compiler and record the results before publishing.
+
+The registry includes historical releases marked `1.0.0`; this **does not** prove the main Noqeri compiler or every package is stable or Stage-2-compatible. The package manager downloads packages and verifies SHA-256 digests against cached metadata, but end-to-end online/offline installation, dependency resolution, archive integrity, failure recovery and registry availability must be tested against actual immutable releases before announcing a stable distribution.
