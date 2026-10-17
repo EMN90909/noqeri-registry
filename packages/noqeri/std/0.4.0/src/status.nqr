@@ -1,0 +1,8 @@
+module noqeri.std.status
+
+function error_code(status: isize): isize {
+    if status < 0 {
+        return -status - 1
+    }
+    return 0
+}

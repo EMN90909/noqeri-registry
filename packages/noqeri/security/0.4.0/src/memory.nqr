@@ -1,0 +1,21 @@
+module security.memory
+
+// Explicitly clear caller-owned bytes through volatile stores so the compiler
+// may not treat the clearing writes as ordinary dead stores.
+export function zeroMemory(memory: *volatile u8, count: usize): void {
+    let index: usize = 0
+    while index < count {
+        memory[index] = 0 as u8
+        index = index + 1
+    }
+}
+
+// Validate a half-open range without overflowing offset + length.
+export function validRange(offset: usize, length: usize, total: usize): bool {
+    if offset > total { return false }
+    return length <= total - offset
+}
+
+export function validIndex(index: usize, total: usize): bool {
+    return index < total
+}

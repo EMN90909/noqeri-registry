@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.firebase
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function firebaseFirestoreRoot(): string { return "https://firestore.googleapis.com/v1" }
+export function firebaseCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function firebaseLastStatus(): int { return providerHttpStatus() }
+export function firebaseAuthSignInUrl(apiKey: string): string { return "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + apiKey }
+export function firebaseDocumentUrl(projectId: string, path: string): string { return firebaseFirestoreRoot() + "/projects/" + projectId + "/databases/(default)/documents/" + path }
+export function firebaseSignInPassword(apiKey: string, body: string): string { return providerHttpJson("POST", firebaseAuthSignInUrl(apiKey), "none", "", "", "", body) }
+export function firebaseGetDocument(projectId: string, idToken: string, path: string): string { return providerHttpJson("GET", firebaseDocumentUrl(projectId, path), "bearer", idToken, "", "", "") }

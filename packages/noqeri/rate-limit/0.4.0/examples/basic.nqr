@@ -1,0 +1,3 @@
+import package "noqeri/rate-limit"
+let tokens: i64 = rateLimitRefill(2 as i64, 10 as i64, 1000 as i64, 3 as i64)
+print(rateLimitAllowed(tokens, 1 as i64))

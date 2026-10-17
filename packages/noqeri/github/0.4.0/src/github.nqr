@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.github
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function githubApiRoot(): string { return "https://api.github.com" }
+export function githubCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function githubLastStatus(): int { return providerHttpStatus() }
+export function githubRepoUrl(owner: string, repo: string): string { return githubApiRoot() + "/repos/" + owner + "/" + repo }
+export function githubGetRepo(token: string, owner: string, repo: string): string { return providerHttpJson("GET", githubRepoUrl(owner, repo), "bearer", token, "Accept", "application/vnd.github+json", "") }

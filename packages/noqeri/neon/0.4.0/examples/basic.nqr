@@ -1,0 +1,2 @@
+import package "noqeri/neon"
+print(neonDataTableUrl("https://example.neon.tech/rest/v1", "profiles"))

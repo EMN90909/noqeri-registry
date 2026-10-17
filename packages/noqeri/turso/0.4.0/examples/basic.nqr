@@ -1,0 +1,2 @@
+import package "noqeri/turso"
+print(tursoPipelineUrl("https://demo-org.turso.io"))

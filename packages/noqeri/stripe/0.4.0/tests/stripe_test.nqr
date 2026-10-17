@@ -1,0 +1,5 @@
+import "../src/stripe.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(stripePaymentIntentsUrl() == "https://api.stripe.com/v1/payment_intents")
+require(stripeCredentialPresent("sk_test_123"))
+print("stripe package tests: OK")
