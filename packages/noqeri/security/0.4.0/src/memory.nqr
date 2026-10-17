@@ -19,3 +19,11 @@ export function validRange(offset: usize, length: usize, total: usize): bool {
 export function validIndex(index: usize, total: usize): bool {
     return index < total
 }
+
+
+// Reject a null destination unless there is nothing to erase.
+export function zeroMemoryChecked(memory: *volatile u8, count: usize): bool {
+    if memory == null { return count == 0 as usize }
+    zeroMemory(memory, count)
+    return true
+}
