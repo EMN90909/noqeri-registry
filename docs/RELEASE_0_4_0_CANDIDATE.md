@@ -8,7 +8,7 @@
 - `noqeri/test`: assert helper made public.
 - `noqeri/std`: checked arithmetic avoids dereferencing null outputs; overflow preflight uses a conservative signed-63-bit portable bound; list helpers guard null list pointers.
 - `noqeri/rate-limit`: overflow-resistant saturating refill and bounded retry-after calculation.
-- `noqeri/base64`: strict Base64URL rejects standard '+'/'/' and inappropriate padding.
+- `noqeri/security`: new null-aware volatile memory clearing operation, with regression fixture.\n- `noqeri/base64`: strict Base64URL rejects standard '+'/'/' and inappropriate padding.
 - All other packages: retained existing implementation and tests; added consistent 0.4.0 manifests, source-import smoke checks and notes. **No claim that all 54 sources were materially improved or executed.**
 
 ## Important migration blocker
