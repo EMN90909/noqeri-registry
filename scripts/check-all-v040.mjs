@@ -2,7 +2,8 @@
 import {spawnSync} from 'node:child_process'
 import {readFileSync,existsSync} from 'node:fs'
 import {resolve,join} from 'node:path'
-const root=resolve(new URL('..',import.meta.url).pathname)
+import {fileURLToPath} from 'node:url'
+const root=resolve(fileURLToPath(new URL('..',import.meta.url)))
 const compiler=process.env.NOQERI_BIN
 if(!compiler||!existsSync(compiler)){console.error('Set NOQERI_BIN to a trusted executable; no compiler was found');process.exit(2)}
 const catalog=JSON.parse(readFileSync(join(root,'registry/index.json'),'utf8'))

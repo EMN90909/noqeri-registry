@@ -1,11 +1,12 @@
-# noqeri/web 0.4.0
+# noqeri/web 0.4.0 (release candidate)
 
-This is a **pre-1.0 release** of the existing web package, based on the 1.0.0 source line.
+This pre-1.0 package candidate is based on the earlier 1.0.0 implementation. Existing source files and tests have been retained where present, alongside a new source-import smoke fixture and this release note.
 
-- Entry: `src/web.nqr`.
+- Public entrypoint: `src/web.nqr` (verify it matches `package.nqr`).
 - License: GPL-3.0-only.
-- Support: Local library; check target/compiler compatibility before production use.
-- Historical packages remain in the repository for reproducibility. The index marks former 1.x releases as yanked so new unpinned installations resolve to 0.4.0. Previously pinned installs can continue resolving historical versions.
-- The package source and existing tests were retained; added a minimal source-import smoke fixture. Passing static checks does **not** prove execution, ABI compatibility or security assurance.
+- Quality evidence: test-contract only; **not compiler/runtime verified**.
+- Scope: Local library; requires execution of public API and negative/boundary tests before production use.
+- Selected fixes in this candidate: core/test exports, safer standard-library pointer/output handling, bounded rate-limiter arithmetic and stricter Base64URL input validation. Packages outside those areas primarily receive consistent 0.4.0 packaging and test/documentation scaffolding, not independently verified behavior changes.
+- Historical package files remain unchanged, but historical releases are **marked yanked in the candidate index**. The existing Noqeri resolver excludes yanked releases even for explicit pinned requests. Therefore pinned older installations **may break if this candidate is merged as-is**. Do not merge before implementing and verifying a backwards-compatible migration policy.
 
-Run a real package test with a trusted Noqeri compiler: `noqeri check tests/release_smoke.nqr`. Run all provided package tests before publishing production binaries.
+Local compile check (requires a trusted working Noqeri compiler): `noqeri check tests/release_smoke.nqr`. The candidate is not considered production-ready until these checks and behavioral fixtures pass with executable logs.

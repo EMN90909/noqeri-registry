@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import {readFile,stat} from 'node:fs/promises'
 import {join,resolve} from 'node:path'
-const root=resolve(new URL('..',import.meta.url).pathname)
+import {fileURLToPath} from 'node:url'
+const root=resolve(fileURLToPath(new URL('..',import.meta.url)))
 const catalog=JSON.parse(await readFile(join(root,'registry/index.json'),'utf8'))
 const errors=[]
 for(const p of catalog.packages){
