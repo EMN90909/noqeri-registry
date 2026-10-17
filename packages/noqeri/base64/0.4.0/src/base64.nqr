@@ -16,6 +16,7 @@ export function base64AlphabetValue(value: u8): int {
 export function base64UrlAlphabetValue(value: u8): int {
     if value == 45 as u8 { return 62 }
     if value == 95 as u8 { return 63 }
+    if value == 43 as u8 || value == 47 as u8 { return -1 }
     return base64AlphabetValue(value)
 }
 
