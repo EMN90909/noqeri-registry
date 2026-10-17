@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.clerk
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function clerkApiRoot(): string { return "https://api.clerk.com/v1" }
+export function clerkCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function clerkLastStatus(): int { return providerHttpStatus() }
+export function clerkUsersUrl(): string { return clerkApiRoot() + "/users" }
+export function clerkUserUrl(userId: string): string { return clerkUsersUrl() + "/" + userId }
+export function clerkListUsers(secretKey: string): string { if !clerkCredentialPresent(secretKey) { return "" } return providerHttpJson("GET", clerkUsersUrl(), "bearer", secretKey, "", "", "") }
+export function clerkGetUser(secretKey: string, userId: string): string { if !clerkCredentialPresent(secretKey) { return "" } return providerHttpJson("GET", clerkUserUrl(userId), "bearer", secretKey, "", "", "") }

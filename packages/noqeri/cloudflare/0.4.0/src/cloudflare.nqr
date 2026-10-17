@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.cloudflare
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function cloudflareApiRoot(): string { return "https://api.cloudflare.com/client/v4" }
+export function cloudflareCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function cloudflareLastStatus(): int { return providerHttpStatus() }
+export function cloudflareAccountsUrl(): string { return cloudflareApiRoot() + "/accounts" }
+export function cloudflareZonesUrl(): string { return cloudflareApiRoot() + "/zones" }
+export function cloudflareListZones(apiToken: string): string { if !cloudflareCredentialPresent(apiToken) { return "" } return providerHttpJson("GET", cloudflareZonesUrl(), "bearer", apiToken, "", "", "") }

@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/glob.nqr"
+
+function main(): int {
+    let pattern: [u8; 5] = [42 as u8,46 as u8,110 as u8,113 as u8,114 as u8]
+    let file: [u8; 8] = [109 as u8,97 as u8,105 as u8,110 as u8,46 as u8,110 as u8,113 as u8,114 as u8]
+    if glob_match(slice(pattern), slice(file)) { return 0 }
+    return 1
+}

@@ -1,0 +1,5 @@
+import "../src/tailwind.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(tailwindPathLooksValid("a.css"))
+require(!tailwindPathLooksValid("x"))
+print("tailwind package tests: OK")

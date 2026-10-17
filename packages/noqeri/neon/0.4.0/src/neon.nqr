@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.neon
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function neonApiRoot(): string { return "https://console.neon.tech/api/v2" }
+export function neonCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function neonLastStatus(): int { return providerHttpStatus() }
+export function neonDataTableUrl(dataApiUrl: string, table: string): string { return dataApiUrl + "/" + table }
+export function neonSelect(dataApiUrl: string, jwt: string, table: string, query: string): string { return providerHttpJson("GET", neonDataTableUrl(dataApiUrl, table) + "?" + query, "bearer", jwt, "", "", "") }
+export function neonInsert(dataApiUrl: string, jwt: string, table: string, body: string): string { return providerHttpJson("POST", neonDataTableUrl(dataApiUrl, table), "bearer", jwt, "", "", body) }

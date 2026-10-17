@@ -1,0 +1,2 @@
+import package "noqeri/firebase"
+print(firebaseDocumentUrl("demo-project", "users/42"))
