@@ -1,0 +1,7 @@
+// Canonical Noqeri application. Stage-2/native host wiring remains a qualification gate.
+import "../src/registry.noqeri"
+function main(): int {
+    let status: isize = registryServe(8080)
+    if status < 0 { return 1 }
+    return 0
+}
