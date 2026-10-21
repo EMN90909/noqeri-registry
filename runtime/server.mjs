@@ -25,6 +25,15 @@ export function createRegistryHandler(catalog){
     try{
       if(path==='/health')return reply(req,res,200,{status:'ok',storage:'noesql',database:'registry.noedb',nativeQualified:false})
       const {packages,ids,locations}=await catalogSnapshot(catalog)
+      if(path==='/v1/advisories'){
+        const snapshot=await catalog.db.snapshot()
+        const names=new Map(snapshot.tables.packages.rows.map(p=>[p.id,p.namespace+'/'+p.name]))
+        const advisories=snapshot.tables.advisories.rows.filter(a=>!a.withdrawn).map(a=>({
+          id:a.advisory_key,package:names.get(a.package_id),severity:a.severity,
+          summary:a.summary,affected:a.affected
+        })).sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0)
+        return reply(req,res,200,{schema:1,advisories})
+      }
       if(path==='/v1/index')return reply(req,res,200,{protocol:'v1',packageFormat:'nqpkg-1',packages})
       if(path==='/v1/packages')return reply(req,res,200,{packages})
       if(path==='/v1/search'){
