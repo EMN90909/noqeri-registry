@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
-import "../src/registry.nqr"
+import "../src/registry.noqeri"
 
 function main(): int {
     if !registryPortValid(80) { return 1 }
