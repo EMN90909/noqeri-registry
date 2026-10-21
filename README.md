@@ -1,3 +1,5 @@
+**Registry v1 integration:** [NoeSQL-backed metadata, immutable `.nqpkg` storage, HTTP endpoints and current qualification gaps](docs/CANONICAL_SERVICE.md). The active project entrypoint is `Programs/registry.noqeri`; released `.nqr` packages are retained as legacy compatibility content.
+
 # Noqeri Registry
 
 The official source registry for Noqeri packages. Registry runtime logic and package implementations are written in Noqeri. Operating-system I/O is reached only through explicit Noqeri ABI `extern` capabilities, so package logic is not tied to Go, C, C++, Windows, Linux, or macOS APIs.
