@@ -1,0 +1,55 @@
+import { lstat, readdir, readFile, mkdir, writeFile } from 'node:fs/promises'
+import { join, resolve, relative, sep } from 'node:path'
+import { gzipSync } from 'node:zlib'
+import { createHash } from 'node:crypto'
+const LIMIT_FILES=256, LIMIT_BYTES=8*1024*1024
+const safe = s => typeof s==='string' && s.length>0 && !s.includes('\\') && !s.startsWith('/') && s.split('/').every(p=>p&&p!=='.'&&p!=='..'&&!p.includes('\0'))
+const oct=(n,size)=>n.toString(8).padStart(size-1,'0')+'\0'
+function header(path,size) {
+ if(!safe(path)||Buffer.byteLength(path)>100)throw Error('unsafe or long archive path')
+ const b=Buffer.alloc(512)
+ b.write(path,0,100);b.write(oct(0o644,8),100,8)
+ b.write(oct(0,8),108,8);b.write(oct(0,8),116,8)
+ b.write(oct(size,12),124,12);b.write(oct(0,12),136,12)
+ b.fill(32,148,156);b[156]=48;b.write('ustar\0',257);b.write('00',263)
+ let checksum=0;for(const n of b)checksum+=n
+ b.write(oct(checksum,8),148,8);return b
+}
+export async function makeArchive(root) {
+ const base=resolve(root),files=[],state={count:0,bytes:0}
+ async function walk(dir,depth) {
+  if(depth>12)throw Error('package tree exceeds depth limit')
+  const entries=await readdir(dir,{withFileTypes:true})
+  entries.sort((a,b)=>a.name.localeCompare(b.name,'en'))
+  for(const entry of entries) {
+   const file=join(dir,entry.name),name=relative(base,file).split(sep).join('/')
+   if(!safe(name))throw Error('unsafe package path')
+   const st=await lstat(file)
+   if(st.isSymbolicLink()||st.nlink!==1)throw Error('links are not allowed in packages')
+   if(st.isDirectory()){await walk(file,depth+1);continue}
+   if(!st.isFile()||++state.count>LIMIT_FILES||st.size>LIMIT_BYTES-state.bytes)throw Error('package exceeds file/byte limits')
+   const data=await readFile(file)
+   if(data.length!==st.size)throw Error('package changed during archive build')
+   state.bytes+=data.length;files.push({name,data})
+  }
+ }
+ await walk(base,0)
+ const manifest=files.find(f=>f.name==='package.noqeri')||files.find(f=>f.name==='package.nqr')
+ if(!manifest)throw Error('package manifest missing (.noqeri canonical, .nqr legacy)')
+ const entry=/\bentry\s*:\s*"([^"]+)"/.exec(manifest.data.toString('utf8'))?.[1]
+ if(!safe(entry)||!files.some(f=>f.name===entry))throw Error('package entry missing or unsafe')
+ const chunks=[]
+ for(const f of files){
+  chunks.push(header(f.name,f.data.length),f.data)
+  const pad=(512-f.data.length%512)%512
+  if(pad)chunks.push(Buffer.alloc(pad))
+ }
+ chunks.push(Buffer.alloc(1024))
+ const bytes=gzipSync(Buffer.concat(chunks),{level:9,mtime:0})
+ return {bytes,integrity:'sha256:'+createHash('sha256').update(bytes).digest('hex'),entry,files:files.length}
+}
+export async function writeImmutableArchive(target,archive){
+ await mkdir(resolve(target,'..'),{recursive:true,mode:0o700})
+ try {await writeFile(target,archive.bytes,{flag:'wx',mode:0o600})}
+ catch(e){if(e.code!=='EEXIST')throw e;const old=await readFile(target);if('sha256:'+createHash('sha256').update(old).digest('hex')!==archive.integrity)throw Error('immutable release archive mismatch')}
+}
