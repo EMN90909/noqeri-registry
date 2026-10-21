@@ -44,7 +44,7 @@ Public GitHub Actions CI runs these public contract tests. The genuine NoeSQL me
 
 ## Historical package releases
 
-The `packages/` tree contains hundreds of immutable historical `.nqr` and `package.nqr` sources. Those files are **legacy release contents**, not current application source. Renaming or overwriting already-published files would break reproducibility, archival checksums, and existing lockfiles. New packages should use canonical `.noqeri` and `package.noqeri` and publish new versions, not mutate historical versions. Use the `tests/fixtures/legacy/` pattern for compatibility tests as needed.
+As of October 21, 2026, `main` contains **8 active `.noqeri` files and 425 historical `.nqr` files**. The `packages/` tree contains immutable historical `.nqr` and `package.nqr` sources. Those files are **legacy release contents**, not current application source. Renaming or overwriting already-published files would break reproducibility, archival checksums, and existing lockfiles. New packages should use canonical `.noqeri` and `package.noqeri` and publish new versions, not mutate historical versions. Use the `tests/fixtures/legacy/` pattern for compatibility tests as needed.
 
 The `0.4.0` package refresh is in the historical index, and earlier `1.x` versions may be yanked. The current Registry API declines public downloads of yanked versions, so restoring old pinned online installs needs an explicitly reviewed policy change. Do not claim all 54 package releases have native Stage-2 compiler parity.
 
