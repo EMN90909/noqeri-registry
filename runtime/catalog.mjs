@@ -4,6 +4,7 @@ import { readFile, stat } from 'node:fs/promises'
 import { resolve, join, relative, sep } from 'node:path'
 import { database } from 'noesql/session'
 import { IDENT, SEMVER, makeArchive, storeArchive } from './archive.mjs'
+import { compareSemver } from './semver.mjs'
 const schema=`table packages {
  id: int key auto
  namespace: text required
@@ -121,7 +122,7 @@ export async function catalogSnapshot(catalog){
   const decorated=packages.map(pkg=>({
     namespace:pkg.namespace,name:pkg.name,description:pkg.description,
     versions:versions.filter(v=>v.package_id===pkg.id).map(v=>({version:v.version,yanked:v.yanked,archiveIntegrity:v.archive_integrity,
-      entry:v.entry,legacy:v.legacy,dependencies:Object.fromEntries(dependencies.filter(d=>d.version_id===v.id).map(d=>[d.alias,d.coordinate+'@'+d.pinned_version])),downloads:downloads.find(d=>d.version_id===v.id)?.count||0})).sort((a,b)=>a.version<b.version?1:a.version>b.version?-1:0)
+      entry:v.entry,legacy:v.legacy,dependencies:Object.fromEntries(dependencies.filter(d=>d.version_id===v.id).map(d=>[d.alias,d.coordinate+'@'+d.pinned_version])),downloads:downloads.find(d=>d.version_id===v.id)?.count||0})).sort((a,b)=>compareSemver(b.version,a.version))
   })).sort((a,b)=>(a.namespace+'/'+a.name).localeCompare(b.namespace+'/'+b.name,'en'))
   return {packages:decorated,locations:new Map(versions.map(v=>[v.package_id+'/'+v.version,v.archive_location])),ids:new Map(packages.map(p=>[p.namespace+'/'+p.name,p.id]))}
 }
