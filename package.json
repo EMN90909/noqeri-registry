@@ -1,0 +1,13 @@
+{
+  "name": "noqeri-registry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=22.13.0"},
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test tests/registry-api.test.mjs",
+    "verify:index": "node scripts/verify-index.mjs"
+  },
+  "dependencies": {"noesql": "0.7.6"}
+}
