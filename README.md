@@ -1,58 +1,55 @@
 # Noqeri Registry
 
-The official source registry for Noqeri packages. Registry runtime logic and package implementations are written in Noqeri. Operating-system I/O is reached only through explicit Noqeri ABI `extern` capabilities, so package logic is not tied to Go, C, C++, Windows, Linux, or macOS APIs.
+Official package registry source and **experimental NoeSQL-backed Registry API v1**. Canonical Registry application, test and policy sources use `.noqeri`; package releases are distributed in deterministic, checksum-verified `.nqpkg` archives.
 
-## Run
+## Architecture
 
-```sh
-noqeri run Programs/registry.nqr
+```text
+Noqeri Registry app (src/registry.noqeri)
+           |
+        host ABI (native path not fully qualified)
+           |
+Registry HTTP transport (runtime/server.mjs)
+           |
+NoeSQL session (private dependency, NOESQL_SESSION_MODULE)
+           |
+registry.noedb  +  artifacts/sha256-<digest>.nqpkg
 ```
 
-The host ABI supplies package-file access and HTTP serving. Noqeri-owned code validates package names, versions, ports and package-domain rules.
+The Node 22 transport provides `GET /health`, `/v1/index`, `/v1/search`, `/v1/packages/...`, `/v1/advisories` and verified download routes. Its metadata store is NoeSQL's `.noedb` reference implementation, **not a production-qualified native Noqeri database driver**. There is no authenticated public publish endpoint. NoeSQL remains private; it is not vendored into this public repository.
 
-## Package quality rule
+The historical `registry/index.json` is a **one-time migration input**, not the HTTP service's authoritative data after bootstrap. Run the importer only against an empty database. Archive bytes stay on filesystem/object storage, not inside the database.
 
-A published package must contain useful exported behavior. Manifest-only packages and placeholder sources are not accepted. Host-backed packages keep validation, framing, status handling and protocol rules in Noqeri and restrict `extern` functions to the actual host capability boundary.
+## Run locally
+
+Requires Node.js 22+, an authorized local checkout/installation of private NoeSQL, and package sources.
+
+```sh
+export NOESQL_SESSION_MODULE=/absolute/path/to/NoeSQL/Runtime/noesql-session.mjs
+npm run bootstrap       # explicit one-time import; do not re-run on existing data
+npm start               # Node transport with /v1 endpoints
+```
+
+The canonical Noqeri-native application source is `Programs/registry.noqeri`, importing `src/registry.noqeri`. The `registryHostServe` native ABI remains under qualification and must not be described as fully integrated with the Node transport.
+
+## Tests and release gates
+
+```sh
+npm test                  # public transport, semver and artifact integrity checks
+npm run test:integration  # requires private NoeSQL session, persists/reopens registry.noedb
+node scripts/verify-index.mjs
+```
+
+Public GitHub Actions CI runs these public contract tests. The genuine NoeSQL metadata persistence test reopens the file with a fresh engine session and is separately gated behind the private NoeSQL checkout. An authorized workflow is available at [NoeSQL E2E (manual)](.github/workflows/noesql-e2e-manual.yml); it needs a scoped read-only `NOESQL_READ_TOKEN` secret. **Passing public mocks does not establish private engine qualification.**
+
+## Historical package releases
+
+The `packages/` tree contains hundreds of immutable historical `.nqr` and `package.nqr` sources. Those files are **legacy release contents**, not current application source. Renaming or overwriting already-published files would break reproducibility, archival checksums, and existing lockfiles. New packages should use canonical `.noqeri` and `package.noqeri` and publish new versions, not mutate historical versions. Use the `tests/fixtures/legacy/` pattern for compatibility tests as needed.
+
+The `0.4.0` package refresh is in the historical index, and earlier `1.x` versions may be yanked. The current Registry API declines public downloads of yanked versions, so restoring old pinned online installs needs an explicitly reviewed policy change. Do not claim all 54 package releases have native Stage-2 compiler parity.
+
+`registry/index.json` may also contain historical names like NoqeriDB, NoqeriSQL or references to `.nqo`. These are archive descriptions and **not** endorsements of those superseded active formats.
 
 ## License
 
-Everything in this repository, including every package, is licensed under **GPL-3.0-only**. Package source files carry SPDX identifiers and the repository `LICENSE` contains the GPL-3.0-only notice and canonical FSF license reference.
-
-## Local testing
-
-GitHub Actions is intentionally not required. Run checks on your own machine with the installed Noqeri stage-0/stage-1 compiler:
-
-```sh
-noqeri check Programs/registry.nqr
-noqeri check tests/registry_contracts.nqr
-```
-
-## Registry release verification (October 2026)
-
-Use `node scripts/verify-index.mjs` to validate index schema, coordinate uniqueness, semver syntax, duplicate versions, yanked flags and canonical release paths **without network access or GitHub Actions**. This is an index-contract check, not a package execution test or authenticity proof. Also run `noqeri check Programs/registry.nqr` and `noqeri check tests/registry_contracts.nqr` with a working verified compiler and record the results before publishing.
-
-The registry includes historical releases marked `1.0.0`; this **does not** prove the main Noqeri compiler or every package is stable or Stage-2-compatible. The package manager downloads packages and verifies SHA-256 digests against cached metadata, but end-to-end online/offline installation, dependency resolution, archive integrity, failure recovery and registry availability must be tested against actual immutable releases before announcing a stable distribution.
-
-
-## 0.4.0 candidate refresh (release branch)
-
-A coordinated **0.4.0 release candidate for all 54 existing packages** is staged on the `release/0.4.0-package-refresh` branch. Each package has a source manifest, retained source implementation, release notes, and a new smoke fixture. Specific code changes harden `core`, `test`, `security`, `std`, `base64`, and `rate-limit`; the other packages are repackaged with verification scaffolding, not falsely described as fully rewritten.
-
-**Do not deploy this branch directly:** the candidate index yanks existing 1.x releases to select 0.4.0 by default. The current Noqeri resolver filters yanked versions even for explicit pins, so this would break some existing installations. Resolve that migration hazard and pass full package/compiler compatibility tests before merging or publishing.
-
-Local offline checks (Node.js):
-```sh
-node scripts/verify-index.mjs
-node scripts/verify-v040.mjs
-```
-Compiler-dependent checks:
-```sh
-NOQERI_BIN=/path/to/verified/noqeri node scripts/check-all-v040.mjs
-```
-See [candidate release report](docs/RELEASE_0_4_0_CANDIDATE.md). No GitHub Actions are used.
-
-## Main-branch merge verification (2026-10-17)
-
-The 0.4.0 package refresh was merged through PR #2. A post-merge GitHub tree and catalog consistency check found all 54 package entries with an active 0.4.0 release, manifests, source directories, release notes, and smoke fixtures. The Noqeri package manager was changed in commit `5796161168283dfed15f2b926e64148869fbc6de` to allow explicit historical-version requests even when those versions are yanked; **that compatibility change has not passed an integrated resolver test**. Earlier candidate warnings about pin breakage describe the pre-fix resolver; keep pinned-install tests as a release gate.
-
-An actual local checkout still cannot be completed on the available worker because DNS resolution of github.com fails. No full 54-package compiler run was executed and no stable quality classification is implied by this merge. The registered 0.4.0 packages remain candidates pending compiler and provider-integration checks. No GitHub Actions were used.
+GPL-3.0-only. See [LICENSE](LICENSE). NoeSQL is a separate private project and is not relicensed by this repository.
