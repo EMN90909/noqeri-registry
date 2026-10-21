@@ -2,8 +2,12 @@
 export const VALID_VERSION = /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-((?:0|[1-9A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9A-Za-z-][0-9A-Za-z-]*))*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/
 function parts(v) {
   if(!VALID_VERSION.test(v)) throw new Error('invalid semantic version')
-  const [base,pre]=v.split('+',1)[0].split('-',2)
-  return {base:base.split('.').map(BigInt),pre:pre?.split('.')||[]}
+  const withoutBuild=v.split('+',1)[0]
+  const dash=withoutBuild.indexOf('-')
+  const base=dash<0?withoutBuild:withoutBuild.slice(0,dash)
+  const pre=dash<0?[]:withoutBuild.slice(dash+1).split('.')
+  if(pre.some(part=>/^0[0-9]+$/.test(part)))throw new Error('invalid numeric prerelease identifier')
+  return {base:base.split('.').map(BigInt),pre}
 }
 export function compareSemver(left,right) {
   const a=parts(left),b=parts(right)
