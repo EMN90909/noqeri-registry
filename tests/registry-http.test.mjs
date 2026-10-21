@@ -24,7 +24,7 @@ test('Registry HTTP API is versioned and supports semver + encoding and pinned y
   assert.equal(file.headers.get('x-archive-sha256'),'a'.repeat(64))
   assert.equal((await (await fetch(origin+'/v1/search?q=demo')).json()).packages.length,1)
   assert.equal((await fetch(origin+'/v1/packages/noqeri/demo/1.0.0%2Fescape')).status,400)
-  assert.equal((await fetch(origin+'/v1/packages/%2E%2E/demo/1.0.0')).status,400)
+  assert.ok([400,404].includes((await fetch(origin+'/v1/packages/%2E%2E/demo/1.0.0')).status)) // WHATWG fetch normalizes dot segments before transport
   assert.equal((await fetch(origin+'/v1/packages/noqeri/demo/not-semver')).status,400)
   assert.equal((await fetch(origin+'/v1/packages/noqeri/demo/1.0.0%2Bbuild/download',{method:'POST'})).status,405)
  }finally{await new Promise(resolve=>server.close(resolve))}
