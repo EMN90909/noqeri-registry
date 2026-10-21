@@ -13,5 +13,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Configure read-only private NoeSQL checkout
+        env:
+          NOESQL_READ_TOKEN: ${{ secrets.NOESQL_READ_TOKEN }}
+        run: |
+          if [ -z "$NOESQL_READ_TOKEN" ]; then
+            echo "::error::Set NOESQL_READ_TOKEN with read-only access to private EMN90909/NoeSQL"
+            exit 1
+          fi
+          git config --global url."https://x-access-token:${NOESQL_READ_TOKEN}@github.com/".insteadOf "https://github.com/"
+          git config --global --add url."https://x-access-token:${NOESQL_READ_TOKEN}@github.com/".insteadOf "ssh://git@github.com/"
       - run: npm install --no-audit --no-fund
       - run: npm test
