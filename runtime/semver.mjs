@@ -9,6 +9,10 @@ function parts(v) {
   if(pre.some(part=>/^0[0-9]+$/.test(part)))throw new Error('invalid numeric prerelease identifier')
   return {base:base.split('.').map(BigInt),pre}
 }
+export function isValidSemver(value){
+  if(typeof value!=='string')return false
+  try{parts(value);return true}catch{return false}
+}
 export function compareSemver(left,right) {
   const a=parts(left),b=parts(right)
   for(let i=0;i<3;i++){if(a.base[i]<b.base[i])return -1;if(a.base[i]>b.base[i])return 1}
