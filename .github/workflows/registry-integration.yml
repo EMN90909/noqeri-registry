@@ -1,7 +1,7 @@
 name: Registry public contracts
 on:
   push:
-    branches: [integration/ecosystem-v1]
+    branches: [main]
   pull_request:
     branches: [main]
 permissions:
