@@ -2,7 +2,20 @@ import {readFile,stat,mkdir} from 'node:fs/promises'
 import {resolve,join} from 'node:path'
 import {createHash} from 'node:crypto'
 import {makeArchive,writeImmutableArchive} from './archive.mjs'
-import {readNqd,runNqd} from 'noesql/store'
+import {isAbsolute} from 'node:path'
+import {pathToFileURL} from 'node:url'
+// Load the one upstream NoeSQL implementation, never a registry-side fork.
+// Local multi-repo development can point to the checkout until npm is verified.
+const moduleSpecifier=process.env.NOESQL_STORE_PATH
+if(moduleSpecifier&&!isAbsolute(moduleSpecifier))throw Error('NOESQL_STORE_PATH must be absolute')
+let provider
+try {
+ provider=await import(moduleSpecifier?pathToFileURL(moduleSpecifier).href:'noesql/store')
+} catch(error) {
+ throw Error('NoeSQL store unavailable: install the qualified NoeSQL package or set NOESQL_STORE_PATH to its Runtime/noesql-store.mjs: '+error.message)
+}
+const {readNqd,runNqd}=provider
+if(typeof readNqd!=='function'||typeof runNqd!=='function')throw Error('NoeSQL store provider lacks required API')
 const PART=/^[a-z0-9][a-z0-9-]*$/
 const SEMVER=/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/
 export function checkIdentity(ns,name,version) {
