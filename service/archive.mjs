@@ -20,14 +20,15 @@ export async function makeArchive(root) {
  async function walk(dir,depth) {
   if(depth>12)throw Error('package tree exceeds depth limit')
   const entries=await readdir(dir,{withFileTypes:true})
-  entries.sort((a,b)=>a.name.localeCompare(b.name,'en'))
+  entries.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0)
   for(const entry of entries) {
    const file=join(dir,entry.name),name=relative(base,file).split(sep).join('/')
    if(!safe(name))throw Error('unsafe package path')
    const st=await lstat(file)
-   if(st.isSymbolicLink()||st.nlink!==1)throw Error('links are not allowed in packages')
+   if(st.isSymbolicLink())throw Error('links are not allowed in packages')
    if(st.isDirectory()){await walk(file,depth+1);continue}
-   if(!st.isFile()||++state.count>LIMIT_FILES||st.size>LIMIT_BYTES-state.bytes)throw Error('package exceeds file/byte limits')
+   if(!st.isFile()||st.nlink!==1)throw Error('links are not allowed in packages')
+   if(++state.count>LIMIT_FILES||st.size>LIMIT_BYTES-state.bytes)throw Error('package exceeds file/byte limits')
    const data=await readFile(file)
    if(data.length!==st.size)throw Error('package changed during archive build')
    state.bytes+=data.length;files.push({name,data})
