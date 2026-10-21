@@ -2,6 +2,8 @@ import {readFile,stat,mkdir} from 'node:fs/promises'
 import {resolve,join} from 'node:path'
 import {createHash} from 'node:crypto'
 import {makeArchive,writeImmutableArchive} from './archive.mjs'
+import {checkIdentity,SEMVER} from './identity.mjs'
+export {checkIdentity} from './identity.mjs'
 import {isAbsolute} from 'node:path'
 import {pathToFileURL} from 'node:url'
 // Load the one upstream NoeSQL implementation, never a registry-side fork.
@@ -16,11 +18,6 @@ try {
 }
 const {readNqd,runNqd}=provider
 if(typeof readNqd!=='function'||typeof runNqd!=='function')throw Error('NoeSQL store provider lacks required API')
-const PART=/^[a-z0-9][a-z0-9-]*$/
-const SEMVER=/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/
-export function checkIdentity(ns,name,version) {
- if(!PART.test(ns||'')||!PART.test(name||'')||(version!==undefined&&!SEMVER.test(version)))throw Object.assign(Error('invalid package identity'),{status:400})
-}
 const schema=`table packages {
  id:int key auto
  namespace:text required
@@ -116,7 +113,7 @@ export async function openRegistry({root=process.cwd(),data=join(process.cwd(),'
    version:v.version,yanked:v.yanked,integrity:v.integrity,entry:v.entry,
    path:`packages/${p.namespace}/${p.name}/${v.version}`,
    dependencies:deps.filter(d=>d.version_id===v.id).map(d=>({coordinate:d.coordinate,version:d.constraint}))
-  })).sort((a,b)=>cmp(b.version,a.version))})).sort((a,b)=>(a.namespace+'/'+a.name).localeCompare(b.namespace+'/'+b.name))
+  })).sort((a,b)=>cmp(b.version,a.version))})).sort((a,b)=>{const x=a.namespace+'/'+a.name,y=b.namespace+'/'+b.name;return x<y?-1:x>y?1:0})
   return {protocol:'v1',packageFormat:'nqpkg-1',packages}
  }
  async function archive(ns,name,version) {
