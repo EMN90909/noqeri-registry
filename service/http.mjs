@@ -22,6 +22,8 @@ export async function handleRequest(req,res,store){
  const method=req.method||'GET'
  if(method!=='GET'&&method!=='HEAD')return error(req,res,405,'method_not_allowed')
  if(typeof req.url!=='string'||req.url.length>MAX_URL)return error(req,res,400,'invalid_url')
+ // URL normalizes dot-segments before pathname parsing; reject them first.
+ if(/(?:^|\\/)(?:\\.|%2e){1,2}(?:\\/|\\?|$)/i.test(req.url))return error(req,res,400,'invalid_url')
  let url,parts;try{url=new URL(req.url,'http://localhost');parts=segments(url.pathname)}catch{return error(req,res,400,'invalid_url')}
  if(parts.length===1&&parts[0]==='health')return send(req,res,200,JSON.stringify({status:'ok',backend:'noesql'}))
  if(parts[0]!=='v1')return error(req,res,404,'not_found')
