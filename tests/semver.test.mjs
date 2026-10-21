@@ -8,4 +8,6 @@ test('numeric SemVer ordering and prerelease precedence',()=>{
  assert.equal(compareSemver('1.0.0+build.3','1.0.0+build.2'),0)
  assert.equal(VALID_VERSION.test('1.2.3'),true)
  assert.equal(VALID_VERSION.test('../x'),false)
+ assert.ok(compareSemver('1.0.0-foo-bar.2','1.0.0-foo-bar.1')>0)
+ assert.throws(()=>compareSemver('1.0.0-01','1.0.0'),/leading zero/)
 })
