@@ -40,11 +40,11 @@ export async function makeArchive(root) {
       if(st.isSymbolicLink() || st.nlink!==1 && st.isFile()) throw new Error('package links forbidden')
       if(st.isDirectory()) {await walk(full,depth+1);continue}
       if(!st.isFile()) throw new Error('package must contain regular files')
-      if(++files.length>MAX_FILES || st.size>MAX_BYTES-total) throw new Error('package size/file limit exceeded')
+      if(files.length>=MAX_FILES || st.size>MAX_BYTES-total) throw new Error('package size/file limit exceeded')
       const data=await readFile(full)
       total+=data.length
       if(total>MAX_BYTES)throw new Error('package exceeds byte limit')
-      files[files.length-1]={name:path,data}
+      files.push({name:path,data})
     }
   }
   await walk(base,0)
