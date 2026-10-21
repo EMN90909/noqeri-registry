@@ -25,6 +25,7 @@ export function createRegistryHandler(catalog){
     if(path.length>512)return bad(req,res,414,'uri_too_long')
     try{
       if(path==='/health')return reply(req,res,200,{status:'ok',storage:'noesql',database:'registry.noedb',nativeQualified:false})
+      if(path==='/v1/status')return reply(req,res,200,{status:'experimental',protocol:'v1',storage:'noesql',nativeQualified:false,publishingEnabled:false})
       const {packages,ids,locations}=await catalogSnapshot(catalog)
       if(path==='/v1/advisories'){
         const snapshot=await catalog.db.snapshot()
@@ -40,8 +41,13 @@ export function createRegistryHandler(catalog){
       if(path==='/v1/search'){
         const q=searchParams.get('q')||''
         if(q.length>128)return bad(req,res,400,'search_too_long')
-        const matched=packages.filter(p=>(p.namespace+'/'+p.name+' '+p.description).toLowerCase().includes(q.toLowerCase()))
-        return reply(req,res,200,{packages:matched})
+        const lower=q.trim().toLowerCase()
+        const matched=packages.filter(p=>(p.namespace+'/'+p.name+' '+(p.description||'')).toLowerCase().includes(lower))
+        const offsetValue=searchParams.get('offset')||'0',limitValue=searchParams.get('limit')||'50'
+        if(!/^(0|[1-9]\\d{0,7})$/.test(offsetValue)||!/^(0|[1-9]\\d{0,2})$/.test(limitValue))return bad(req,res,400,'invalid_pagination')
+        const offset=Number(offsetValue),limit=Number(limitValue)
+        if(limit<1||limit>100)return bad(req,res,400,'invalid_pagination')
+        return reply(req,res,200,{packages:matched.slice(offset,offset+limit),total:matched.length,offset,limit})
       }
       const parts=path.split('/').slice(1)
       if(parts[0]!=='v1'||parts[1]!=='packages'||parts.length<4||parts.length>6)return bad(req,res,404,'not_found')
