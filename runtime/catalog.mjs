@@ -48,6 +48,7 @@ table advisories {
  advisory_key: text required
  severity: text required
  summary: text required
+ affected: text required
  withdrawn: bool = false
 }`
 const lit=v=>JSON.stringify(String(v))
