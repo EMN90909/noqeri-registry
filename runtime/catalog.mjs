@@ -2,7 +2,19 @@
 // Source registry/index.json is a one-time, explicit bootstrap import only.
 import { readFile, stat } from 'node:fs/promises'
 import { resolve, join, relative, sep } from 'node:path'
-import { database } from 'noesql/session'
+import { isAbsolute, extname } from 'node:path'
+import { pathToFileURL } from 'node:url'
+async function resolveDatabaseFactory() {
+  // Only trusted deployment configuration may point at an on-disk private
+  // NoeSQL installation. No fallback engine is permitted.
+  const entry = process.env.NOESQL_SESSION_MODULE
+  if (entry && (!isAbsolute(entry) || extname(entry) !== '.mjs')) {
+    throw new Error('NOESQL_SESSION_MODULE must be an absolute .mjs path')
+  }
+  const module = await import(entry ? pathToFileURL(entry).href : 'noesql/session')
+  if (typeof module.database !== 'function') throw new Error('NoeSQL session module has no database()')
+  return module.database
+}
 import { IDENT, SEMVER, makeArchive, storeArchive } from './archive.mjs'
 import { compareSemver, isValidSemver } from './semver.mjs'
 const schema=`table packages {
@@ -58,8 +70,9 @@ const safePackageDir=(root,ns,name,version)=>{
   validated(ns,IDENT,'namespace');validated(name,IDENT,'name');validated(version,SEMVER,'version')
   return join(resolve(root),'packages',ns,name,version)
 }
-export async function openCatalog({root=process.cwd(),databasePath=join(root,'registry.noedb'),archiveRoot=join(root,'artifacts')}={}) {
-  const db=database(resolve(databasePath))
+export async function openCatalog({root=process.cwd(),databasePath=join(root,'registry.noedb'),archiveRoot=join(root,'artifacts'),databaseFactory=null}={}) {
+  const makeDatabase = databaseFactory || await resolveDatabaseFactory()
+  const db=makeDatabase(resolve(databasePath))
   const state=await db.snapshot()
   const names=['packages','versions','dependencies','publishers','package_publishers','downloads','advisories']
   if(names.every(name=>!state.tables[name]))await db.execute(schema)
