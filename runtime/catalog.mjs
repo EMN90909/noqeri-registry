@@ -4,7 +4,7 @@ import { readFile, stat } from 'node:fs/promises'
 import { resolve, join, relative, sep } from 'node:path'
 import { database } from 'noesql/session'
 import { IDENT, SEMVER, makeArchive, storeArchive } from './archive.mjs'
-import { compareSemver } from './semver.mjs'
+import { compareSemver, isValidSemver } from './semver.mjs'
 const schema=`table packages {
  id: int key auto
  namespace: text required
@@ -53,7 +53,7 @@ table advisories {
  withdrawn: bool = false
 }`
 const lit=v=>JSON.stringify(String(v))
-const validated=(s,re,label)=>{if(typeof s!=='string'||!re.test(s))throw new Error('invalid '+label+': '+s);return s}
+const validated=(s,re,label)=>{if(typeof s!=='string'||!re.test(s)||(re===SEMVER&&!isValidSemver(s)))throw new Error('invalid '+label+': '+s);return s}
 const safePackageDir=(root,ns,name,version)=>{
   validated(ns,IDENT,'namespace');validated(name,IDENT,'name');validated(version,SEMVER,'version')
   return join(resolve(root),'packages',ns,name,version)
