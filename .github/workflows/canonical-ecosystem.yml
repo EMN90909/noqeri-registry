@@ -1,0 +1,26 @@
+name: Canonical Registry qualification
+on:
+  pull_request:
+  push:
+    branches: [integration/canonical-ecosystem-v1]
+permissions:
+  contents: read
+jobs:
+  transport:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/verify-index.mjs
+      - run: node --test tests/registry-http.test.mjs
+  noesql-catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: node --test tests/registry-api.test.mjs
