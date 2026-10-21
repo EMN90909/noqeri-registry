@@ -5,6 +5,14 @@ on:
   pull_request:
     branches: [main]
 jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: node --test tests/archive.test.mjs
   registry:
     runs-on: ubuntu-latest
     timeout-minutes: 15
