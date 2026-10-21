@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
 import { gunzipSync } from 'node:zlib'
-import { openCatalog, importInitialIndex } from '../runtime/catalog.mjs'
+import { openCatalog, importInitialIndex, catalogSnapshot } from '../runtime/catalog.mjs'
 import { makeArchive } from '../runtime/archive.mjs'
 import { startRegistry } from '../runtime/server.mjs'
 test('NoeSQL-backed Registry API serves exactly hashed archive and rejects yanked, traversal and repeat bootstrap', { skip: process.platform!=='linux' },async () => {
@@ -27,6 +27,17 @@ test('NoeSQL-backed Registry API serves exactly hashed archive and rejects yanke
     assert.deepEqual(await importInitialIndex(catalog),{packages:1,versions:2})
     await assert.rejects(importInitialIndex(catalog),/already initialized/)
     assert.equal((await readFile(join(dir,'registry.noedb'))).toString('ascii',0,8),'NQDB0002')
+    // Re-open through a fresh NoeSQL session. In-memory mocks cannot pass this
+    // assertion: it requires persisted relational package/version/index rows.
+    const reopened=await openCatalog({root:dir})
+    const persisted=await catalogSnapshot(reopened)
+    assert.equal(persisted.packages.length,1)
+    assert.equal(persisted.packages[0].versions.length,2)
+    assert.deepEqual(persisted.packages[0].versions.map(r=>r.version),['2.0.0','1.0.0'])
+    assert.ok(persisted.packages[0].versions.every(r=>r.archiveIntegrity.startsWith('sha256:')))
+    const before=await readFile(join(dir,'registry.noedb'))
+    await reopened.db.verify()
+    assert.deepEqual(await readFile(join(dir,'registry.noedb')),before)
     ;({server}=await startRegistry({root:dir,host:'127.0.0.1',port:0}))
     const base='http://127.0.0.1:'+server.address().port
     const index=await(await fetch(base+'/v1/index')).json()
