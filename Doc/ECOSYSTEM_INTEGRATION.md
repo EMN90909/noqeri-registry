@@ -3,7 +3,7 @@
 Canonical language sources use `.noqeri`, compiled artifacts `.nqri`, metadata `.nqon`, NoeSQL storage `.noedb`, archives `.nqpkg`. Legacy `.nqr` package fixtures are retained for compatibility until release migration.
 
 - `src/registry.noqeri` is the canonical Noqeri application and policy layer. Its host transport requires the qualified compiler and runtime; do **not** claim full native dogfooding until that route passes executable tests.
-- `runtime/server.mjs` is the Node 22 transitional HTTP transport. It reads authoritative metadata from `registry.noedb` through `noesql/session`, **not** a duplicated Registry database. The NoeSQL module is private and MUST be installed with authorized credentials.
+- `runtime/server.mjs` is the Node 22 transitional HTTP transport. It reads authoritative metadata from `registry.noedb` through `noesql/session`, **not** a duplicated Registry database. The NoeSQL module remains private and MUST be installed into the trusted runtime. Set `NOESQL_SESSION_MODULE` to its absolute `Runtime/noesql-session.mjs` path (or install the module into the Node runtime via an authorized private dependency). No public build or package includes private database source.
 - `node runtime/bootstrap.mjs` imports `registry/index.json` **only into an empty database**. Back up `registry.noedb` before upgrades; bootstrap is intentionally not a production publishing endpoint.
 - `runtime/archive.mjs` builds reproducible archives from the local `packages/` tree with bounded traversal and no symbolic links. Archive bytes go to `artifacts/sha256-<digest>.nqpkg`, not NoeSQL pages.
 - `NOQERI_REGISTRY_API_URL=https://<registry-host>` is required for CLI and website. Configure both consumers to this exact service.
@@ -14,4 +14,6 @@ Canonical language sources use `.noqeri`, compiled artifacts `.nqri`, metadata `
 
 ## CI / private dependency
 
-`EMN90909/NoeSQL` is private, but this repository is public. Standard GitHub Actions cannot install NoeSQL without a scoped read credential. Provide a read-only `NOESQL_READ_TOKEN` secret on the Registry repository and configure authenticated checkout/installation. Never expose the token in logs or client bundles. The public CI's NoeSQL install failure is a real blocker, not a green test.
+Public archive and HTTP transport tests run with `npm test` and do not require private source. Real NoeSQL `.noedb` E2E is gated separately using `npm run test:integration` with `NOESQL_SESSION_MODULE=/absolute/path/to/NoeSQL/Runtime/noesql-session.mjs`. The `Registry private NoeSQL end-to-end` manual GitHub workflow requires the read-only secret and refuses to proceed without it.
+
+`EMN90909/NoeSQL` is private, but this repository is public. The public contracts workflow does not require NoeSQL credentials. For private integration qualification, provide read-only `NOESQL_READ_TOKEN` in the Registry repository so the manual `workflow_dispatch` job can check out private NoeSQL into its isolated workspace. Never expose the token in logs or client bundles. The public CI's NoeSQL install failure is a real blocker, not a green test.
