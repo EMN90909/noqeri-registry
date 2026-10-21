@@ -9,9 +9,7 @@
   "scripts": {
     "start": "node runtime/server.mjs",
     "bootstrap": "node runtime/bootstrap.mjs",
-    "test": "node --test tests/*.test.mjs"
-  },
-  "dependencies": {
-    "noesql": "git+https://github.com/EMN90909/NoeSQL.git#b4ee98cc870498ca97e61aa8ca6dd664d2f50c4c"
+    "test": "node --test tests/archive.test.mjs tests/semver.test.mjs tests/transport.test.mjs",
+    "test:integration": "node --test tests/api.test.mjs"
   }
 }
