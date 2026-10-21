@@ -1,4 +1,5 @@
-import { lstat, readdir, readFile, mkdir, writeFile } from 'node:fs/promises'
+import { lstat, readdir, readFile, mkdir, writeFile, open } from 'node:fs/promises'
+import { constants as fsConstants } from 'node:fs'
 import { join, resolve, relative, sep } from 'node:path'
 import { gzipSync } from 'node:zlib'
 import { createHash } from 'node:crypto'
@@ -29,8 +30,17 @@ export async function makeArchive(root) {
    if(st.isDirectory()){await walk(file,depth+1);continue}
    if(!st.isFile()||st.nlink!==1)throw Error('links are not allowed in packages')
    if(++state.count>LIMIT_FILES||st.size>LIMIT_BYTES-state.bytes)throw Error('package exceeds file/byte limits')
-   const data=await readFile(file)
-   if(data.length!==st.size)throw Error('package changed during archive build')
+   const fh=await open(file,fsConstants.O_RDONLY|(fsConstants.O_NOFOLLOW||0))
+   let data
+   try {
+    const before=await fh.stat()
+    if(!before.isFile()||before.nlink!==1||before.size!==st.size||before.ino!==st.ino)throw Error('package file changed before read')
+    data=Buffer.alloc(before.size)
+    let at=0
+    while(at<data.length){const {bytesRead}=await fh.read(data,at,data.length-at,at);if(!bytesRead)throw Error('package truncated while reading');at+=bytesRead}
+    const after=await fh.stat()
+    if(after.size!==before.size||after.ino!==before.ino||after.mtimeMs!==before.mtimeMs||after.ctimeMs!==before.ctimeMs)throw Error('package file changed during read')
+   }finally{await fh.close()}
    state.bytes+=data.length;files.push({name,data})
   }
  }
@@ -52,5 +62,14 @@ export async function makeArchive(root) {
 export async function writeImmutableArchive(target,archive){
  await mkdir(resolve(target,'..'),{recursive:true,mode:0o700})
  try {await writeFile(target,archive.bytes,{flag:'wx',mode:0o600})}
- catch(e){if(e.code!=='EEXIST')throw e;const old=await readFile(target);if('sha256:'+createHash('sha256').update(old).digest('hex')!==archive.integrity)throw Error('immutable release archive mismatch')}
+ catch(e){
+  if(e.code!=='EEXIST')throw e
+  const fh=await open(target,fsConstants.O_RDONLY|(fsConstants.O_NOFOLLOW||0))
+  try {
+   const st=await fh.stat()
+   if(!st.isFile()||st.nlink!==1||st.size>10*1024*1024)throw Error('unsafe immutable release file')
+   const old=await fh.readFile()
+   if('sha256:'+createHash('sha256').update(old).digest('hex')!==archive.integrity)throw Error('immutable release archive mismatch')
+  }finally{await fh.close()}
+ }
 }
