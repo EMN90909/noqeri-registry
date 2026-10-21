@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { openCatalog, catalogSnapshot } from './catalog.mjs'
 import { artifactFile, IDENT, SEMVER, MAX_BYTES } from './archive.mjs'
+import { isValidSemver } from './semver.mjs'
 const HEADERS = {
   'X-Content-Type-Options':'nosniff', 'Cache-Control':'no-store',
   'Content-Security-Policy':"default-src 'none'", 'Access-Control-Allow-Origin':'*'
@@ -13,7 +14,7 @@ function reply(req,res,status,data,contentType='application/json; charset=utf-8'
 }
 const bad=(req,res,status,message)=>reply(req,res,status,{error:message})
 const validName=(value)=>typeof value==='string'&&IDENT.test(value)
-const validVersion=(value)=>typeof value==='string'&&SEMVER.test(value)
+const validVersion=isValidSemver
 const visible=record=>({namespace:record.namespace,name:record.name,description:record.description,versions:record.versions})
 export function createRegistryHandler(catalog){
   return async function handler(req,res){
