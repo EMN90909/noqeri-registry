@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: EMN90909/noqeri-registry
-          ref: 015594b606024a944578e7f1b262bc438186b944
+          ref: ae8b8c7102bd1e11a32330f7478d8080b1d62052
           path: registry
           persist-credentials: false
       - name: Check out pinned private NoeSQL integration
