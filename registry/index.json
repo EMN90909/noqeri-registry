@@ -1187,6 +1187,21 @@
           "evidence": "test-contract"
         }
       ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "pgas",
+      "description": "Experimental local PGAS partition mapping and native loopback ABI; TLS/RDMA/multi-host not available.",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "path": "packages/noqeri/pgas/0.1.0",
+          "yanked": false,
+          "experimental": true,
+          "quality": "experimental",
+          "evidence": "native-cpp-loopback-tests"
+        }
+      ]
     }
   ]
 }
