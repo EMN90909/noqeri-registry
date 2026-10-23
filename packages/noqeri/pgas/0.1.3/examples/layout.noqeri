@@ -1,0 +1,5 @@
+import "../src/pgas.noqeri"
+module noqeri.pgas.example
+function valid_layout(count: u64, nodes: u32): bool {
+    return pgas_partition_valid(count, nodes, pgas_block())
+}
