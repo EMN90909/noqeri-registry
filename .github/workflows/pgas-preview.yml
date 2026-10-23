@@ -1,0 +1,24 @@
+name: PGAS registry preview
+on:
+  pull_request:
+    paths:
+      - "registry/index.json"
+      - "packages/noqeri/pgas/**"
+      - "tests/pgas-catalog.test.mjs"
+      - ".github/workflows/pgas-preview.yml"
+  push:
+    paths:
+      - "registry/index.json"
+      - "packages/noqeri/pgas/**"
+      - "tests/pgas-catalog.test.mjs"
+      - ".github/workflows/pgas-preview.yml"
+jobs:
+  catalog:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node scripts/verify-index.mjs
+      - run: node --test tests/pgas-catalog.test.mjs
