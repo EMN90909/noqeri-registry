@@ -26,7 +26,7 @@ test("PGAS preview has canonical sources and is not declared production-ready", 
   const currentManifest = await readFile(new URL('../packages/noqeri/pgas/0.1.3/package.noqeri', import.meta.url), 'utf8')
   const currentSource = await readFile(new URL('../packages/noqeri/pgas/0.1.3/src/pgas.noqeri', import.meta.url), 'utf8')
   const tlsSource = await readFile(new URL('../packages/noqeri/pgas/0.1.3/src/pgas_tls.noqeri', import.meta.url), 'utf8')
-  assert.match(currentManifest, /version: "0\\.1\\.3"/)
+  assert.ok(currentManifest.includes('version: "0.1.3"'))
   assert.match(currentSource, /pgas_serve_durable/)
   assert.match(currentSource, /pgas_remote_registered_task/)
   assert.match(tlsSource, /pgas_tls_connect/)
