@@ -1,3 +1,4 @@
+import "../src/pgas.noqeri"
 module example.pgas_layout
 
 // Partition metadata, not live network execution.
