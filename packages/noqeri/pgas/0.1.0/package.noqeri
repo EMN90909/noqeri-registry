@@ -1,0 +1,10 @@
+package {
+    namespace: "noqeri"
+    name: "pgas"
+    version: "0.1.0"
+    edition: "2026"
+    profile: "library"
+    entry: "src/pgas.noqeri"
+    target: "native-posix"
+    license: "GPL-3.0-only"
+}
