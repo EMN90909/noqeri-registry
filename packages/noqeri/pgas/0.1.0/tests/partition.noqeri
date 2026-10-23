@@ -1,0 +1,11 @@
+module noqeri.pgas.tests
+
+// Pure partition validation smoke, requiring the PGAS package import
+// in a consumer build. ABI mapping separately requires native linking.
+function main(): int {
+    if !pgas_partition_valid(8 as u64, 3 as u32, pgas_block()) { return 1 }
+    if !pgas_partition_valid(8 as u64, 3 as u32, pgas_cyclic()) { return 2 }
+    if pgas_partition_valid(0 as u64, 3 as u32, pgas_block()) { return 3 }
+    if pgas_partition_valid(8 as u64, 0 as u32, pgas_block()) { return 4 }
+    return 0
+}
