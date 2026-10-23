@@ -1,0 +1,7 @@
+import "../src/pgas.noqeri"
+module example.pgas_layout
+
+// Partition metadata, not live network execution.
+function valid_layout(elements: u64, nodes: u32): bool {
+    return pgas_partition_valid(elements, nodes, pgas_block())
+}

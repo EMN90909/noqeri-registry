@@ -44,7 +44,7 @@ export function createRegistryHandler(catalog){
         const lower=q.trim().toLowerCase()
         const matched=packages.filter(p=>(p.namespace+'/'+p.name+' '+(p.description||'')).toLowerCase().includes(lower))
         const offsetValue=searchParams.get('offset')||'0',limitValue=searchParams.get('limit')||'50'
-        if(!/^(0|[1-9]\\d{0,7})$/.test(offsetValue)||!/^(0|[1-9]\\d{0,2})$/.test(limitValue))return bad(req,res,400,'invalid_pagination')
+        if(!/^(0|[1-9][0-9]{0,7})$/.test(offsetValue)||!/^(0|[1-9][0-9]{0,2})$/.test(limitValue))return bad(req,res,400,'invalid_pagination')
         const offset=Number(offsetValue),limit=Number(limitValue)
         if(limit<1||limit>100)return bad(req,res,400,'invalid_pagination')
         return reply(req,res,200,{packages:matched.slice(offset,offset+limit),total:matched.length,offset,limit})
