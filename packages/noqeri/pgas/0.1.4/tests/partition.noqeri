@@ -1,0 +1,6 @@
+import "../src/pgas.noqeri"
+function main(): int {
+    if !pgas_partition_valid(8 as u64, 2 as u32, pgas_block()) { return 1 }
+    if !pgas_partition_valid(8 as u64, 2 as u32, pgas_cyclic()) { return 2 }
+    return 0
+}
