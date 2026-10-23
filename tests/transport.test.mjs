@@ -36,7 +36,7 @@ test('Registry v1 transport exposes deterministic metadata and SHA-verified arch
   assert.equal((await fetch(url+'/v1/packages/noqeri/demo/2.0.0/download')).status,404)
   assert.equal((await fetch(url+'/v1/packages/noqeri/%2e%2e%2fbad/1.0.0/download')).status,400)
   const search=await(await fetch(url+'/v1/search?q=demo&limit=1&offset=0')).json()
-  assert.equal(search.total,1,JSON.stringify(search))
+  assert.equal(search.total,1)
   assert.equal(search.packages.length,1)
   assert.equal(search.limit,1)
   assert.equal((await fetch(url+'/v1/search?q=demo&limit=101')).status,400)
