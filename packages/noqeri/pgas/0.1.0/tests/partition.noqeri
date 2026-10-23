@@ -1,3 +1,4 @@
+import "../src/pgas.noqeri"
 module noqeri.pgas.tests
 
 // Pure partition validation smoke, requiring the PGAS package import
