@@ -59,7 +59,10 @@ jobs:
           for name in auth0 base64 clerk cloudflare convex core crypto; do
             package="packages/noqeri/$name/0.1.1"
             /tmp/nq-v011/noqeri check "$package/tests/regression.noqeri"
-            actual=$(/tmp/nq-v011/noqeri run "$package/tests/regression.noqeri")
+            if ! actual=$(/tmp/nq-v011/noqeri run "$package/tests/regression.noqeri" 2>&1); then
+              echo "$actual"
+              exit 1
+            fi
             echo "$name result: $actual"
             if ! printf '%s\n' "$actual" | tail -n 1 | grep -Fxq '0'; then
               echo "::error::Noqeri behavioral test failed: $name"
