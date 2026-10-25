@@ -1,4 +1,4 @@
-import "../src/regex-lite.nqr"
+import "../src/regex-lite.noqeri"
 
 function main(): int {
     if !(regexPatternBytesValid(12 as usize)) { return 1 }

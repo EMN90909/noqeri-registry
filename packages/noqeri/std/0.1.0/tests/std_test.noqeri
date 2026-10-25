@@ -1,4 +1,4 @@
-import "../src/std.nqr"
+import "../src/std.noqeri"
 
 function main(): int {
     if std_version_major() != 1 || std_version_minor() != 6 { return 1 }
