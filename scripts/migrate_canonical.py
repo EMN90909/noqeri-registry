@@ -17,8 +17,8 @@ PACKAGES = ROOT / "packages" / "noqeri"
 INDEX = ROOT / "registry" / "index.json"
 SOURCE_VERSION = "0.4.0"
 TARGET_VERSION = "0.1.0"
-EXTENSIONS = {".noqeri": ".noqeri", ".nqri": ".noqerii"}
-TEXT_EXTENSIONS = {".noqeri", ".noqerii", ".md", ".txt", ".json", ".nqrin"}
+EXTENSIONS = {".noqeri": ".noqeri", ".nqri": ".nqri"}
+TEXT_EXTENSIONS = {".noqeri", ".nqri", ".md", ".txt", ".json", ".nqon"}
 ENTRY = re.compile(r'\bentry\s*:\s*"([^"]+)"')
 VERSION = re.compile(r'\bversion\s*:\s*"0\.4\.0"')
 
@@ -43,7 +43,7 @@ def migrate_dir(source: Path, destination: Path) -> None:
         if not path.is_file() or path.suffix not in TEXT_EXTENSIONS:
             continue
         content = path.read_text(encoding="utf-8")
-        content = content.replace(".noqeri", ".noqeri").replace(".nqri", ".noqerii")
+        content = content.replace(".noqeri", ".noqeri").replace(".nqri", ".nqri")
         if path.name == "package.noqeri":
             content, count = VERSION.subn('version: "0.1.0"', content)
             if count != 1:
@@ -53,7 +53,7 @@ def migrate_dir(source: Path, destination: Path) -> None:
         "# 0.1.0: canonical Noqeri-source release\n\n"
         "This experimental release is derived from the 0.4.0 implementation. "
         "Source, test, example and manifest filenames now use .noqeri, and "
-        "compiled bytecode filenames use .noqerii. Relative references have been "
+        "compiled bytecode filenames use .nqri. Relative references have been "
         "updated. Historic versions remain untouched.\n\n"
         "This migration is a source-format change, not a verified native "
         "compiler/runtime or provider integration qualification.\n",
