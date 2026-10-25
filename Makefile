@@ -1,8 +1,9 @@
-.PHONY: native run-native native-test index-check
+.PHONY: native run run-native native-test index-check
 native:
 	sh scripts/build-native.sh
+run: run-native
 run-native: native
-	REGISTRY_SOURCE_INDEX_PREVIEW=1 REGISTRY_ROOT=$(CURDIR) ./build/native/noqeri-registry
+	sh scripts/run-noqeri.sh
 native-test: native
 	python3 -m unittest discover -s tests/native -p 'test_*.py' -v
 index-check:
