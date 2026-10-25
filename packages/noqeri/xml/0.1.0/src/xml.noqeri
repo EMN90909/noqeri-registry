@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.xml
+export function xmlNameStart(value: u8): bool { return (value >= 65 as u8 && value <= 90 as u8) || (value >= 97 as u8 && value <= 122 as u8) || value == 95 as u8 || value == 58 as u8 }
+export function xmlNameContinue(value: u8): bool { return xmlNameStart(value) || (value >= 48 as u8 && value <= 57 as u8) || value == 45 as u8 || value == 46 as u8 }
+export function xmlDepthValid(depth: usize): bool { return depth <= 128 as usize }
+export function xmlEntityExpansionValid(expandedBytes: usize, sourceBytes: usize): bool { if sourceBytes == 0 as usize { return expandedBytes == 0 as usize } return expandedBytes <= sourceBytes * 8 as usize }

@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.turso
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function tursoPlatformApiRoot(): string { return "https://api.turso.tech/v1" }
+export function tursoCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function tursoLastStatus(): int { return providerHttpStatus() }
+export function tursoPipelineUrl(databaseHttpUrl: string): string { return databaseHttpUrl + "/v2/pipeline" }
+export function tursoQuery(databaseHttpUrl: string, token: string, body: string): string { if !tursoCredentialPresent(token) { return "" } return providerHttpJson("POST", tursoPipelineUrl(databaseHttpUrl), "bearer", token, "", "", body) }
+export function tursoVersion(databaseHttpUrl: string, token: string): string { return providerHttpJson("GET", databaseHttpUrl + "/version", "bearer", token, "", "", "") }

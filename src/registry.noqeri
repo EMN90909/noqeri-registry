@@ -16,6 +16,27 @@ export function registryNameValid(value: []u8): bool {
     }
     return true
 }
+
+// Pure Noqeri protocol guards for the future native transport.
+// They have no runtime dependency on Node and can be executed by a native compiler.
+export function registryHexByteValid(value: u8): bool {
+    return (value >= 48 as u8 && value <= 57 as u8) || (value >= 97 as u8 && value <= 102 as u8)
+}
+export function registryArchiveSha256Valid(hex: []u8): bool {
+    if len(hex) != 64 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(hex) {
+        if !registryHexByteValid(hex[i]) { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function registryPaginationValid(offset: usize, limit: usize): bool {
+    return offset <= 99999999 as usize && limit >= 1 as usize && limit <= 100 as usize
+}
+export function registrySearchBytesValid(length: usize): bool { return length <= 128 as usize }
+export function registryRequestPathBytesValid(length: usize): bool { return length <= 512 as usize }
+export function registryQueryStringBytesValid(length: usize): bool { return length <= 2048 as usize }
 export function registryPortValid(port: int): bool { return port > 0 && port <= 65535 }
 export function registryReleaseVisible(yanked: bool): bool { return !yanked }
 export function registryServe(port: int): isize {

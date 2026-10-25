@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.uuid
+
+export function uuidHexByte(value: u8): bool {
+    return (value >= 48 as u8 && value <= 57 as u8) ||
+           (value >= 65 as u8 && value <= 70 as u8) ||
+           (value >= 97 as u8 && value <= 102 as u8)
+}
+
+export function uuidTextValid(value: []u8): bool {
+    if len(value) != 36 as usize { return false }
+    let index: usize = 0 as usize
+    while index < len(value) {
+        let hyphen: bool = index == 8 as usize || index == 13 as usize || index == 18 as usize || index == 23 as usize
+        if hyphen {
+            if value[index] != 45 as u8 { return false }
+        } else if !uuidHexByte(value[index]) { return false }
+        index = index + 1 as usize
+    }
+    return true
+}
+
+export function uuidVersionNibble(value: []u8): int {
+    if !uuidTextValid(value) { return -1 }
+    let byte: u8 = value[14]
+    if byte >= 48 as u8 && byte <= 57 as u8 { return (byte - 48 as u8) as int }
+    if byte >= 65 as u8 && byte <= 70 as u8 { return (byte - 65 as u8 + 10 as u8) as int }
+    return (byte - 97 as u8 + 10 as u8) as int
+}

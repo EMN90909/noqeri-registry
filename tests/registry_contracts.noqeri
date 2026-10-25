@@ -5,5 +5,18 @@ function main(): int {
     if !registryPortValid(80) { return 1 }
     if registryPortValid(0) { return 2 }
     if registryPortValid(70000) { return 3 }
+    if !registryHexByteValid(48 as u8) { return 4 }
+    if !registryHexByteValid(102 as u8) { return 5 }
+    if registryHexByteValid(71 as u8) { return 6 }
+    if !registryPaginationValid(0 as usize, 100 as usize) { return 7 }
+    if registryPaginationValid(0 as usize, 101 as usize) { return 8 }
+    if registryPaginationValid(0 as usize, 0 as usize) { return 9 }
+    if registryPaginationValid(100000000 as usize, 1 as usize) { return 10 }
+    if !registrySearchBytesValid(128 as usize) { return 11 }
+    if registrySearchBytesValid(129 as usize) { return 12 }
+    if !registryRequestPathBytesValid(512 as usize) { return 13 }
+    if registryRequestPathBytesValid(513 as usize) { return 14 }
+    if !registryQueryStringBytesValid(2048 as usize) { return 15 }
+    if registryQueryStringBytesValid(2049 as usize) { return 16 }
     return 0
 }

@@ -1,0 +1,13 @@
+module security.validation
+
+export function asciiDigit(value: u8): bool {
+    return value >= 48 as u8 && value <= 57 as u8
+}
+
+export function asciiLower(value: u8): bool {
+    return value >= 97 as u8 && value <= 122 as u8
+}
+
+export function bounded(value: usize, minimum: usize, maximum: usize): bool {
+    return value >= minimum && value <= maximum
+}
