@@ -1,3 +1,7 @@
+# ARCHIVED RELEASE PROCEDURE
+
+The commands below reference removed Node.js scripts and must not be executed. The current Go + Noqeri toolchain uses `make test`, `make verify`, and `make check-noqeri`. This release note is retained only as historical context.
+
 # 0.4.0 registry refresh — release candidate
 
 **Not published as stable.** Inventory: 54 existing packages, each with a 0.4.0 manifest, source entrypoint, release notes and a smoke fixture; existing package files are retained. Provider packages keep experimental markings. Quality level is experimental and evidence is test-contract only until real compiler results exist.
