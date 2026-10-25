@@ -1,0 +1,43 @@
+name: Noqeri Go host: HTTPS and database runtime
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'internal/hostbridge/**'
+      - 'cmd/noqeri-host/**'
+      - 'docs/HOST_RUNTIME.md'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/noqeri-host-runtime.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  host:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - name: Pin real drivers and commit dependency checksums after successful tests
+        run: |
+          go get github.com/jackc/pgx/v5@v5.7.6 modernc.org/sqlite@v1.36.3
+          go mod tidy
+          go test ./...
+          go test -race ./internal/hostbridge
+          go test -tags dbdrivers ./internal/hostbridge ./cmd/noqeri-host -count=1 -v
+          go build -tags dbdrivers -o /tmp/noqeri-host ./cmd/noqeri-host
+          printf '{"v":1,"id":"ci","op":"ping"}\n' | /tmp/noqeri-host | grep '"ok":true'
+          go vet ./...
+      - name: Commit verified, pinned dependencies
+        if: github.actor != 'github-actions[bot]'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add go.mod go.sum
+          if ! git diff --cached --quiet; then
+            git commit -m 'Pin SQLite and PostgreSQL drivers for the Go Noqeri runtime'
+            git push origin HEAD:main
+          fi
