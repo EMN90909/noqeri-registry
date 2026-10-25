@@ -5,5 +5,14 @@ function main(): int {
     if !registryPortValid(80) { return 1 }
     if registryPortValid(0) { return 2 }
     if registryPortValid(70000) { return 3 }
+    let get: [u8; 3] = [71 as u8, 69 as u8, 84 as u8]
+    let head: [u8; 4] = [72 as u8, 69 as u8, 65 as u8, 68 as u8]
+    let post: [u8; 4] = [80 as u8, 79 as u8, 83 as u8, 84 as u8]
+    if !registryReadMethodValid(slice(get)) { return 4 }
+    if !registryReadMethodValid(slice(head)) { return 5 }
+    if registryReadMethodValid(slice(post)) { return 6 }
+    if !registryPaginationValid(0, 100) { return 7 }
+    if registryPaginationValid(-1, 1) || registryPaginationValid(0, 101) { return 8 }
+    if !registryHexDigitValid(102 as u8) || registryHexDigitValid(71 as u8) { return 9 }
     return 0
 }

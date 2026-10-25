@@ -11,6 +11,7 @@
     "bootstrap": "node runtime/bootstrap.mjs",
     "test": "node --test tests/archive.test.mjs tests/semver.test.mjs tests/transport.test.mjs tests/canonical-packages.test.mjs",
     "test:integration": "node --test tests/api.test.mjs",
-    "verify:index": "node scripts/verify-index.mjs"
+    "verify:index": "node scripts/verify-index.mjs",
+    "test:compiler": "node scripts/check-all-v010.mjs"
   }
 }

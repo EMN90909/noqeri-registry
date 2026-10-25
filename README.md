@@ -37,6 +37,7 @@ The canonical Noqeri-native application source is `Programs/registry.noqeri`, im
 ```sh
 npm test                  # public transport, semver and artifact integrity checks
 npm run test:integration  # requires private NoeSQL session, persists/reopens registry.noedb
+NOQERI_BIN=/absolute/path/to/noqeri npm run test:compiler # explicit native compiler qualification
 node scripts/verify-index.mjs
 ```
 
