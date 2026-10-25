@@ -12,7 +12,7 @@ OLD = {".nqr": ".noqeri", ".nqo": ".nqri"}
 TEXT_SUFFIXES = {".noqeri", ".nqri", ".nqon", ".md", ".json", ".mjs",
                  ".js", ".py", ".cpp", ".h", ".html", ".yml", ".yaml",
                  ".sh", ".txt", ".toml"}
-SKIP_DIRS = {".git", "node_modules", ".venv", "__pycache__"}
+SKIP_DIRS = {".git", ".github", "node_modules", ".venv", "__pycache__"}
 PATTERN = re.compile(r"\.(?:nqr|nqo)(?![a-zA-Z0-9_])")
 
 def new_extension(match: re.Match[str]) -> str:
