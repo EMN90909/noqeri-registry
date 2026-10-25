@@ -29,15 +29,18 @@ jobs:
       - name: Verify 0.1.1 manifests, MIT notices, and case-sensitive files
         run: |
           set -eu
-          for name in auth0 base64 clerk cloudflare convex core crypto; do
+          for name in auth0 base64 clerk cloudflare convex core crypto csv db dom env fetch firebase fs github glob hex html http-client http-server; do
             release="packages/noqeri/$name/0.1.1"
             test -f "$release/package.noqeri"
             test -f "$release/LICENSE"
-            test -f "$release/src/$name.noqeri"
+            source="$name"
+            if [ "$name" = "http-client" ]; then source="http_client"; fi
+            if [ "$name" = "http-server" ]; then source="server"; fi
+            test -f "$release/src/$source.noqeri"
             test -f "$release/tests/regression.noqeri"
             grep -q 'version: "0.1.1"' "$release/package.noqeri"
             grep -q 'license: "MIT"' "$release/package.noqeri"
-            grep -q 'SPDX-License-Identifier: MIT' "$release/src/$name.noqeri"
+            grep -q 'SPDX-License-Identifier: MIT' "$release/src/$source.noqeri"
           done
   native-noqeri:
     runs-on: ubuntu-24.04
@@ -56,7 +59,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for name in auth0 base64 clerk cloudflare convex core crypto; do
+          for name in auth0 base64 clerk cloudflare convex core crypto csv db dom env fetch firebase fs github glob hex html http-client http-server; do
             package="packages/noqeri/$name/0.1.1"
             /tmp/nq-v011/noqeri check "$package/tests/regression.noqeri"
             if ! actual=$(/tmp/nq-v011/noqeri run "$package/tests/regression.noqeri" 2>&1); then
