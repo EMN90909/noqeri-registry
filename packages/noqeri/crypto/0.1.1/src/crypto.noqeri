@@ -1,0 +1,111 @@
+// SPDX-License-Identifier: MIT
+// Crypto boundary: host provides CSPRNG and SHA-256; this module never substitutes a weak hash.
+module noqeri.crypto
+
+extern function cryptoRandomFill(output: []u8): bool
+extern function cryptoSha256(input: []u8, output: []u8): bool
+
+export function cryptoSha256OutputSize(): usize { return 32 as usize }
+export function cryptoSha512OutputSize(): usize { return 64 as usize }
+export function cryptoDigestLengthValid(n: usize): bool { return n == 32 as usize || n == 64 as usize }
+export function cryptoCanSha256(dst: []u8): bool { return len(dst) >= 32 as usize }
+export function cryptoRandomNonEmpty(dst: []u8): bool {
+    if len(dst) == 0 as usize { return true }
+    return cryptoRandomFill(dst)
+}
+export function cryptoDigest(src: []u8, dst: []u8): bool {
+    if !cryptoCanSha256(dst) { return false }
+    return cryptoSha256(src,dst)
+}
+export function cryptoDigestEqual(a: []u8, b: []u8): bool {
+    if len(a) != len(b) { return false }
+    let mismatch: int = 0
+    let i: usize = 0 as usize
+    while i < len(a) {
+        // Compare every byte; caller must also use an execution mode with stable timing.
+        if a[i] != b[i] { mismatch = mismatch + 1 }
+        i = i + 1 as usize
+    }
+    return mismatch == 0
+}
+export function cryptoZero(dst: []u8): usize {
+    let i: usize = 0 as usize
+    while i < len(dst) { dst[i] = 0 as u8 i = i + 1 as usize }
+    return len(dst)
+}
+export function cryptoHexDigit(value: u8, uppercase: bool): u8 {
+    if value < 10 as u8 { return 48 as u8 + value }
+    if uppercase { return 65 as u8 + (value - 10 as u8) }
+    return 97 as u8 + (value - 10 as u8)
+}
+export function cryptoHexNibble(byte: u8): int {
+    if byte >= 48 as u8 && byte <= 57 as u8 { return (byte - 48 as u8) as int }
+    if byte >= 65 as u8 && byte <= 70 as u8 { return (byte - 65 as u8) as int + 10 }
+    if byte >= 97 as u8 && byte <= 102 as u8 { return (byte - 97 as u8) as int + 10 }
+    return -1
+}
+export function cryptoHexEncode(src: []u8, dst: []u8, uppercase: bool): isize {
+    if len(src) > len(dst) / 2 as usize { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(src) {
+        let b: u8 = src[i]
+        dst[i * 2 as usize] = cryptoHexDigit(b / 16 as u8,uppercase)
+        dst[i * 2 as usize + 1 as usize] = cryptoHexDigit(b % 16 as u8,uppercase)
+        i = i + 1 as usize
+    }
+    return (len(src) * 2 as usize) as isize
+}
+export function cryptoHexDecode(src: []u8, dst: []u8): isize {
+    if len(src) % 2 as usize != 0 as usize { return -1 as isize }
+    if len(src) / 2 as usize > len(dst) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(src) {
+        if cryptoHexNibble(src[i]) < 0 || cryptoHexNibble(src[i + 1 as usize]) < 0 { return -1 as isize }
+        i = i + 2 as usize
+    }
+    i = 0 as usize
+    while i < len(src) {
+        let hi: int = cryptoHexNibble(src[i])
+        let lo: int = cryptoHexNibble(src[i + 1 as usize])
+        dst[i / 2 as usize] = (hi * 16 + lo) as u8
+        i = i + 2 as usize
+    }
+    return (len(src) / 2 as usize) as isize
+}
+export function cryptoHexValid(src: []u8): bool {
+    if len(src) % 2 as usize != 0 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(src) {
+        if cryptoHexNibble(src[i]) < 0 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+// XOR is a byte transform, NOT encryption. Keep distinct from authenticated crypto.
+export function cryptoXorBytes(a: []u8, b: []u8, dst: []u8): isize {
+    if len(a) != len(b) || len(dst) < len(a) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(a) {
+        dst[i] = a[i] ^ b[i]
+        i = i + 1 as usize
+    }
+    return len(a) as isize
+}
+export function cryptoSha256Hex(input: []u8, digestBuffer: []u8, hexBuffer: []u8): bool {
+    if len(digestBuffer) < 32 as usize || len(hexBuffer) < 64 as usize { return false }
+    if !cryptoSha256(input,digestBuffer) { return false }
+    // Uses only the first 32 digest bytes and 64 output bytes.
+    let i: usize = 0 as usize
+    while i < 32 as usize {
+        let b: u8 = digestBuffer[i]
+        hexBuffer[i * 2 as usize] = cryptoHexDigit(b / 16 as u8,false)
+        hexBuffer[i * 2 as usize + 1 as usize] = cryptoHexDigit(b % 16 as u8,false)
+        i = i + 1 as usize
+    }
+    return true
+}
+export function cryptoRandomHex(randomBuffer: []u8, hexBuffer: []u8): bool {
+    if len(randomBuffer) > len(hexBuffer) / 2 as usize { return false }
+    if !cryptoRandomNonEmpty(randomBuffer) { return false }
+    return cryptoHexEncode(randomBuffer,hexBuffer,false) >= 0 as isize
+}

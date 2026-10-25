@@ -1,0 +1,73 @@
+// SPDX-License-Identifier: MIT
+// Cloudflare HTTP adapter for the Noqeri 0.1.1 package ecosystem.
+// The host supplies providerHttpJson and providerHttpStatus. Network calls require an injected,
+// secure transport; these extern declarations do not silently create an HTTP client.
+module noqeri.cloudflare
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function cloudflareApiVersion(): int { return 1 }
+export function cloudflareCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function cloudflareLastStatus(): int { return providerHttpStatus() }
+export function cloudflareRoot(): string { return "https://api.cloudflare.com/client/v4" }
+export function cloudflareStatusSuccess(code: int): bool { return code >= 200 && code <= 299 }
+export function cloudflareStatusUnauthorized(code: int): bool { return code == 401 || code == 403 }
+export function cloudflareStatusRetryable(code: int): bool { return code == 408 || code == 429 || code == 500 || code == 502 || code == 503 || code == 504 }
+export function cloudflareRetryDelayMillis(attempt: int): int {
+    if attempt <= 0 { return 200 }
+    if attempt == 1 { return 400 }
+    if attempt == 2 { return 800 }
+    if attempt == 3 { return 1600 }
+    if attempt == 4 { return 3200 }
+    return 5000
+}
+export function cloudflareNameCharSafe(value: u8): bool {
+    if value >= 65 as u8 && value <= 90 as u8 { return true }
+    if value >= 97 as u8 && value <= 122 as u8 { return true }
+    if value >= 48 as u8 && value <= 57 as u8 { return true }
+    return value == 45 as u8 || value == 95 as u8 || value == 46 as u8
+}
+export function cloudflareIdentifierSafe(value: []u8): bool {
+    if len(value) == 0 as usize || len(value) > 128 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(value) {
+        if !cloudflareNameCharSafe(value[i]) { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+// Reject credentials and raw JSON that cannot safely be transported. Strings passed to
+// URL constructors must be trusted or prevalidated by the caller. IDs require encoding.
+export function cloudflareBodySizeValid(size: usize): bool { return size <= 1048576 as usize }
+export function cloudflareMethodAllowed(method: string): bool {
+    return method == "GET" || method == "POST" || method == "PATCH" || method == "PUT" || method == "DELETE"
+}
+export function cloudflareRequest(method: string, secret: string, url: string, body: string): string {
+    if !cloudflareMethodAllowed(method) || !cloudflareCredentialPresent(secret) || textLength(url) < 9 { return "" }
+    if textLength(body) > 1048576 { return "" }
+    return providerHttpJson(method, url, "bearer", secret, "", "", body)
+}
+export function cloudflareAccountsUrl(): string { return cloudflareRoot() + "/accounts" }
+export function cloudflareZonesUrl(): string { return cloudflareRoot() + "/zones" }
+export function cloudflareUserUrl(): string { return cloudflareRoot() + "/user" }
+export function cloudflareTokensUrl(): string { return cloudflareRoot() + "/user/tokens" }
+export function cloudflareWorkersUrl(): string { return cloudflareRoot() + "/accounts" }
+export function cloudflareR2Url(): string { return cloudflareRoot() + "/accounts" }
+
+
+export function cloudflareZoneUrl(zoneId: string): string { return cloudflareZonesUrl() + "/" + zoneId }
+export function cloudflareDNSRecordsUrl(zoneId: string): string { return cloudflareZoneUrl(zoneId) + "/dns_records" }
+export function cloudflareDNSRecordUrl(zoneId: string, recordId: string): string { return cloudflareDNSRecordsUrl(zoneId) + "/" + recordId }
+export function cloudflarePurgeCacheUrl(zoneId: string): string { return cloudflareZoneUrl(zoneId) + "/purge_cache" }
+export function cloudflareAnalyticsUrl(zoneId: string): string { return cloudflareZoneUrl(zoneId) + "/analytics/dashboard" }
+export function cloudflareWorkerScriptsUrl(accountId: string): string { return cloudflareAccountsUrl() + "/" + accountId + "/workers/scripts" }
+export function cloudflareKVNamespacesUrl(accountId: string): string { return cloudflareAccountsUrl() + "/" + accountId + "/storage/kv/namespaces" }
+export function cloudflareListZones(apiToken: string): string { return cloudflareRequest("GET",apiToken,cloudflareZonesUrl(),"") }
+export function cloudflareListDNSRecords(apiToken: string, zoneId: string): string { return cloudflareRequest("GET",apiToken,cloudflareDNSRecordsUrl(zoneId),"") }
+export function cloudflareCreateDNSRecord(apiToken: string, zoneId: string, body: string): string { return cloudflareRequest("POST",apiToken,cloudflareDNSRecordsUrl(zoneId),body) }
+export function cloudflareUpdateDNSRecord(apiToken: string, zoneId: string, recordId: string, body: string): string { return cloudflareRequest("PATCH",apiToken,cloudflareDNSRecordUrl(zoneId,recordId),body) }
+export function cloudflareDeleteDNSRecord(apiToken: string, zoneId: string, recordId: string): string { return cloudflareRequest("DELETE",apiToken,cloudflareDNSRecordUrl(zoneId,recordId),"") }
+export function cloudflarePurgeAll(apiToken: string, zoneId: string): string { return cloudflareRequest("POST",apiToken,cloudflarePurgeCacheUrl(zoneId),"{\"purge_everything\":true}") }
+export function cloudflarePageValid(page: int, perPage: int): bool { return page > 0 && perPage > 0 && perPage <= 50 }
+

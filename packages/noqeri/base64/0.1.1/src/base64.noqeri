@@ -1,0 +1,171 @@
+// SPDX-License-Identifier: MIT
+// RFC 4648 Base64 and Base64URL codecs. Caller allocates destination.
+// All decoders reject malformed input before touching the output buffer.
+module noqeri.base64
+
+export function base64AlphabetValue(c: u8): int {
+    if c >= 65 as u8 && c <= 90 as u8 { return (c - 65 as u8) as int }
+    if c >= 97 as u8 && c <= 122 as u8 { return (c - 97 as u8) as int + 26 }
+    if c >= 48 as u8 && c <= 57 as u8 { return (c - 48 as u8) as int + 52 }
+    if c == 43 as u8 { return 62 }
+    if c == 47 as u8 { return 63 }
+    return -1
+}
+export function base64UrlAlphabetValue(c: u8): int {
+    if c == 45 as u8 { return 62 }
+    if c == 95 as u8 { return 63 }
+    if c == 43 as u8 || c == 47 as u8 { return -1 }
+    return base64AlphabetValue(c)
+}
+export function base64Digit(v: u8): u8 {
+    if v < 26 as u8 { return v + 65 as u8 }
+    if v < 52 as u8 { return v - 26 as u8 + 97 as u8 }
+    if v < 62 as u8 { return v - 52 as u8 + 48 as u8 }
+    if v == 62 as u8 { return 43 as u8 }
+    return 47 as u8
+}
+export function base64UrlDigit(v: u8): u8 {
+    if v == 62 as u8 { return 45 as u8 }
+    if v == 63 as u8 { return 95 as u8 }
+    return base64Digit(v)
+}
+export function base64EncodedLength(inputBytes: usize): usize {
+    let result: usize = (inputBytes / 3 as usize) * 4 as usize
+    if inputBytes % 3 as usize != 0 as usize { result = result + 4 as usize }
+    return result
+}
+export function base64EncodedUrlLength(inputBytes: usize, padded: bool): usize {
+    if padded { return base64EncodedLength(inputBytes) }
+    let result: usize = (inputBytes / 3 as usize) * 4 as usize
+    if inputBytes % 3 as usize == 1 as usize { result = result + 2 as usize }
+    if inputBytes % 3 as usize == 2 as usize { result = result + 3 as usize }
+    return result
+}
+export function base64DecodedMaxLength(chars: usize): usize {
+    return (chars / 4 as usize) * 3 as usize + (if chars % 4 as usize == 2 as usize { 1 as usize } else if chars % 4 as usize == 3 as usize { 2 as usize } else { 0 as usize })
+}
+function base64Value(c: u8, url: bool): int {
+    if url { return base64UrlAlphabetValue(c) }
+    return base64AlphabetValue(c)
+}
+// Padding is allowed only in the final 2 bytes, and unused bits MUST be zero.
+export function base64ValidateMode(input: []u8, url: bool, padded: bool): bool {
+    let n: usize = len(input)
+    if n == 0 as usize { return true }
+    if n % 4 as usize == 1 as usize { return false }
+    if padded && n % 4 as usize != 0 as usize { return false }
+    let pad: usize = 0 as usize
+    let seenPad: bool = false
+    let i: usize = 0 as usize
+    while i < n {
+        let c: u8 = input[i]
+        if c == 61 as u8 {
+            if !padded { return false }
+            if i + 2 as usize < n { return false }
+            seenPad = true
+            pad = pad + 1 as usize
+        } else {
+            if seenPad || base64Value(c,url) < 0 { return false }
+        }
+        i = i + 1 as usize
+    }
+    if pad > 2 as usize { return false }
+    if pad > 0 as usize && n % 4 as usize != 0 as usize { return false }
+    if n - pad < 2 as usize { return false }
+    let last: int = base64Value(input[n - pad - 1 as usize],url)
+    if pad == 2 as usize || (!padded && n % 4 as usize == 2 as usize) { return last % 16 == 0 }
+    if pad == 1 as usize || (!padded && n % 4 as usize == 3 as usize) { return last % 4 == 0 }
+    return true
+}
+export function base64Valid(input: []u8): bool { return base64ValidateMode(input,false,true) }
+export function base64UrlValid(input: []u8, padded: bool): bool { return base64ValidateMode(input,true,padded) }
+export function base64CharValid(c: u8): bool { return base64AlphabetValue(c) >= 0 || c == 61 as u8 }
+export function base64UrlCharValid(c: u8): bool { return base64UrlAlphabetValue(c) >= 0 || c == 61 as u8 }
+export function base64LengthValid(chars: usize): bool { return chars % 4 as usize == 0 as usize }
+export function base64DecodedLengthMode(input: []u8, url: bool, padded: bool): isize {
+    if !base64ValidateMode(input,url,padded) { return -1 as isize }
+    let pad: usize = 0 as usize
+    let n: usize = len(input)
+    if n >= 1 as usize && input[n - 1 as usize] == 61 as u8 { pad = pad + 1 as usize }
+    if n >= 2 as usize && input[n - 2 as usize] == 61 as u8 { pad = pad + 1 as usize }
+    return (base64DecodedMaxLength(n) - pad) as isize
+}
+export function base64DecodedLength(input: []u8): isize {
+    return base64DecodedLengthMode(input,false,true)
+}
+export function base64DecodedUrlLength(input: []u8, padded: bool): isize {
+    return base64DecodedLengthMode(input,true,padded)
+}
+export function base64EncodeMode(src: []u8, dst: []u8, url: bool, padded: bool): isize {
+    let required: usize = base64EncodedUrlLength(len(src),padded)
+    if len(dst) < required { return -1 as isize }
+    let i: usize = 0 as usize
+    let output: usize = 0 as usize
+    while i < len(src) {
+        let remaining: usize = len(src) - i
+        let a: u32 = src[i] as u32
+        let b: u32 = 0 as u32
+        let c: u32 = 0 as u32
+        if remaining > 1 as usize { b = src[i + 1 as usize] as u32 }
+        if remaining > 2 as usize { c = src[i + 2 as usize] as u32 }
+        let x: u32 = a * 65536 as u32 + b * 256 as u32 + c
+        let d1: u8 = (x / 262144 as u32) as u8
+        let d2: u8 = ((x / 4096 as u32) % 64 as u32) as u8
+        let d3: u8 = ((x / 64 as u32) % 64 as u32) as u8
+        let d4: u8 = (x % 64 as u32) as u8
+        if url {
+            dst[output] = base64UrlDigit(d1)
+            dst[output + 1 as usize] = base64UrlDigit(d2)
+        } else {
+            dst[output] = base64Digit(d1)
+            dst[output + 1 as usize] = base64Digit(d2)
+        }
+        output = output + 2 as usize
+        if remaining > 1 as usize {
+            if url { dst[output] = base64UrlDigit(d3) } else { dst[output] = base64Digit(d3) }
+            output = output + 1 as usize
+        } else if padded { dst[output] = 61 as u8 output = output + 1 as usize }
+        if remaining > 2 as usize {
+            if url { dst[output] = base64UrlDigit(d4) } else { dst[output] = base64Digit(d4) }
+            output = output + 1 as usize
+        } else if padded { dst[output] = 61 as u8 output = output + 1 as usize }
+        i = i + 3 as usize
+    }
+    return output as isize
+}
+export function base64Encode(src: []u8, dst: []u8): isize { return base64EncodeMode(src,dst,false,true) }
+export function base64EncodeUrl(src: []u8, dst: []u8, padded: bool): isize { return base64EncodeMode(src,dst,true,padded) }
+export function base64DecodeMode(src: []u8, dst: []u8, url: bool, padded: bool): isize {
+    let required: isize = base64DecodedLengthMode(src,url,padded)
+    if required < 0 as isize || len(dst) < required as usize { return -1 as isize }
+    let i: usize = 0 as usize
+    let out: usize = 0 as usize
+    while i < len(src) {
+        let a: int = base64Value(src[i],url)
+        let b: int = base64Value(src[i + 1 as usize],url)
+        let c: int = 0
+        let d: int = 0
+        let hasC: bool = i + 2 as usize < len(src) && src[i + 2 as usize] != 61 as u8
+        let hasD: bool = i + 3 as usize < len(src) && src[i + 3 as usize] != 61 as u8
+        if hasC { c = base64Value(src[i + 2 as usize],url) }
+        if hasD { d = base64Value(src[i + 3 as usize],url) }
+        let x: u32 = a as u32 * 262144 as u32 + b as u32 * 4096 as u32 + c as u32 * 64 as u32 + d as u32
+        dst[out] = (x / 65536 as u32) as u8
+        out = out + 1 as usize
+        if hasC {
+            dst[out] = ((x / 256 as u32) % 256 as u32) as u8
+            out = out + 1 as usize
+        }
+        if hasD {
+            dst[out] = (x % 256 as u32) as u8
+            out = out + 1 as usize
+        }
+        i = i + 4 as usize
+    }
+    return out as isize
+}
+export function base64Decode(src: []u8, dst: []u8): isize { return base64DecodeMode(src,dst,false,true) }
+export function base64DecodeUrl(src: []u8, dst: []u8): isize {
+    if base64ValidateMode(src,true,false) { return base64DecodeMode(src,dst,true,false) }
+    return base64DecodeMode(src,dst,true,true)
+}

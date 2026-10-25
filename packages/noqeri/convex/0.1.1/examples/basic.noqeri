@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Example: locally executable without provider credentials or network.
+import "../src/convex.noqeri"
+    print(convexQueryUrl("https://example.convex.cloud"))
+    print(convexRequestBody("messages:list","{}"))

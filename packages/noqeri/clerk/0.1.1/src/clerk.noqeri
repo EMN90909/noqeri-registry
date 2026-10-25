@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: MIT
+// Clerk HTTP adapter for the Noqeri 0.1.1 package ecosystem.
+// The host supplies providerHttpJson and providerHttpStatus. Network calls require an injected,
+// secure transport; these extern declarations do not silently create an HTTP client.
+module noqeri.clerk
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function clerkApiVersion(): int { return 1 }
+export function clerkCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function clerkLastStatus(): int { return providerHttpStatus() }
+export function clerkRoot(): string { return "https://api.clerk.com/v1" }
+export function clerkStatusSuccess(code: int): bool { return code >= 200 && code <= 299 }
+export function clerkStatusUnauthorized(code: int): bool { return code == 401 || code == 403 }
+export function clerkStatusRetryable(code: int): bool { return code == 408 || code == 429 || code == 500 || code == 502 || code == 503 || code == 504 }
+export function clerkRetryDelayMillis(attempt: int): int {
+    if attempt <= 0 { return 200 }
+    if attempt == 1 { return 400 }
+    if attempt == 2 { return 800 }
+    if attempt == 3 { return 1600 }
+    if attempt == 4 { return 3200 }
+    return 5000
+}
+export function clerkNameCharSafe(value: u8): bool {
+    if value >= 65 as u8 && value <= 90 as u8 { return true }
+    if value >= 97 as u8 && value <= 122 as u8 { return true }
+    if value >= 48 as u8 && value <= 57 as u8 { return true }
+    return value == 45 as u8 || value == 95 as u8 || value == 46 as u8
+}
+export function clerkIdentifierSafe(value: []u8): bool {
+    if len(value) == 0 as usize || len(value) > 128 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(value) {
+        if !clerkNameCharSafe(value[i]) { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+// Reject credentials and raw JSON that cannot safely be transported. Strings passed to
+// URL constructors must be trusted or prevalidated by the caller. IDs require encoding.
+export function clerkBodySizeValid(size: usize): bool { return size <= 1048576 as usize }
+export function clerkMethodAllowed(method: string): bool {
+    return method == "GET" || method == "POST" || method == "PATCH" || method == "PUT" || method == "DELETE"
+}
+export function clerkRequest(method: string, secret: string, url: string, body: string): string {
+    if !clerkMethodAllowed(method) || !clerkCredentialPresent(secret) || textLength(url) < 9 { return "" }
+    if textLength(body) > 1048576 { return "" }
+    return providerHttpJson(method, url, "bearer", secret, "", "", body)
+}
+export function clerkUsersUrl(): string { return clerkRoot() + "/users" }
+export function clerkSessionsUrl(): string { return clerkRoot() + "/sessions" }
+export function clerkOrganizationsUrl(): string { return clerkRoot() + "/organizations" }
+export function clerkInvitationsUrl(): string { return clerkRoot() + "/invitations" }
+export function clerkDomainsUrl(): string { return clerkRoot() + "/domains" }
+export function clerkWebhooksUrl(): string { return clerkRoot() + "/webhooks" }
+export function clerkInstanceUrl(): string { return clerkRoot() + "/instance" }
+export function clerkM2MTokensUrl(): string { return clerkRoot() + "/m2m_tokens" }
+export function clerkMachinesUrl(): string { return clerkRoot() + "/machines" }
+export function clerkAPIKeysUrl(): string { return clerkRoot() + "/api_keys" }
+
+
+export function clerkUserUrl(userId: string): string { return clerkUsersUrl() + "/" + userId }
+export function clerkSessionUrl(sessionId: string): string { return clerkSessionsUrl() + "/" + sessionId }
+export function clerkOrganizationUrl(organizationId: string): string { return clerkOrganizationsUrl() + "/" + organizationId }
+export function clerkOrganizationMembersUrl(organizationId: string): string { return clerkOrganizationUrl(organizationId) + "/memberships" }
+export function clerkUserBanUrl(userId: string): string { return clerkUserUrl(userId) + "/ban" }
+export function clerkSessionRevokeUrl(sessionId: string): string { return clerkSessionUrl(sessionId) + "/revoke" }
+export function clerkListUsers(secretKey: string): string { return clerkRequest("GET",secretKey,clerkUsersUrl(),"") }
+export function clerkGetUser(secretKey: string, userId: string): string { return clerkRequest("GET",secretKey,clerkUserUrl(userId),"") }
+export function clerkGetSession(secretKey: string, sessionId: string): string { return clerkRequest("GET",secretKey,clerkSessionUrl(sessionId),"") }
+export function clerkCreateUser(secretKey: string, body: string): string { return clerkRequest("POST",secretKey,clerkUsersUrl(),body) }
+export function clerkUpdateUser(secretKey: string, userId: string, body: string): string { return clerkRequest("PATCH",secretKey,clerkUserUrl(userId),body) }
+export function clerkDeleteUser(secretKey: string, userId: string): string { return clerkRequest("DELETE",secretKey,clerkUserUrl(userId),"") }
+export function clerkPageSizeValid(limit: int): bool { return limit >= 1 && limit <= 500 }
+

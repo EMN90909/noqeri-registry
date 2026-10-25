@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Example: locally executable without provider credentials or network.
+import "../src/auth0.noqeri"
+    print(auth0UsersUrl("example.us.auth0.com"))
+    print(auth0RoleUsersUrl("example.us.auth0.com","rol_example"))

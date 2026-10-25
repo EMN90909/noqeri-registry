@@ -1,0 +1,72 @@
+// SPDX-License-Identifier: MIT
+// Auth0 HTTP adapter for the Noqeri 0.1.1 package ecosystem.
+// The host supplies providerHttpJson and providerHttpStatus. Network calls require an injected,
+// secure transport; these extern declarations do not silently create an HTTP client.
+module noqeri.auth0
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function auth0ApiVersion(): int { return 1 }
+export function auth0CredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function auth0LastStatus(): int { return providerHttpStatus() }
+export function auth0Root(domain: string): string { return "https://" + domain + "/api/v2" }
+export function auth0StatusSuccess(code: int): bool { return code >= 200 && code <= 299 }
+export function auth0StatusUnauthorized(code: int): bool { return code == 401 || code == 403 }
+export function auth0StatusRetryable(code: int): bool { return code == 408 || code == 429 || code == 500 || code == 502 || code == 503 || code == 504 }
+export function auth0RetryDelayMillis(attempt: int): int {
+    if attempt <= 0 { return 200 }
+    if attempt == 1 { return 400 }
+    if attempt == 2 { return 800 }
+    if attempt == 3 { return 1600 }
+    if attempt == 4 { return 3200 }
+    return 5000
+}
+export function auth0NameCharSafe(value: u8): bool {
+    if value >= 65 as u8 && value <= 90 as u8 { return true }
+    if value >= 97 as u8 && value <= 122 as u8 { return true }
+    if value >= 48 as u8 && value <= 57 as u8 { return true }
+    return value == 45 as u8 || value == 95 as u8 || value == 46 as u8
+}
+export function auth0IdentifierSafe(value: []u8): bool {
+    if len(value) == 0 as usize || len(value) > 128 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(value) {
+        if !auth0NameCharSafe(value[i]) { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+// Reject credentials and raw JSON that cannot safely be transported. Strings passed to
+// URL constructors must be trusted or prevalidated by the caller. IDs require encoding.
+export function auth0BodySizeValid(size: usize): bool { return size <= 1048576 as usize }
+export function auth0MethodAllowed(method: string): bool {
+    return method == "GET" || method == "POST" || method == "PATCH" || method == "PUT" || method == "DELETE"
+}
+export function auth0Request(method: string, secret: string, url: string, body: string): string {
+    if !auth0MethodAllowed(method) || !auth0CredentialPresent(secret) || textLength(url) < 9 { return "" }
+    if textLength(body) > 1048576 { return "" }
+    return providerHttpJson(method, url, "bearer", secret, "", "", body)
+}
+export function auth0UsersUrl(domain: string): string { return auth0Root(domain) + "/users" }
+export function auth0RolesUrl(domain: string): string { return auth0Root(domain) + "/roles" }
+export function auth0OrganizationsUrl(domain: string): string { return auth0Root(domain) + "/organizations" }
+export function auth0ClientsUrl(domain: string): string { return auth0Root(domain) + "/clients" }
+export function auth0ConnectionsUrl(domain: string): string { return auth0Root(domain) + "/connections" }
+export function auth0LogsUrl(domain: string): string { return auth0Root(domain) + "/logs" }
+export function auth0JobsUrl(domain: string): string { return auth0Root(domain) + "/jobs" }
+export function auth0ResourceServersUrl(domain: string): string { return auth0Root(domain) + "/resource-servers" }
+export function auth0ActionsUrl(domain: string): string { return auth0Root(domain) + "/actions/actions" }
+export function auth0TicketsUrl(domain: string): string { return auth0Root(domain) + "/tickets" }
+
+
+export function auth0ManagementUrl(domain: string, route: string): string { return auth0Root(domain) + "/" + route }
+export function auth0UserUrl(domain: string, userId: string): string { return auth0UsersUrl(domain) + "/" + userId }
+export function auth0RoleUsersUrl(domain: string, roleId: string): string { return auth0RolesUrl(domain) + "/" + roleId + "/users" }
+export function auth0UserOrganizationsUrl(domain: string, userId: string): string { return auth0UserUrl(domain,userId) + "/organizations" }
+export function auth0PageValid(page: int, perPage: int): bool { return page >= 0 && perPage > 0 && perPage <= 100 }
+export function auth0Get(token: string, domain: string, route: string): string { return auth0Request("GET", token, auth0ManagementUrl(domain,route), "") }
+export function auth0Post(token: string, domain: string, route: string, body: string): string { return auth0Request("POST", token, auth0ManagementUrl(domain,route), body) }
+export function auth0Patch(token: string, domain: string, route: string, body: string): string { return auth0Request("PATCH",token,auth0ManagementUrl(domain,route),body) }
+export function auth0Delete(token: string, domain: string, route: string): string { return auth0Request("DELETE",token,auth0ManagementUrl(domain,route),"") }
+

@@ -1,0 +1,83 @@
+// SPDX-License-Identifier: MIT
+// Convex HTTP adapter for the Noqeri 0.1.1 package ecosystem.
+// The host supplies providerHttpJson and providerHttpStatus. Network calls require an injected,
+// secure transport; these extern declarations do not silently create an HTTP client.
+module noqeri.convex
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function convexApiVersion(): int { return 1 }
+export function convexCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function convexLastStatus(): int { return providerHttpStatus() }
+export function convexRoot(deploymentUrl: string): string { return deploymentUrl + "/api" }
+export function convexStatusSuccess(code: int): bool { return code >= 200 && code <= 299 }
+export function convexStatusUnauthorized(code: int): bool { return code == 401 || code == 403 }
+export function convexStatusRetryable(code: int): bool { return code == 408 || code == 429 || code == 500 || code == 502 || code == 503 || code == 504 }
+export function convexRetryDelayMillis(attempt: int): int {
+    if attempt <= 0 { return 200 }
+    if attempt == 1 { return 400 }
+    if attempt == 2 { return 800 }
+    if attempt == 3 { return 1600 }
+    if attempt == 4 { return 3200 }
+    return 5000
+}
+export function convexNameCharSafe(value: u8): bool {
+    if value >= 65 as u8 && value <= 90 as u8 { return true }
+    if value >= 97 as u8 && value <= 122 as u8 { return true }
+    if value >= 48 as u8 && value <= 57 as u8 { return true }
+    return value == 45 as u8 || value == 95 as u8 || value == 46 as u8
+}
+export function convexIdentifierSafe(value: []u8): bool {
+    if len(value) == 0 as usize || len(value) > 128 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(value) {
+        if !convexNameCharSafe(value[i]) { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+// Reject credentials and raw JSON that cannot safely be transported. Strings passed to
+// URL constructors must be trusted or prevalidated by the caller. IDs require encoding.
+export function convexBodySizeValid(size: usize): bool { return size <= 1048576 as usize }
+export function convexMethodAllowed(method: string): bool {
+    return method == "GET" || method == "POST" || method == "PATCH" || method == "PUT" || method == "DELETE"
+}
+export function convexRequest(method: string, secret: string, url: string, body: string): string {
+    if !convexMethodAllowed(method) || !convexCredentialPresent(secret) || textLength(url) < 9 { return "" }
+    if textLength(body) > 1048576 { return "" }
+    return providerHttpJson(method, url, "bearer", secret, "", "", body)
+}
+export function convexQueryUrl(deploymentUrl: string): string { return convexRoot(deploymentUrl) + "/query" }
+export function convexMutationUrl(deploymentUrl: string): string { return convexRoot(deploymentUrl) + "/mutation" }
+export function convexActionUrl(deploymentUrl: string): string { return convexRoot(deploymentUrl) + "/action" }
+export function convexRunUrl(deploymentUrl: string): string { return convexRoot(deploymentUrl) + "/run" }
+export function convexFunctionSpecUrl(deploymentUrl: string): string { return convexRoot(deploymentUrl) + "/function_spec" }
+
+
+export function convexFunctionPathValid(value: []u8): bool {
+    if len(value) == 0 as usize || len(value) > 256 as usize { return false }
+    let separators: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i < len(value) {
+        let c: u8 = value[i]
+        if c == 58 as u8 { separators = separators + 1 as usize }
+        else if !convexIsIdentifierChar(c) && c != 47 as u8 && c != 46 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return separators == 1 as usize
+}
+export function convexIsIdentifierChar(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 95 as u8 || c == 45 as u8
+}
+export function convexRequestBody(functionPath: string, jsonArgs: string): string {
+    return "{\"path\":\"" + functionPath + "\",\"args\":" + jsonArgs + ",\"format\":\"json\"}"
+}
+export function convexQuery(deploymentUrl: string, userToken: string, body: string): string { return convexRequest("POST",userToken,convexQueryUrl(deploymentUrl),body) }
+export function convexMutation(deploymentUrl: string, userToken: string, body: string): string { return convexRequest("POST",userToken,convexMutationUrl(deploymentUrl),body) }
+export function convexAction(deploymentUrl: string, userToken: string, body: string): string { return convexRequest("POST",userToken,convexActionUrl(deploymentUrl),body) }
+export function convexQueryFunction(deploymentUrl: string, userToken: string, path: string, jsonArgs: string): string { return convexQuery(deploymentUrl,userToken,convexRequestBody(path,jsonArgs)) }
+export function convexMutationFunction(deploymentUrl: string, userToken: string, path: string, jsonArgs: string): string { return convexMutation(deploymentUrl,userToken,convexRequestBody(path,jsonArgs)) }
+export function convexActionFunction(deploymentUrl: string, userToken: string, path: string, jsonArgs: string): string { return convexAction(deploymentUrl,userToken,convexRequestBody(path,jsonArgs)) }
+export function convexRetryableStatus(status: int): bool { return status == 408 || status == 429 || status == 500 || status == 502 || status == 503 || status == 504 }
+

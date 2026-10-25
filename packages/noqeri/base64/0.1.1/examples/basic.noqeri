@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Example: locally executable without provider credentials or network.
+import "../src/base64.noqeri"
+    let bytes: [u8; 1] = [77 as u8]
+    let output: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    print(base64Encode(slice(bytes),slice(output)))

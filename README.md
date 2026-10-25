@@ -53,3 +53,9 @@ The committed `registry/index.json` is the current source of truth.
 Versioned package contents are in `packages/noqeri/`. Release identity,
 archive integrity, symlink rules and yanked-release behavior are verified
 by Go tests. Run `make audit` for package counts.
+
+## Seven international-preview packages (0.1.1)
+
+The seven packages `auth0`, `base64`, `clerk`, `cloudflare`, `convex`, `core`, and `crypto` now have independently authored Noqeri `0.1.1` implementations, positive/negative native regression tests, usage examples, and MIT license notices. Their network-facing adapters still require a secure host implementation for the declared transport interfaces. Use the version-qualified package path to choose `0.1.1`; higher-version experimental packages are not implicitly overwritten.
+
+**Licensing:** MIT is the default license for original new work and these seven `0.1.1` releases. Older GPL-3.0-only files remain GPL-3.0-only. See [license scope](LICENSES/README.md).

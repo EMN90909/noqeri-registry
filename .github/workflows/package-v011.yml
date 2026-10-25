@@ -1,0 +1,69 @@
+name: Noqeri 0.1.1 international release verification
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/noqeri/**'
+      - 'registry/index.json'
+      - '.github/workflows/package-v011.yml'
+  pull_request:
+    paths:
+      - 'packages/noqeri/**'
+      - 'registry/index.json'
+      - '.github/workflows/package-v011.yml'
+permissions:
+  contents: read
+jobs:
+  catalog:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - name: Verify Go transport and release catalog
+        run: |
+          go test ./...
+          go run ./cmd/registryctl -root . verify
+      - name: Verify 0.1.1 manifests, MIT notices, and case-sensitive files
+        run: |
+          set -eu
+          for name in auth0 base64 clerk cloudflare convex core crypto; do
+            release="packages/noqeri/$name/0.1.1"
+            test -f "$release/package.noqeri"
+            test -f "$release/LICENSE"
+            test -f "$release/src/$name.noqeri"
+            test -f "$release/tests/regression.noqeri"
+            grep -q 'version: "0.1.1"' "$release/package.noqeri"
+            grep -q 'license: "MIT"' "$release/package.noqeri"
+            grep -q 'SPDX-License-Identifier: MIT' "$release/src/$name.noqeri"
+          done
+  native-noqeri:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: EMN90909/Noqeri
+          path: .noqeri-toolchain
+      - name: Build official Stage-0 Noqeri compiler
+        run: |
+          cmake -S .noqeri-toolchain -B /tmp/nq-v011 -DCMAKE_BUILD_TYPE=Release -DNOQERI_GRAPHICS_PORTABLE_BUILD=ON
+          cmake --build /tmp/nq-v011 --target noqeri -j 2
+      - name: Typecheck and execute new releases
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in auth0 base64 clerk cloudflare convex core crypto; do
+            package="packages/noqeri/$name/0.1.1"
+            /tmp/nq-v011/noqeri check "$package/tests/regression.noqeri"
+            actual=$(/tmp/nq-v011/noqeri run "$package/tests/regression.noqeri")
+            echo "$name result: $actual"
+            if ! printf '%s\n' "$actual" | tail -n 1 | grep -Fxq '0'; then
+              echo "::error::Noqeri behavioral test failed: $name"
+              exit 1
+            fi
+            /tmp/nq-v011/noqeri check "$package/examples/basic.noqeri"
+          done

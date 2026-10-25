@@ -35,6 +35,14 @@
           "quality": "experimental",
           "evidence": "test-contract",
           "migrationFrom": "0.4.0"
+        },
+        {
+          "version": "0.1.1",
+          "path": "packages/noqeri/core/0.1.1",
+          "yanked": false,
+          "experimental": true,
+          "quality": "experimental",
+          "evidence": "test-contract"
         }
       ]
     },
@@ -179,6 +187,14 @@
           "quality": "experimental",
           "evidence": "test-contract",
           "migrationFrom": "0.4.0"
+        },
+        {
+          "version": "0.1.1",
+          "path": "packages/noqeri/base64/0.1.1",
+          "yanked": false,
+          "experimental": true,
+          "quality": "experimental",
+          "evidence": "test-contract"
         }
       ]
     },
@@ -870,6 +886,14 @@
           "quality": "experimental",
           "evidence": "test-contract",
           "migrationFrom": "0.4.0"
+        },
+        {
+          "version": "0.1.1",
+          "path": "packages/noqeri/crypto/0.1.1",
+          "yanked": false,
+          "experimental": true,
+          "quality": "experimental",
+          "evidence": "test-contract"
         }
       ]
     },
@@ -1177,6 +1201,14 @@
           "quality": "experimental",
           "evidence": "test-contract",
           "migrationFrom": "0.4.0"
+        },
+        {
+          "version": "0.1.1",
+          "path": "packages/noqeri/convex/0.1.1",
+          "yanked": false,
+          "experimental": true,
+          "quality": "experimental",
+          "evidence": "test-contract"
         }
       ]
     },
@@ -1208,6 +1240,14 @@
           "quality": "experimental",
           "evidence": "test-contract",
           "migrationFrom": "0.4.0"
+        },
+        {
+          "version": "0.1.1",
+          "path": "packages/noqeri/clerk/0.1.1",
+          "yanked": false,
+          "experimental": true,
+          "quality": "experimental",
+          "evidence": "test-contract"
         }
       ]
     },
@@ -1301,6 +1341,14 @@
           "quality": "experimental",
           "evidence": "test-contract",
           "migrationFrom": "0.4.0"
+        },
+        {
+          "version": "0.1.1",
+          "path": "packages/noqeri/cloudflare/0.1.1",
+          "yanked": false,
+          "experimental": true,
+          "quality": "experimental",
+          "evidence": "test-contract"
         }
       ]
     },
@@ -1487,6 +1535,14 @@
           "quality": "experimental",
           "evidence": "test-contract",
           "migrationFrom": "0.4.0"
+        },
+        {
+          "version": "0.1.1",
+          "path": "packages/noqeri/auth0/0.1.1",
+          "yanked": false,
+          "experimental": true,
+          "quality": "experimental",
+          "evidence": "test-contract"
         }
       ]
     },

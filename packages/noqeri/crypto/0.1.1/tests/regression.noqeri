@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: MIT
+// All tests are network-independent; external transports require host integration.
+import "../src/crypto.noqeri"
+function main(): int {
+    let bytes: [u8; 3] = [0 as u8,15 as u8,255 as u8]
+    let hex: [u8; 6] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    let output: [u8; 3] = [0 as u8,0 as u8,0 as u8]
+    if cryptoHexEncode(slice(bytes),slice(hex),false) != 6 as isize { return 1 }
+    if !cryptoHexValid(slice(hex)) { return 2 }
+    if cryptoHexDecode(slice(hex),slice(output)) != 3 as isize { return 3 }
+    if !cryptoDigestEqual(slice(output),slice(bytes)) { return 4 }
+    let invalid: [u8; 2] = [122 as u8,49 as u8]
+    if cryptoHexValid(slice(invalid)) || cryptoHexDecode(slice(invalid),slice(output)) >= 0 as isize { return 5 }
+    if cryptoDigestEqual(slice(output),slice(hex)) { return 6 }
+    if cryptoZero(slice(output)) != 3 as usize || output[2] != 0 as u8 { return 7 }
+    if !cryptoDigestLengthValid(32 as usize) || cryptoDigestLengthValid(31 as usize) { return 8 }
+    return 0
+}
+print(main())

@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+// All tests are network-independent; external transports require host integration.
+import "../src/cloudflare.noqeri"
+function main(): int {
+    if !cloudflarePageValid(1,20) || cloudflarePageValid(0,10) || cloudflarePageValid(1,51) { return 1 }
+    if !(cloudflareZonesUrl() == "https://api.cloudflare.com/client/v4/zones") { return 2 }
+    if !(cloudflareDNSRecordsUrl("abc") == "https://api.cloudflare.com/client/v4/zones/abc/dns_records") { return 3 }
+    if !(cloudflarePurgeCacheUrl("abc") == "https://api.cloudflare.com/client/v4/zones/abc/purge_cache") { return 4 }
+    if !cloudflareStatusRetryable(429) || cloudflareStatusRetryable(403) { return 5 }
+    if !cloudflareMethodAllowed("DELETE") || cloudflareMethodAllowed("OPTIONS") { return 6 }
+    return 0
+}
+print(main())

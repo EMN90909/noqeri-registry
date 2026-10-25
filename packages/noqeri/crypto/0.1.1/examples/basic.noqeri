@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Example: encode bytes into caller-managed lower-case hex without host bindings.
+import "../src/crypto.noqeri"
+let data: [u8; 2] = [170 as u8,255 as u8]
+let encoded: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+print(cryptoHexEncode(slice(data),slice(encoded),false))

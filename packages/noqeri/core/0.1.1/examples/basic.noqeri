@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Example: locally executable without provider credentials or network.
+import "../src/core.noqeri"
+    let data: [u8; 3] = [65 as u8,66 as u8,67 as u8]
+    print(coreBytesIndexOf(slice(data),66 as u8))

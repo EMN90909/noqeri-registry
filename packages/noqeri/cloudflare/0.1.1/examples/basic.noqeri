@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Example: locally executable without provider credentials or network.
+import "../src/cloudflare.noqeri"
+    print(cloudflareZonesUrl())
+    print(cloudflareDNSRecordsUrl("zone_123"))

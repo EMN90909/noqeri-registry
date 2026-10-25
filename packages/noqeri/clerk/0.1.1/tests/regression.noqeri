@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: MIT
+// All tests are network-independent; external transports require host integration.
+import "../src/clerk.noqeri"
+function main(): int {
+    if !clerkPageSizeValid(50) || clerkPageSizeValid(0) || clerkPageSizeValid(501) { return 1 }
+    if !(clerkUsersUrl() == "https://api.clerk.com/v1/users") { return 2 }
+    if !(clerkSessionRevokeUrl("sess_1") == "https://api.clerk.com/v1/sessions/sess_1/revoke") { return 3 }
+    if !clerkStatusRetryable(503) || clerkStatusRetryable(400) { return 4 }
+    if !clerkCredentialPresent("secret123") || clerkCredentialPresent("bad") { return 5 }
+    let ok: [u8; 3] = [97 as u8,95 as u8,49 as u8]
+    let no: [u8; 3] = [97 as u8,63 as u8,49 as u8]
+    if !clerkIdentifierSafe(slice(ok)) || clerkIdentifierSafe(slice(no)) { return 6 }
+    return 0
+}
+print(main())
