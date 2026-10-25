@@ -214,6 +214,7 @@ class Catalog {
 public:
     std::vector<Package> packages;
     Json index{json_object_new_object()},all{json_object_new_object()},advisories;
+    std::string downloadsHtml, publishedReleases;
     explicit Catalog(const fs::path& root) {
         Json data(json_object_from_file((root/"registry/index.json").string().c_str()));
         if(!data.value || val(data.value,"protocol")!="v1" || val(data.value,"packageFormat")!="nqpkg-1")
@@ -271,6 +272,17 @@ public:
         json_object_object_add(all.value,"packages",makeList());
         advisories=Json(json_object_from_file((root/"advisories/index.json").string().c_str()));
         if(!advisories.value)throw std::runtime_error("advisory catalog unreadable");
+        // Static files are generated only from SHA-256-verified, published
+        // Noqeri compiler assets; there is no dynamic directory traversal.
+        auto page=loadFile(root/"downloads/index.html",1024*1024);
+        downloadsHtml.assign(page.begin(),page.end());
+        auto catalogBytes=loadFile(root/"downloads/releases.json",4*1024*1024);
+        publishedReleases.assign(catalogBytes.begin(),catalogBytes.end());
+        Json releaseDoc(json_tokener_parse(publishedReleases.c_str()));
+        if(!releaseDoc.value || !json_object_is_type(releaseDoc.value,json_type_object)
+            || !field(releaseDoc.value,"releases"))
+            throw std::runtime_error("invalid published-downloads catalog");
+
     }
     const Package* lookup(std::string_view ns,std::string_view name)const {
         auto it=std::find_if(packages.begin(),packages.end(),[&](const Package& p){return p.ns==ns&&p.name==name;});
@@ -338,6 +350,8 @@ Reply handle(const Catalog& catalog,const std::string& method,const std::string&
     if(route==3)return {200,"application/json; charset=utf-8",dump(catalog.index.value),"",""};
     if(route==4)return {200,"application/json; charset=utf-8",dump(catalog.all.value),"",""};
     if(route==6)return {200,"application/json; charset=utf-8",dump(catalog.advisories.value),"",""};
+    if(route==8)return {200,"text/html; charset=utf-8",catalog.downloadsHtml,"",""};
+    if(route==9)return {200,"application/json; charset=utf-8",catalog.publishedReleases,"",""};
     if(route==5) {
         std::map<std::string,std::string> params;
         try{params=queryParams(query);}catch(...){return error(400,"invalid_query");}
