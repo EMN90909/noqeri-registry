@@ -7,3 +7,9 @@ The compiler repository owns the bundled `Lib/std` implementation. This registry
 The 1.5 foundation contains more than 100 standard-library modules spanning math, text/Unicode, bytes/encoding, generic collection operations, IO/filesystem/process, time/date, structured data, networking/HTTP/WebSocket/TLS, security parameter policy, SQL/database, concurrency, testing/debug/profile and related utilities.
 
 Aggregate container syntax such as `List<T>`/`Map<K,V>` remains a compiler-language milestone; the 1.5 library uses the currently supported inferred generic functions over slices rather than fabricating type-specific package aliases.
+
+<!-- REGISTRY_CAPABILITY_DOC_V2 -->
+
+## API inventory and evidence
+
+Read [API_REFERENCE.md](API_REFERENCE.md) for exported functions, required host bindings and actual capability status. Source uses .noqeri and bytecode uses .nqri. Compiler compatibility and runtime behavior require independent verification.

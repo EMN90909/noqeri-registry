@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Working capability example with visible positive and negative cases.
+import "../src/env.noqeri"
+function main(): int {
+    let line: [u8; 5] = [65 as u8,66 as u8,61 as u8,120 as u8,121 as u8]
+    if envAssignmentSeparator(slice(line)) != 2 as isize { return 1 }
+    let bad: [u8; 2] = [0 as u8,10 as u8]
+    if envValueSafe(slice(bad)) { return 2 }
+
+    return 0
+}

@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Working capability example with visible positive and negative cases.
+import "../src/db.noqeri"
+function main(): int {
+    if !dbAffectedRowsValid(0 as isize) || dbAffectedRowsValid(-1 as isize) { return 1 }
+    if !dbIsTransientError(-5 as isize) || dbIsTransientError(-9 as isize) { return 2 }
+
+    return 0
+}

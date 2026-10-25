@@ -8,3 +8,9 @@ let status = tailwindBuild("src/input.css", "public/app.css", true)
 ```
 
 The host must point `tailwindHostBuild`/`tailwindHostWatch` at an installed official Tailwind CLI or standalone binary.
+
+<!-- REGISTRY_CAPABILITY_DOC_V2 -->
+
+## API inventory and evidence
+
+Read [API_REFERENCE.md](API_REFERENCE.md) for exported functions, required host bindings and actual capability status. Source uses .noqeri and bytecode uses .nqri. Compiler compatibility and runtime behavior require independent verification.

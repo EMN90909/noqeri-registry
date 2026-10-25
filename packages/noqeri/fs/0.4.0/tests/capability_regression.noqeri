@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Executable positive and negative capability contract.
+import "../src/fs.noqeri"
+function main(): int {
+    let safe: [u8; 5] = [97 as u8,47 as u8,98 as u8,46 as u8,99 as u8]
+    let unsafe: [u8; 4] = [46 as u8,46 as u8,47 as u8,99 as u8]
+    if !fsSafeRelativePath(slice(safe)) { return 1 }
+    if fsSafeRelativePath(slice(unsafe)) { return 2 }
+
+    return 0
+}

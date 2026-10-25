@@ -7,3 +7,9 @@ This release marks the aggregate-generic collection milestone: the compiler can 
 The canonical standard-library implementation remains bundled with `EMN90909/Noqeri` under `Lib/std`. This registry package is intentionally a small version/capability facade rather than a duplicated copy of every std module.
 
 Key guarantees exposed here include portable status/range checks, separate AES/RSA key policies, aggregate-generic descriptors, and GPL-3.0-only licensing.
+
+<!-- REGISTRY_CAPABILITY_DOC_V2 -->
+
+## API inventory and evidence
+
+Read [API_REFERENCE.md](API_REFERENCE.md) for exported functions, required host bindings and actual capability status. Source uses .noqeri and bytecode uses .nqri. Compiler compatibility and runtime behavior require independent verification.

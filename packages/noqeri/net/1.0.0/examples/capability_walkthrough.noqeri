@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Working capability example with visible positive and negative cases.
+import "../src/net.noqeri"
+function main(): int {
+    let good: [u8; 7] = [49 as u8,46 as u8,50 as u8,46 as u8,51 as u8,46 as u8,52 as u8]
+    let bad: [u8; 9] = [49 as u8,46 as u8,50 as u8,46 as u8,51 as u8,46 as u8,50 as u8,53 as u8,54 as u8]
+    if !ipv4TextValid(slice(good)) { return 1 }
+    if ipv4TextValid(slice(bad)) { return 2 }
+
+    return 0
+}

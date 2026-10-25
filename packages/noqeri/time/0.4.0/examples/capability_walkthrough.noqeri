@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Working capability example with visible positive and negative cases.
+import "../src/time.noqeri"
+function main(): int {
+    if !timeLeapYear(2000) || timeLeapYear(1900) || !timeLeapYear(2024) { return 1 }
+    if timeDaysInMonth(2024,2) != 29 || timeDaysInMonth(2023,2) != 28 { return 2 }
+    if timeDateValid(2023,2,29) || !timeDateValid(2024,2,29) { return 3 }
+
+    return 0
+}

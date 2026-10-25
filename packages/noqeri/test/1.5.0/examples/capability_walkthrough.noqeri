@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Working capability example with visible positive and negative cases.
+import "../src/test.noqeri"
+function main(): int {
+    if assert_bool(true,false) >= 0 as isize { return 1 }
+    if assert_u64(2 as u64,2 as u64) != 0 as isize { return 2 }
+
+    return 0
+}

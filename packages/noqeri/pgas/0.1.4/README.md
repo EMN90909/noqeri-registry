@@ -24,3 +24,9 @@ implemented. Noqeri's trusted Stage-1 seed remains historically pinned.
 There is no independent two-NIC or physical-machine certification.
 
 No existing `0.1.0` or `0.1.3` release bytes were rewritten.
+
+<!-- REGISTRY_CAPABILITY_DOC_V2 -->
+
+## API inventory and evidence
+
+Read [API_REFERENCE.md](API_REFERENCE.md) for exported functions, required host bindings and actual capability status. Source uses .noqeri and bytecode uses .nqri. Compiler compatibility and runtime behavior require independent verification.

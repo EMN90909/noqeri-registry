@@ -14,3 +14,9 @@ Only local loopback TCP is permitted. Multi-host use, TLS, RDMA, fault-tolerant
 recovery, and arbitrary remote task submission remain unimplemented. See
 `Noqeri/Doc/PGAS.md`. The historic registry catalog is not a live-public
 publication guarantee.
+
+<!-- REGISTRY_CAPABILITY_DOC_V2 -->
+
+## API inventory and evidence
+
+Read [API_REFERENCE.md](API_REFERENCE.md) for exported functions, required host bindings and actual capability status. Source uses .noqeri and bytecode uses .nqri. Compiler compatibility and runtime behavior require independent verification.

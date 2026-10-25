@@ -8,3 +8,8 @@ extern function noqeriDbClose(database: usize): bool
 export function dbHandleValid(database: usize): bool { return database != 0 as usize }
 export function dbResultOk(code: isize): bool { return code >= 0 }
 export function dbResultError(code: isize): bool { return code < 0 }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function dbAffectedRowsValid(rows: isize): bool { return rows >= 0 as isize }
+export function dbTransactionStatusValid(status: isize): bool { return status == 0 as isize }
+export function dbIsTransientError(status: isize): bool { return status == -5 as isize || status == -6 as isize }

@@ -8,3 +8,31 @@ export function netPortValid(port: int): bool { return port > 0 && port <= 65535
 export function netSocketValid(socket: usize): bool { return socket != 0 as usize }
 export function ipv4OctetValid(value: int): bool { return value >= 0 && value <= 255 }
 export function ipv4Valid(a: int, b: int, c: int, d: int): bool { return ipv4OctetValid(a) && ipv4OctetValid(b) && ipv4OctetValid(c) && ipv4OctetValid(d) }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function ipv4TextValid(value: []u8): bool {
+    if len(value) < 7 as usize || len(value) > 15 as usize { return false }
+    let count: usize = 0 as usize
+    let octet: int = 0
+    let digits: usize = 0 as usize
+    let leadingZero: bool = false
+    let i: usize = 0 as usize
+    while i < len(value) {
+        let c: u8 = value[i]
+        if c == 46 as u8 {
+            if digits == 0 as usize || !ipv4OctetValid(octet) || count >= 3 as usize { return false }
+            count = count + 1 as usize
+            octet = 0
+            digits = 0 as usize
+            leadingZero = false
+        } else {
+            if c < 48 as u8 || c > 57 as u8 || digits >= 3 as usize { return false }
+            if digits == 0 as usize { leadingZero = c == 48 as u8 }
+            if digits > 0 as usize && leadingZero { return false }
+            octet = octet * 10 + (c - 48 as u8) as int
+            digits = digits + 1 as usize
+        }
+        i = i + 1 as usize
+    }
+    return count == 3 as usize && digits > 0 as usize && ipv4OctetValid(octet)
+}

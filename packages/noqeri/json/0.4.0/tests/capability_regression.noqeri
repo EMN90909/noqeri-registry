@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Executable positive and negative capability contract.
+import "../src/json.noqeri"
+function main(): int {
+    let good: [u8; 4] = [34 as u8,104 as u8,105 as u8,34 as u8]
+    let bad: [u8; 3] = [34 as u8,10 as u8,34 as u8]
+    if !jsonStringTokenValid(slice(good)) { return 1 }
+    if jsonStringTokenValid(slice(bad)) { return 2 }
+    if !jsonHexDigit(65 as u8) || jsonHexDigit(71 as u8) { return 3 }
+
+    return 0
+}

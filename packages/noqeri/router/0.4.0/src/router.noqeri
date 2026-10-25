@@ -4,3 +4,34 @@ module noqeri.router
 export function routeByteEqual(left: u8, right: u8): bool { return left == right }
 export function routeExact(path: []u8, pattern: []u8): bool { if len(path) != len(pattern) { return false } let i: usize = 0 as usize while i < len(path) { if path[i] != pattern[i] { return false } i = i + 1 } return true }
 export function routeStartsWith(path: []u8, prefix: []u8): bool { if len(prefix) > len(path) { return false } let i: usize = 0 as usize while i < len(prefix) { if path[i] != prefix[i] { return false } i = i + 1 } return true }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function routePatternValid(pattern: []u8): bool {
+    if len(pattern) == 0 as usize || pattern[0] != 47 as u8 { return false }
+    let i: usize = 0 as usize
+    while i < len(pattern) {
+        if pattern[i] == 0 as u8 || pattern[i] == 63 as u8 || pattern[i] == 35 as u8 { return false }
+        if pattern[i] == 47 as u8 && i + 1 as usize < len(pattern) && pattern[i + 1 as usize] == 47 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function routePatternMatch(pattern: []u8, pathname: []u8): bool {
+    if !routePatternValid(pattern) || len(pathname) == 0 as usize || pathname[0] != 47 as u8 { return false }
+    let p: usize = 0 as usize
+    let i: usize = 0 as usize
+    while p < len(pattern) && i < len(pathname) {
+        if pattern[p] == 58 as u8 && p > 0 as usize && pattern[p - 1 as usize] == 47 as u8 {
+            p = p + 1 as usize
+            let nameBegin: usize = p
+            while p < len(pattern) && pattern[p] != 47 as u8 { p = p + 1 as usize }
+            if nameBegin == p || pathname[i] == 47 as u8 { return false }
+            while i < len(pathname) && pathname[i] != 47 as u8 { i = i + 1 as usize }
+        } else {
+            if pattern[p] != pathname[i] { return false }
+            p = p + 1 as usize
+            i = i + 1 as usize
+        }
+    }
+    return p == len(pattern) && i == len(pathname)
+}

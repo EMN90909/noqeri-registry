@@ -7,3 +7,24 @@ export function httpIsRedirect(status: int): bool { return status >= 300 && stat
 export function httpIsClientError(status: int): bool { return status >= 400 && status <= 499 }
 export function httpIsServerError(status: int): bool { return status >= 500 && status <= 599 }
 export function httpMethodIsSafe(method: int): bool { return method == 1 || method == 2 }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function httpHeaderNameByteValid(c: u8): bool {
+    if (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) { return true }
+    return c == 45 as u8 || c == 95 as u8 || c == 33 as u8 || c == 35 as u8 || c == 36 as u8 || c == 37 as u8 || c == 38 as u8 || c == 39 as u8 || c == 42 as u8 || c == 43 as u8 || c == 94 as u8 || c == 96 as u8 || c == 124 as u8 || c == 126 as u8
+}
+export function httpHeaderNameValid(name: []u8): bool {
+    if len(name) == 0 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(name) { if !httpHeaderNameByteValid(name[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function httpHeaderValueValid(value: []u8): bool {
+    let i: usize = 0 as usize
+    while i < len(value) {
+        if value[i] == 10 as u8 || value[i] == 13 as u8 || value[i] == 0 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function httpResponseBodyAllowed(status: int): bool { return status != 204 && status != 304 && (status < 100 || status >= 200) }

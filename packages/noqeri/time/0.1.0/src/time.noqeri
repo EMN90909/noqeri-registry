@@ -7,3 +7,20 @@ export function secondsToMillis(seconds: u64): u64 { return seconds * 1000 as u6
 export function minutesToMillis(minutes: u64): u64 { return secondsToMillis(minutes * 60 as u64) }
 export function hoursToMillis(hours: u64): u64 { return minutesToMillis(hours * 60 as u64) }
 export function elapsedMillis(start: u64, finish: u64): u64 { if finish < start { return 0 as u64 } return finish - start }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function timeLeapYear(year: int): bool {
+    if year % 400 == 0 { return true }
+    if year % 100 == 0 { return false }
+    return year % 4 == 0
+}
+export function timeDaysInMonth(year: int, month: int): int {
+    if month < 1 || month > 12 { return 0 }
+    if month == 2 { if timeLeapYear(year) { return 29 } return 28 }
+    if month == 4 || month == 6 || month == 9 || month == 11 { return 30 }
+    return 31
+}
+export function timeDateValid(year: int, month: int, day: int): bool {
+    if year < 1 { return false }
+    return day >= 1 && day <= timeDaysInMonth(year,month)
+}

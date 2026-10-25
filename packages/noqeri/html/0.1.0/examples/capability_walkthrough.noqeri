@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Working capability example with visible positive and negative cases.
+import "../src/html.noqeri"
+function main(): int {
+    let src: [u8; 1] = [38 as u8]
+    let dst: [u8; 5] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    if htmlEscapeBytes(slice(src),slice(dst)) != 5 as isize { return 1 }
+    if dst[0] != 38 as u8 || dst[1] != 97 as u8 || dst[4] != 59 as u8 { return 2 }
+
+    return 0
+}

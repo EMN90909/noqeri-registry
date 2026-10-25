@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Working capability example with visible positive and negative cases.
+import "../src/url.noqeri"
+function main(): int {
+    let input: [u8; 3] = [65 as u8,32 as u8,66 as u8]
+    let encoded: [u8; 9] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    let decoded: [u8; 3] = [0 as u8,0 as u8,0 as u8]
+    if urlEncodeBytes(slice(input),slice(encoded)) != 5 as isize { return 1 }
+    let query: [u8; 5] = [65 as u8,37 as u8,50 as u8,48 as u8,66 as u8]
+    if urlDecodeBytes(slice(query),slice(decoded)) != 3 as isize { return 2 }
+    if decoded[1] != 32 as u8 { return 3 }
+
+    return 0
+}

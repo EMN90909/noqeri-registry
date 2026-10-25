@@ -11,3 +11,25 @@ export function status_ok(status: isize): bool {
 export function status_error(status: isize): bool {
     return status < 0
 }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function coreBytesEqual(left: []u8, right: []u8): bool {
+    if len(left) != len(right) { return false }
+    let i: usize = 0 as usize
+    while i < len(left) { if left[i] != right[i] { return false } i = i + 1 as usize }
+    return true
+}
+export function coreBytesIndexOf(data: []u8, needle: u8): isize {
+    let i: usize = 0 as usize
+    while i < len(data) { if data[i] == needle { return i as isize } i = i + 1 as usize }
+    return -1 as isize
+}
+export function coreBytesCopy(source: []u8, destination: []u8): isize {
+    if len(source) > len(destination) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(source) { destination[i] = source[i] i = i + 1 as usize }
+    return len(source) as isize
+}
+export function coreRangeValid(offset: usize, count: usize, length: usize): bool {
+    return offset <= length && count <= length - offset
+}

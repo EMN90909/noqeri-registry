@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Executable positive and negative capability contract.
+import "../src/crypto.noqeri"
+function main(): int {
+    let a: [u8; 2] = [12 as u8,13 as u8]
+    let b: [u8; 2] = [12 as u8,13 as u8]
+    if !cryptoDigestEqual(slice(a),slice(b)) { return 1 }
+    b[0] = 14 as u8
+    if cryptoDigestEqual(slice(a),slice(b)) { return 2 }
+
+    return 0
+}

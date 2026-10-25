@@ -4,3 +4,45 @@ module noqeri.html
 export function htmlNeedsEscape(value: u8): bool { return value == 38 as u8 || value == 60 as u8 || value == 62 as u8 || value == 34 as u8 || value == 39 as u8 }
 export function htmlEscapeLength(value: u8): usize { if value == 38 as u8 { return 5 as usize } if value == 60 as u8 || value == 62 as u8 { return 4 as usize } if value == 34 as u8 { return 6 as usize } if value == 39 as u8 { return 5 as usize } return 1 as usize }
 export function htmlEscapedLength(input: []u8): usize { let total: usize = 0 as usize let i: usize = 0 as usize while i < len(input) { total = total + htmlEscapeLength(input[i]) i = i + 1 } return total }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function htmlEscapeBytes(source: []u8, destination: []u8): isize {
+    let required: usize = htmlEscapedLength(source)
+    if len(destination) < required { return -1 as isize }
+    let input: usize = 0 as usize
+    let out: usize = 0 as usize
+    while input < len(source) {
+        let c: u8 = source[input]
+        if htmlNeedsEscape(c) {
+            destination[out] = 38 as u8
+            if c == 38 as u8 {
+                destination[out + 1 as usize] = 97 as u8
+                destination[out + 2 as usize] = 109 as u8
+                destination[out + 3 as usize] = 112 as u8
+                destination[out + 4 as usize] = 59 as u8
+            } else if c == 34 as u8 {
+                destination[out + 1 as usize] = 113 as u8
+                destination[out + 2 as usize] = 117 as u8
+                destination[out + 3 as usize] = 111 as u8
+                destination[out + 4 as usize] = 116 as u8
+                destination[out + 5 as usize] = 59 as u8
+            } else if c == 39 as u8 {
+                destination[out + 1 as usize] = 35 as u8
+                destination[out + 2 as usize] = 51 as u8
+                destination[out + 3 as usize] = 57 as u8
+                destination[out + 4 as usize] = 59 as u8
+            } else {
+                destination[out + 1 as usize] = 108 as u8
+                destination[out + 2 as usize] = 116 as u8
+                if c == 62 as u8 {
+                    destination[out + 1 as usize] = 103 as u8
+                    destination[out + 2 as usize] = 116 as u8
+                }
+                destination[out + 3 as usize] = 59 as u8
+            }
+            out = out + htmlEscapeLength(c)
+        } else { destination[out] = c out = out + 1 as usize }
+        input = input + 1 as usize
+    }
+    return out as isize
+}

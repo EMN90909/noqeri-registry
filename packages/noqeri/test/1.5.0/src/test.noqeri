@@ -6,3 +6,19 @@ function assert_i64(actual: i64, expected: i64): isize {
     }
     return 0
 }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function assert_bool(actual: bool, expected: bool): isize {
+    if actual != expected { return -1 as isize }
+    return 0 as isize
+}
+export function assert_u64(actual: u64, expected: u64): isize {
+    if actual != expected { return -1 as isize }
+    return 0 as isize
+}
+export function assert_bytes_equal(left: []u8, right: []u8): isize {
+    if len(left) != len(right) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(left) { if left[i] != right[i] { return -1 as isize } i = i + 1 as usize }
+    return 0 as isize
+}

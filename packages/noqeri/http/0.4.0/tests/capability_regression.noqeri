@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Executable positive and negative capability contract.
+import "../src/http.noqeri"
+function main(): int {
+    let valid: [u8; 4] = [72 as u8,111 as u8,115 as u8,116 as u8]
+    let crlf: [u8; 2] = [13 as u8,10 as u8]
+    if !httpHeaderNameValid(slice(valid)) { return 1 }
+    if httpHeaderValueValid(slice(crlf)) { return 2 }
+    if httpResponseBodyAllowed(204) || !httpResponseBodyAllowed(200) { return 3 }
+
+    return 0
+}
