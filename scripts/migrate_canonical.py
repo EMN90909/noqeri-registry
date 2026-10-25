@@ -19,8 +19,8 @@ SOURCE_VERSION = "0.4.0"
 TARGET_VERSION = "0.1.0"
 EXTENSIONS = {".nqr": ".noqeri", ".nqo": ".nqri"}
 TEXT_EXTENSIONS = {".noqeri", ".nqri", ".md", ".txt", ".json", ".nqon"}
-ENTRY = re.compile(r'\\bentry\\s*:\\s*"([^"]+)"')
-VERSION = re.compile(r'\\bversion\\s*:\\s*"0\\.4\\.0"')
+ENTRY = re.compile(r'\bentry\s*:\s*"([^"]+)"')
+VERSION = re.compile(r'\bversion\s*:\s*"0\.4\.0"')
 
 
 def packages_to_migrate(index: dict) -> list[dict]:
@@ -50,13 +50,13 @@ def migrate_dir(source: Path, destination: Path) -> None:
                 raise RuntimeError(f"Expected one version field in {path}, found {count}")
         path.write_text(content, encoding="utf-8")
     (destination / "RELEASE_NOTES.md").write_text(
-        "# 0.1.0: canonical Noqeri-source release\\n\\n"
+        "# 0.1.0: canonical Noqeri-source release\n\n"
         "This experimental release is derived from the 0.4.0 implementation. "
         "Source, test, example and manifest filenames now use .noqeri, and "
         "compiled bytecode filenames use .nqri. Relative references have been "
-        "updated. Historic versions remain untouched.\\n\\n"
+        "updated. Historic versions remain untouched.\n\n"
         "This migration is a source-format change, not a verified native "
-        "compiler/runtime or provider integration qualification.\\n",
+        "compiler/runtime or provider integration qualification.\n",
         encoding="utf-8",
     )
 
@@ -70,9 +70,9 @@ def verify_release(package: dict) -> None:
     if not manifest.is_file():
         raise RuntimeError(f"Missing canonical manifest for {name}")
     text = manifest.read_text(encoding="utf-8")
-    if not re.search(r'\\bversion\\s*:\\s*"0\\.1\\.0"', text):
+    if not re.search(r'\bversion\s*:\s*"0\.1\.0"', text):
         raise RuntimeError(f"Wrong manifest version for {name}")
-    if not re.search(r'\\bname\\s*:\\s*"noqeri/' + re.escape(name) + r'"', text):
+    if not re.search(r'\bname\s*:\s*"noqeri/' + re.escape(name) + r'"', text):
         raise RuntimeError(f"Wrong package coordinate for {name}")
     entry = ENTRY.search(text)
     if not entry or not entry.group(1).endswith(".noqeri") or not (directory / entry.group(1)).is_file():
@@ -86,7 +86,7 @@ def verify_release(package: dict) -> None:
                 raise RuntimeError(f"Legacy reference remains in {path}")
             if path.suffix == ".noqeri":
                 # Validate explicit relative imports before compiler testing.
-                for ref in re.findall(r'\\bimport\\s*"([^"]+)"', text):
+                for ref in re.findall(r'\bimport\s*"([^"]+)"', text):
                     if ref.startswith(".") and not (path.parent / ref).is_file():
                         raise RuntimeError(f"Missing relative import {ref} from {path}")
 
@@ -121,7 +121,7 @@ def main() -> None:
                     "evidence": "test-contract",
                     "migrationFrom": SOURCE_VERSION,
                 })
-        INDEX.write_text(json.dumps(index, indent=2, ensure_ascii=False) + "\\n", encoding="utf-8")
+        INDEX.write_text(json.dumps(index, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     index = json.loads(INDEX.read_text(encoding="utf-8"))
     for package in packages_to_migrate(index):
