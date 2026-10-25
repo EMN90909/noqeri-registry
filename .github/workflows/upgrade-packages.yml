@@ -43,6 +43,12 @@ jobs:
           for t in packages/noqeri/*/0.1.0/tests/capability_regression.noqeri; do
             src="${t%/tests/capability_regression.noqeri}"
             /tmp/noqeri-package-compiler/noqeri check "$t"
+            output=$(/tmp/noqeri-package-compiler/noqeri run "$t")
+            printf '%s\n' "$output"
+            if ! printf '%s\n' "$output" | tail -n 1 | grep -Fxq '0'; then
+              echo "Behavioral regression: $t returned a nonzero result"
+              exit 1
+            fi
             count=$((count + 1))
           done
           echo "Checked $count enhanced package contracts with Noqeri compiler"
