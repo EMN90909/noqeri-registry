@@ -125,8 +125,8 @@ export function coreAsciiTrimEnd(data: []u8): usize {
     while i > 0 as usize && coreAsciiWhitespace(data[i - 1 as usize]) { i = i - 1 as usize }
     return i
 }
-export function coreDecimalParseU64(data: []u8, result: *u64): bool {
-    if result == null || len(data) == 0 as usize { return false }
+export function coreDecimalParseU64(data: []u8, result: []u64): bool {
+    if len(result) == 0 as usize || len(data) == 0 as usize { return false }
     let value: u64 = 0 as u64
     let i: usize = 0 as usize
     while i < len(data) {
@@ -137,7 +137,7 @@ export function coreDecimalParseU64(data: []u8, result: *u64): bool {
         value = value * 10 as u64 + digit
         i = i + 1 as usize
     }
-    unsafe { result[0 as usize] = value }
+    result[0 as usize] = value
     return true
 }
 export function coreDecimalFormatU64(input: u64, dst: []u8): isize {
