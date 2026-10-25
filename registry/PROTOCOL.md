@@ -1,32 +1,39 @@
-# Noqeri Registry Protocol v1 (integration branch)
+# Registry HTTP Protocol v1: Go implementation
 
-Noqeri Registry is the authoritative service for packages, metadata and advisories, backed by NoeSQL `registry.noedb`. Archives `.nqpkg` are content addressed and stored separately in filesystem/object storage. The Registry's canonical application source is `.noqeri`. Node currently hosts the transport until Noqeri's native runtime/Stage-2 qualification passes.
+The Go service is a read-only source-index service with Noqeri policy sources.
+It is not a NoeSQL-backed publishing system.
 
-## Package identity
+## Routes
 
-`namespace/name@version` uses lowercase ASCII namespace/name matching `^[a-z0-9][a-z0-9-]*$` and SemVer 2 version. Versions are immutable once published. Historical release `.noqeri` payloads remain importable under an explicit compatibility path.
+- `GET|HEAD /health`
+- `GET|HEAD /v1/status`
+- `GET|HEAD /v1/index`
+- `GET|HEAD /v1/packages`
+- `GET|HEAD /v1/search?q=...&offset=0&limit=50`
+- `GET|HEAD /v1/advisories`
+- `GET|HEAD /v1/releases`
+- `GET|HEAD /downloads`
+- `GET|HEAD /v1/packages/{namespace}/{name}`
+- `GET|HEAD /v1/packages/{namespace}/{name}/versions`
+- `GET|HEAD /v1/packages/{namespace}/{name}/{version}`
+- `GET|HEAD /v1/packages/{namespace}/{name}/{version}/download`
 
-## Read-only REST endpoints
+Responses are JSON unless requesting an HTML page or a gzip package artifact.
+Yanked versions are discoverable but not downloadable. Download responses
+provide an SHA-256 digest through `X-Archive-SHA256` and have the content type
+`application/vnd.noqeri.package+gzip`.
 
-- `GET /health`
-- `GET /v1/index` or `GET /v1/packages`: deterministic package lists
-- `GET /v1/search?q=<term>`
-- `GET /v1/packages/{namespace}/{name}`
-- `GET /v1/packages/{namespace}/{name}/versions`
-- `GET /v1/packages/{namespace}/{name}/{version}`
-- `GET /v1/packages/{namespace}/{name}/{version}/download`
-- `GET /v1/advisories`
+The Go service refuses write methods; there is no public publishing endpoint.
+Package metadata loads from the committed catalog on restart. It is not a
+transactional database and cannot preserve the former NoeSQL counters or
+publisher sessions. No compatibility with old `.nqr` and `.nqo` sources.
 
-Version metadata includes `version`, `yanked`, `archiveIntegrity` (`sha256:<lowercase64>`), `entry`, `dependencies` and other metadata. `download` streams the actual deterministic tar.gz `.nqpkg` bytes. Clients must verify SHA-256 of the **archive bytes** before extraction and enforce path/file/byte limits. Do not fetch package content directly from GitHub.
+## Security boundaries
 
-**Yanked policy:** No yanked version is selected automatically. An explicitly requested pinned yanked version is also rejected **online**, including the public download route. A verified locally cached pinned version may be used offline. This supersedes the earlier v1 draft promise that yanked archives would always remain publicly downloadable; that behavior was not secured by the new implementation.
+Inputs have bounded URL/search/query sizes. Package IDs and versions are
+strictly validated, archive traversal and symbolic links are rejected, and
+package archives are deterministic. Go tests cover behavior and negative cases.
 
-## Schema
-
-`packages`, `versions`, `dependencies`, `publishers`, `package_publishers`, `downloads` and `advisories` are NoeSQL metadata tables. They hold artifact location/digest but never archive blobs.
-
-## Write safety and current limitations
-
-No unauthenticated Registry publishing endpoint exists. `node runtime/bootstrap.mjs` performs a one-time, local, operator-controlled import of legacy `registry/index.json` into a new, empty `.noedb` file, and refuses preexisting metadata. Do not use this as a multi-tenant publication interface or imply publishers/advisory management have been qualified.
-
-The Node reference NoeSQL implementation and private dependency install require additional deployment and native release gates. A public Registry workflow cannot install private `EMN90909/NoeSQL` unless a read-only GitHub token is configured.
+The standalone Noqeri compiler checks `Programs/registry.noqeri` and
+`tests/registry_contracts.noqeri` independently. Go still owns HTTP dispatch,
+and Noqeri is not dynamically linked into the Go process.
