@@ -91,20 +91,20 @@ If NoeSQL is not installed, start with the **public tests** above; `npm start` i
 
 ## Package catalog
 
-**Catalog snapshot on October 25, 2026:** `registry/index.json` contains **55 package coordinates** and **116 version entries**.
+**Catalog snapshot on October 25, 2026:** `registry/index.json` contains **55 package coordinates** and **170 version entries**.
 
 | Release family | Catalog entries | Notes |
 | :--- | ---: | :--- |
-| `0.4.0` | 54 | Current non-yanked library release set; historical `.nqr` package sources |
-| `0.1.0`, `0.1.3`, `0.1.4` | 3 | Experimental `noqeri/pgas` releases, using `.noqeri` |
+| `0.1.0` | 55 | 54 canonical `.noqeri` library migrations and one PGAS release |\n| `0.4.0` | 54 | Preserved, non-yanked historical `.nqr` library releases |
+| `0.1.3`, `0.1.4` | 2 | Later experimental `noqeri/pgas` releases |
 | Historical `1.0.0`, `1.5.0`, `1.6.0` | 59 | Retained on disk but **yanked** in the catalog |
-| **Total** | **116** | **57 non-yanked**, 59 yanked |
+| **Total** | **170** | **111 non-yanked**, 59 yanked |
 
 Examples of package areas include foundations (`core`, `std`, `test`), encoding (`base64`, `json`, `yaml`), web/networking (`http`, `websocket`), data (`db`, `sqlite`, `postgres`), and experimental provider adapters (`supabase`, `stripe`, `openai`). These names are **catalog entries**, not promises that every adapter has live provider support or complete compiler compatibility.
 
 Explore the [catalog](registry/index.json), [source packages](packages/noqeri) and [provider-package limits](docs/PROVIDER_PACKAGES.md).
 
-### Canonical extensions and release immutability
+### Canonical `0.1.0` library release migration\n\nAll 54 library packages now have separate `0.1.0` release trees with `package.noqeri`, `.noqeri` sources, tests and examples, and corrected relative imports. `noqeri/pgas@0.1.0` already used canonical source extensions. Run `python3 scripts/migrate_canonical.py --check` to verify package identities, entry files and source references without rewriting anything. The one-time `--write` operation can regenerate the release set from the immutable `0.4.0` trees in an earlier checkout.\n\n**SemVer migration caveat:** `0.4.0` sorts after `0.1.0` and remains non-yanked to avoid breaking existing downloads. To select the canonical migration, pin `@0.1.0` explicitly. This is a source-format migration, **not** evidence of native compiler parity or live provider integration. The Node.js transport remains the working HTTP host until the Noqeri native host ABI and NoeSQL runtime are qualified.\n\n### Canonical extensions and release immutability
 
 | File | Meaning |
 | :--- | :--- |
