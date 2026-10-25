@@ -172,7 +172,7 @@ code{background:#233543;padding:2px 5px;border-radius:4px}footer{color:var(--mut
 <p><strong>Windows:</strong> use <code>Expand-Archive FILE.zip</code>, then <code>bin/noqeri.exe --version</code>.</p>
 <p>Verify <code>sha256sum FILE</code> (PowerShell: <code>Get-FileHash FILE -Algorithm SHA256</code>) against the checksum above before executing. A build-only artifact is not guaranteed to run on your device.</p>
 <p>Generic WGSL shader emission does not imply NVIDIA CUDA, AMD ROCm, Intel Arc, Apple Metal, or GPU-driver validation. GPU-specific binaries are listed only with actual qualification evidence.</p>
-</div></section></main><footer>Official Noqeri Registry · <a href="https://github.com/EMN90909/noqeri-registry">Repository</a> · Preview artifacts are not production guarantees.</footer></body></html>')
+</div></section></main><footer>Official Noqeri Registry · <a href="https://github.com/EMN90909/noqeri-registry">Repository</a> · Preview artifacts are not production guarantees.</footer></body></html>''')
     return "\n".join(parts)+"\n"
 
 def main():
