@@ -35,7 +35,26 @@ Each line is a JSON object. Responses have `v:1`, the matching `id`, `ok`, and o
 {"v":1,"id":"c1","op":"db_close","handle":1}
 ```
 
+Existing Noqeri extern signatures can also be mapped by an embedding adapter using the `invoke` operation:
+
+```json
+{"v":1,"id":"x1","op":"invoke","symbol":"providerHttpJson","arguments":["GET","https://api.github.com/rate_limit","bearer","ignored","","",""]}
+{"v":1,"id":"x2","op":"invoke","symbol":"providerHttpStatus","arguments":[]}
+```
+
+The Noqeri-provided auth argument is intentionally ignored; only the **host's** environment credential is used. `invoke` also recognizes `noqeriDbOpen`, `noqeriDbExecute`, `noqeriDbClose`, `sqliteOpen`, `sqliteExecute`, and `sqliteClose`, with the database path sourced from host configuration. This is an invocation mapping API for an eventual ABI service adapter, **not automatic linking into Stage-0**.
+
 The `db_open` handle is allocated by the host and must be read from the response; `1` above is illustrative. SQLite uses `?` placeholders and Postgres uses `$1`, `$2`, etc. Transactions: `db_begin`, parameterized `db_exec` / `db_query`, followed by `db_commit` or `db_rollback`. No SQL interpolation is performed. Up to 8 database handles, 64 arguments, 64 result columns, 500 result rows, and 64 KiB per result cell are accepted.
+
+## Webhook verification
+
+Pass the exact raw JSON payload and received `Stripe-Signature` header to this host **before** processing a payment event. Example:
+
+```json
+{"v":1,"id":"evt-check","op":"stripe_verify_webhook","body":"{\"id\":\"evt_example\"}","signature":"t=1700000000,v1=<hex-signature>"}
+```
+
+Signatures are checked using a trusted host clock, a maximum 5-minute time difference, and constant-work HMAC comparison. A successful signature is only an authenticity check; persistently deduplicate event IDs and verify any financial effects server-side. The example timestamp is historical and will intentionally fail today.
 
 ## Environment-provided credentials (never sent over IPC)
 
@@ -44,7 +63,7 @@ The host reads `NOQERI_{PROVIDER}_TOKEN` from its own environment for each API p
 Provider-specific details:
 
 - **Supabase:** project Data API uses `NOQERI_SUPABASE_TOKEN` as an `apikey` (new `sb_secret_*` / publishable keys are not JWTs), plus optional `NOQERI_SUPABASE_JWT` for an end-user identity and RLS. Management API uses bearer credentials. Secret keys bypass RLS and must only be used in trusted backend contexts.
-- **Stripe:** requests use `application/x-www-form-urlencoded`, and `NOQERI_STRIPE_IDEMPOTENCY_KEY` can provide a valid idempotency key for POST. The host does not implement webhook signature verification or automatic confirmation of financial effects.
+- **Stripe:** requests use `application/x-www-form-urlencoded`, and `NOQERI_STRIPE_IDEMPOTENCY_KEY` can provide an idempotency key for POST. Set `NOQERI_STRIPE_WEBHOOK_SECRET` for the `stripe_verify_webhook` operation. The host validates the timestamped v1 HMAC-SHA256 signature using a 5-minute tolerance before the caller processes an event. Persistent event-ID deduplication, ledger reconciliation, refund policy, and automatic confirmation of financial effects are NOT handled.
 - **PlanetScale:** set `NOQERI_PLANETSCALE_TOKEN_ID` and `NOQERI_PLANETSCALE_TOKEN`; the Authorization header is `<id>:<token>`.
 - **Firebase Auth:** the configured API key (`NOQERI_FIREBASE_TOKEN`) is passed in the `key` query parameter to identitytoolkit/securetoken. Firestore uses OAuth bearer tokens.
 - **PostgreSQL:** `NOQERI_POSTGRES_DSN` must be a PostgreSQL URL with `?sslmode=verify-full` and a server identity/certificate that validates. All SQL inputs are bound parameters. Do not embed it in a source file.

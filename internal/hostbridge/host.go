@@ -20,17 +20,20 @@ const maxFrame = (2 << 20)
 // Message is the versioned IPC protocol. Credentials are NEVER passed in messages;
 // server-side NOQERI_* environment variables hold the secrets.
 type Message struct {
-	Version  int               `json:"v"`
-	ID       string            `json:"id,omitempty"`
-	Op       string            `json:"op"`
-	Provider string            `json:"provider,omitempty"`
-	Method   string            `json:"method,omitempty"`
-	URL      string            `json:"url,omitempty"`
-	Body     string            `json:"body,omitempty"`
-	Driver   string            `json:"driver,omitempty"`
-	Handle   uint64            `json:"handle,omitempty"`
-	Query    string            `json:"query,omitempty"`
-	Args     []json.RawMessage `json:"args,omitempty"`
+	Version   int               `json:"v"`
+	ID        string            `json:"id,omitempty"`
+	Op        string            `json:"op"`
+	Provider  string            `json:"provider,omitempty"`
+	Method    string            `json:"method,omitempty"`
+	URL       string            `json:"url,omitempty"`
+	Body      string            `json:"body,omitempty"`
+	Driver    string            `json:"driver,omitempty"`
+	Handle    uint64            `json:"handle,omitempty"`
+	Query     string            `json:"query,omitempty"`
+	Args      []json.RawMessage `json:"args,omitempty"`
+	Symbol    string            `json:"symbol,omitempty"`
+	Arguments []string          `json:"arguments,omitempty"`
+	Signature string            `json:"signature,omitempty"`
 }
 type Result struct {
 	Version  int      `json:"v"`
@@ -70,6 +73,14 @@ func (e *Engine) Dispatch(ctx context.Context, m Message) Result {
 	}
 	var err error
 	switch m.Op {
+	case "invoke":
+		output := e.InvokeNoqeriExtern(ctx, m.Symbol, m.Arguments)
+		output.ID = m.ID
+		return output
+	case "stripe_verify_webhook":
+		if err = VerifyStripeSignature(m.Body, m.Signature, e.Env("NOQERI_STRIPE_WEBHOOK_SECRET"), time.Now()); err == nil {
+			result.OK = true
+		}
 	case "ping":
 		result.OK = true
 		result.Body = "pong"
