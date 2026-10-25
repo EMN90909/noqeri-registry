@@ -56,7 +56,7 @@
   },
   "test": {
     "about": "Non-panicking assertions for explicit unit test exit status.",
-    "source": "\nexport function assert_bool(actual: bool, expected: bool): isize {\n    if actual != expected { return -1 as isize }\n    return 0 as isize\n}\nexport function assert_u64(actual: u64, expected: u64): isize {\n    if actual != expected { return -1 as isize }\n    return 0 as isize\n}\nexport function assert_bytes_equal(left: []u8, right: []u8): isize {\n    if len(left) != len(right) { return -1 as isize }\n    let i: usize = 0 as usize\n    while i < len(left) { if left[i] != right[i] { return -1 as isize } i = i + 1 as usize }\n    return 0 as isize\n}\n",
+    "source": "\nexport function assert_bool(actual: bool, expected: bool): isize {\n    if actual && !expected { return -1 as isize }\n    if !actual && expected { return -1 as isize }\n    return 0 as isize\n}\nexport function assert_u64(actual: u64, expected: u64): isize {\n    if actual != expected { return -1 as isize }\n    return 0 as isize\n}\nexport function assert_bytes_equal(left: []u8, right: []u8): isize {\n    if len(left) != len(right) { return -1 as isize }\n    let i: usize = 0 as usize\n    while i < len(left) { if left[i] != right[i] { return -1 as isize } i = i + 1 as usize }\n    return 0 as isize\n}\n",
     "test": "    if assert_bool(true,false) >= 0 as isize { return 1 }\n    if assert_u64(2 as u64,2 as u64) != 0 as isize { return 2 }\n"
   },
   "db": {

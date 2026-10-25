@@ -8,7 +8,8 @@ export function assertUsizeEqual(actual: usize, expected: usize): isize { if act
 
 // REGISTRY_CAPABILITY_UPGRADE_V2
 export function assert_bool(actual: bool, expected: bool): isize {
-    if actual != expected { return -1 as isize }
+    if actual && !expected { return -1 as isize }
+    if !actual && expected { return -1 as isize }
     return 0 as isize
 }
 export function assert_u64(actual: u64, expected: u64): isize {
