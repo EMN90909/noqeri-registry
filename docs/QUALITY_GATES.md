@@ -144,29 +144,12 @@ Changing algorithmic complexity, storage layout, safety mode, backend, compiler 
 
 ## Package-depth audit
 
-`tools/package-depth-audit.mjs` scans every package version under `packages/` and reports source depth independently from manifest claims.
-
-It checks:
-
-- total source bytes and nonblank code lines;
-- exported API count, records/private functions and control flow;
-- tests and runnable examples;
-- README and manifest entry presence;
-- GPL-3.0-only package metadata;
-- obvious placeholder patterns;
-- the requested 30 KiB source target as an informational field only.
-
-Run:
-
-```sh
-node tools/package-depth-audit.mjs
-node tools/package-depth-audit.mjs --json
-node tools/package-depth-audit.mjs --strict
-```
-
-`--strict` exits non-zero while obvious placeholder package versions remain. A package becomes `reviewable` in the audit only when it has real source depth, tests, examples, README, a valid entry path and GPL-3.0-only metadata.
-
-The audit is intentionally conservative: passing it is necessary evidence of implementation depth, not an automatic `stable` promotion.
+The former JavaScript depth-audit CLI was removed in the Go + Noqeri rewrite.
+Use `go run ./cmd/registryctl verify` for canonical source and import
+integrity checks and `go run ./cmd/registryctl audit` for catalog counts.
+These commands do **not** automatically establish implementation depth or
+promote a package to `stable`. Depth and quality evidence require independent
+manual review and compiler-executed tests.
 
 ## Promotion checklist
 
@@ -191,7 +174,9 @@ Before promotion to stable/core, reviewers should answer yes to the relevant que
 
 ## Compatibility dashboard
 
-`tools/compatibility-dashboard.mjs` scans all package versions and emits a machine-readable matrix against `compatibility/releases.json`. A row only becomes `pass` after the package's test command has actually been executed with that compiler version; discovery alone is reported as `untested`.
+The old JavaScript compatibility dashboard was removed. The Go build does
+not currently generate compiler-version compatibility matrices. Treat
+unexecuted compiler combinations as **untested**, not as passing.
 
 ## Ecosystem priority
 
