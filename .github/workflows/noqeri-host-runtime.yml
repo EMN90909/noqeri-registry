@@ -1,4 +1,4 @@
-name: Noqeri Go host: HTTPS and database runtime
+name: 'Noqeri Go host: HTTPS and database runtime'
 on:
   push:
     branches: [main]
