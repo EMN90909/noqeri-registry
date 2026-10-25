@@ -2,7 +2,7 @@
 
 Noqeri-native Vercel REST API wrapper using bearer-token authentication.
 
-```nqr
+```noqeri
 import package "noqeri/vercel"
 let projects = vercelListProjects(token)
 ```
