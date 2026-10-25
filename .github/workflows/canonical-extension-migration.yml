@@ -1,0 +1,39 @@
+name: Canonical Noqeri extension migration
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/canonical-extension-migration.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Rewrite obsolete Noqeri references
+        run: python3 scripts/rename_extensions.py
+      - name: Check migration is complete
+        shell: bash
+        run: |
+          if find packages -type f \( -name '*.nqr' -o -name '*.nqo' \) | grep -q .; then
+            echo 'Obsolete file extension remains'
+            exit 1
+          fi
+          if grep -REn '\\.(nqr|nqo)([^a-zA-Z0-9_]|$)' packages --include='*.noqeri' --include='*.md' | head -40; then
+            echo 'Inspect remaining obsolete extension references above'
+          fi
+      - name: Commit package migration
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m 'Migrate all remaining Noqeri package references to canonical extensions'
+            git push origin HEAD:main
+          fi
