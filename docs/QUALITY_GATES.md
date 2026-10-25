@@ -133,14 +133,14 @@ Changing algorithmic complexity, storage layout, safety mode, backend, compiler 
 
 ## Executable policy helpers
 
-`tools/quality_policy.nqr` encodes the promotion contract used by registry-side tooling and tests. It now separates quality levels from evidence states and exposes stricter promotion helpers:
+`tools/quality_policy.noqeri` encodes the promotion contract used by registry-side tooling and tests. It now separates quality levels from evidence states and exposes stricter promotion helpers:
 
 - `registryCanPublishPreviewEvidence(...)` requires real depth plus at least a `test-contract`;
 - `registryCanPublishStableEvidence(...)` requires verified test evidence and measured performance whenever a performance claim is made;
 - `registryCanPublishCoreEvidence(...)` layers release-cycle/offline/maintainer requirements on top of the stable gate;
 - claim helpers prevent safety/performance labels from being emitted without the corresponding evidence state and metadata.
 
-`tests/quality_policy.nqr` is the executable contract for these rules.
+`tests/quality_policy.noqeri` is the executable contract for these rules.
 
 ## Package-depth audit
 

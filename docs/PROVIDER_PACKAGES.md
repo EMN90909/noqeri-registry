@@ -1,6 +1,6 @@
 # Official provider packages
 
-The registry now carries Noqeri-authored adapters for common hosted services. Package implementation is `.nqr`; JavaScript SDKs are not embedded into these packages.
+The registry now carries Noqeri-authored adapters for common hosted services. Package implementation is `.noqeri`; JavaScript SDKs are not embedded into these packages.
 
 Use the new package import form:
 
@@ -19,9 +19,9 @@ The HTTP-backed packages keep URL construction, API conventions, validation and 
 
 These provider adapters are marked **experimental** until the standard HTTPS/provider host is implemented and exercised on the supported OS matrix. Their source is meaningful and testable, but publishing an adapter is not a claim that every upstream SDK feature has been reproduced.
 
-## Why these are `.nqr`, not `.nqd`
+## Why these are `.noqeri`, not `.nqd`
 
-`.nqd` remains the intentionally simple NoqeriDB schema/query format. Reusing `.nqd` as a general SDK/program source extension would create two unrelated meanings for one format and violate Noqeri's simplicity rule. Service libraries therefore use `.nqr`; a future database-specific Supabase/Turso migration or schema file may legitimately use `.sql` or a provider-specific data tool, while embedded NoqeriDB stays `.nqd`.
+`.nqd` remains the intentionally simple NoqeriDB schema/query format. Reusing `.nqd` as a general SDK/program source extension would create two unrelated meanings for one format and violate Noqeri's simplicity rule. Service libraries therefore use `.noqeri`; a future database-specific Supabase/Turso migration or schema file may legitimately use `.sql` or a provider-specific data tool, while embedded NoqeriDB stays `.nqd`.
 
 ## Package quality gate
 

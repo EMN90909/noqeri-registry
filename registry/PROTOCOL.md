@@ -4,7 +4,7 @@ Noqeri Registry is the authoritative service for packages, metadata and advisori
 
 ## Package identity
 
-`namespace/name@version` uses lowercase ASCII namespace/name matching `^[a-z0-9][a-z0-9-]*$` and SemVer 2 version. Versions are immutable once published. Historical release `.nqr` payloads remain importable under an explicit compatibility path.
+`namespace/name@version` uses lowercase ASCII namespace/name matching `^[a-z0-9][a-z0-9-]*$` and SemVer 2 version. Versions are immutable once published. Historical release `.noqeri` payloads remain importable under an explicit compatibility path.
 
 ## Read-only REST endpoints
 

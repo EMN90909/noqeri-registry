@@ -33,4 +33,4 @@ The native integration suite launches the actual compiled Noqeri program and ver
 - C++: platform I/O, metadata serialization and deterministic archive generation.
 - NoeSQL: future native read/write source of truth; **not integrated with this preview**.
 
-Canonical package source files use `.noqeri` and portable bytecode uses `.nqri`. Historical `.nqr` files remain immutable artifacts.
+Canonical package source files use `.noqeri` and portable bytecode uses `.noqerii`. Historical `.noqeri` files remain immutable artifacts.

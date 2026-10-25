@@ -36,7 +36,7 @@
 
 | Component | Implemented today | Qualification boundary |
 | :--- | :--- | :--- |
-| Package catalog | `registry/index.json` and versioned `packages/` source tree | Historical source includes the legacy `.nqr` extension |
+| Package catalog | `registry/index.json` and versioned `packages/` source tree | Historical source includes the legacy `.noqeri` extension |
 | HTTP API | `GET` / `HEAD` metadata, search, advisories, and download routes | Node transport; experimental deployment |
 | Native Noqeri preview | Stage-0 compiled Noqeri routing plus C++ Linux HTTP/archives without a JavaScript runtime | Explicit source-index mode only; native NoeSQL integration pending |
 | Metadata storage | NoeSQL-backed `registry.noedb` and explicit one-time import | Requires a separately installed NoeSQL session |
@@ -117,7 +117,7 @@ If NoeSQL is not installed, start with the **public tests** above; `npm start` i
 | Release family | Catalog entries | Notes |
 | :--- | ---: | :--- |
 | `0.1.0` | 55 | 54 canonical `.noqeri` library migrations and one PGAS release |
-| `0.4.0` | 54 | Preserved, non-yanked historical `.nqr` library releases |
+| `0.4.0` | 54 | Preserved, non-yanked historical `.noqeri` library releases |
 | `0.1.3`, `0.1.4` | 2 | Later experimental `noqeri/pgas` releases |
 | Historical `1.0.0`, `1.5.0`, `1.6.0` | 59 | Retained on disk but **yanked** in the catalog |
 | **Total** | **170** | **111 non-yanked**, 59 yanked |
@@ -137,13 +137,13 @@ All 54 library packages now have separate `0.1.0` release trees with `package.no
 | File | Meaning |
 | :--- | :--- |
 | `.noqeri` | Current Noqeri source |
-| `.nqri` | Portable Noqeri compiled bytecode, produced by the language toolchain |
-| `.nqon` | Noqeri Object Notation, including `project.nqon` |
+| `.noqerii` | Portable Noqeri compiled bytecode, produced by the language toolchain |
+| `.nqrin` | Noqeri Object Notation, including `project.nqrin` |
 | `.nqpkg` | Deterministic, SHA-256-addressed package archive |
 | `.noedb` | NoeSQL metadata database file |
-| `.nqr` / `.nqo` | Legacy language/bytecode names; **not** canonical for new releases |
+| `.noqeri` / `.nqri` | Legacy language/bytecode names; **not** canonical for new releases |
 
-**Do not rename or rewrite historical package releases in place.** The repository still contains legacy `package.nqr` and `src/*.nqr` contents in versioned directories. Altering those files changes package bytes and breaks reproducibility or pinned consumers. New versions should use `package.noqeri` and `.noqeri` source, with migration and compiler-compatibility evidence.
+**Breaking change:** Historical package source files have been renamed to `.noqeri`. No compatibility mode for former extensions is supported. The repository still contains legacy `package.noqeri` and `src/*.noqeri` contents in versioned directories. Altering those files changes package bytes and breaks reproducibility or pinned consumers. New versions should use `package.noqeri` and `.noqeri` source, with migration and compiler-compatibility evidence.
 
 The `noqeri/pgas` packages demonstrate the current `.noqeri` layout: [PGAS 0.1.4 manifest](packages/noqeri/pgas/0.1.4/package.noqeri). Older package trees are archival compatibility surfaces, not automatically rewritten sources.
 
@@ -234,8 +234,8 @@ See [integration requirements](Doc/ECOSYSTEM_INTEGRATION.md), [release-candidate
 
 ## Current limitations and versioning
 
-- The service package declares **`0.1.0`** in `package.json`, whereas the Noqeri project manifest currently declares **`1.0.0`** in `project.nqon`. These declarations are **not synchronized** and do not replace individual package release versions.
-- The `0.4.0` libraries remain historical `.nqr` releases; their availability does not mean they are compatible with the latest Noqeri compiler. Canonical `.noqeri` migration requires **new** releases and test evidence.
+- The service package declares **`0.1.0`** in `package.json`, whereas the Noqeri project manifest currently declares **`1.0.0`** in `project.nqrin`. These declarations are **not synchronized** and do not replace individual package release versions.
+- The `0.4.0` libraries remain historical `.noqeri` releases; their availability does not mean they are compatible with the latest Noqeri compiler. Canonical `.noqeri` migration requires **new** releases and test evidence.
 - The Noqeri-native server-host binding is still an integration boundary; the public HTTP API uses Node and an external NoeSQL session.
 - No production publishing/authentication service, audited native backend, complete cross-platform compiler matrix or broad provider-integration qualification is established here.
 

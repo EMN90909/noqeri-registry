@@ -133,7 +133,7 @@ class NativeRegistryTest(unittest.TestCase):
             names = tar.getnames()
             self.assertIn("package.noqeri", names)
             self.assertIn("src/core.noqeri", names)
-            self.assertNotIn("package.nqr", names)
+            self.assertNotIn("package.noqeri", names)
         status, headers, data = self.request("HEAD", path + "/download")
         self.assertEqual(status, 200)
         self.assertEqual(int(headers["Content-Length"]), len(archive))

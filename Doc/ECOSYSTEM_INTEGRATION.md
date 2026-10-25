@@ -1,6 +1,6 @@
 # Noqeri Registry integration: implementation and constraints
 
-Canonical language sources use `.noqeri`, compiled artifacts `.nqri`, metadata `.nqon`, NoeSQL storage `.noedb`, archives `.nqpkg`. Legacy `.nqr` package fixtures are retained for compatibility until release migration.
+Canonical language sources use `.noqeri`, compiled artifacts `.noqerii`, metadata `.nqrin`, NoeSQL storage `.noedb`, archives `.nqpkg`. Legacy `.noqeri` package fixtures are retained for compatibility until release migration.
 
 - `src/registry.noqeri` is the canonical Noqeri application and policy layer. Its host transport requires the qualified compiler and runtime; do **not** claim full native dogfooding until that route passes executable tests.
 - `runtime/server.mjs` is the Node 22 transitional HTTP transport. It reads authoritative metadata from `registry.noedb` through `noesql/session`, **not** a duplicated Registry database. The NoeSQL module remains private and MUST be installed into the trusted runtime. Set `NOESQL_SESSION_MODULE` to its absolute `Runtime/noesql-session.mjs` path (or install the module into the Node runtime via an authorized private dependency). No public build or package includes private database source.
