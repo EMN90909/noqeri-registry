@@ -3,14 +3,16 @@
 Generated from the release's Noqeri source. **Listed does not mean tested or production-qualified.**
 
 - Entry: src/sqlite.noqeri
-- Exported functions: 3
+- Exported functions: 5
 - Host externs: 3
 
 ## Exported API
 
 - sqliteBusy
 - sqliteHandleValid
+- sqliteIdentifierValid
 - sqliteResultOk
+- sqliteRetryable
 
 ## External host bindings required
 
@@ -20,6 +22,8 @@ Generated from the release's Noqeri source. **Listed does not mean tested or pro
 
 These declarations need real host implementations; compiling does not provide network, database or cryptographic services.
 
-## Capability status
+## Expanded functionality
 
-No new algorithm was introduced for this module in this pass. Existing APIs remain experimental unless separately verified.
+SQLite identifier token checks and retryable return-code classification, not a SQL parser.
+
+Run tests/capability_regression.noqeri using a compatible Noqeri compiler.

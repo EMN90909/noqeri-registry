@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Working capability example with visible positive and negative cases.
+import "../src/websocket.noqeri"
+function main(): int {
+    if !websocketControlFrameValid(9 as u8,true,true,10 as usize) { return 1 }
+    if websocketControlFrameValid(9 as u8,false,true,10 as usize) { return 2 }
+    if websocketClientFrameValid(1 as u8,false,2 as usize) { return 3 }
+
+    return 0
+}

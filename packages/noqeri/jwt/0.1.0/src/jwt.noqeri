@@ -5,3 +5,27 @@ export function jwtTokenBytesValid(bytes: usize): bool { return bytes > 0 as usi
 export function jwtAlgorithmAllowed(code: int): bool { return code == 1 || code == 2 || code == 3 }
 export function jwtExpired(nowSeconds: i64, expiresSeconds: i64, skewSeconds: i64): bool { return nowSeconds - skewSeconds >= expiresSeconds }
 export function jwtNotBeforeValid(nowSeconds: i64, notBeforeSeconds: i64, skewSeconds: i64): bool { return nowSeconds + skewSeconds >= notBeforeSeconds }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function jwtBase64UrlByteValid(value: u8): bool {
+    return (value >= 65 as u8 && value <= 90 as u8) || (value >= 97 as u8 && value <= 122 as u8) || (value >= 48 as u8 && value <= 57 as u8) || value == 45 as u8 || value == 95 as u8
+}
+export function jwtCompactShapeValid(token: []u8): bool {
+    if !jwtTokenBytesValid(len(token)) { return false }
+    let parts: usize = 1 as usize
+    let segmentSize: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i < len(token) {
+        let c: u8 = token[i]
+        if c == 46 as u8 {
+            if segmentSize == 0 as usize || parts >= 3 as usize { return false }
+            parts = parts + 1 as usize
+            segmentSize = 0 as usize
+        } else {
+            if !jwtBase64UrlByteValid(c) { return false }
+            segmentSize = segmentSize + 1 as usize
+        }
+        i = i + 1 as usize
+    }
+    return parts == 3 as usize && segmentSize > 0 as usize
+}

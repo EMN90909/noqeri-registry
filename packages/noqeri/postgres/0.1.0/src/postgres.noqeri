@@ -8,3 +8,18 @@ extern function postgresClose(connection: usize): bool
 export function postgresHandleValid(connection: usize): bool { return connection != 0 as usize }
 export function postgresProtocolVersion(): int { return 196608 }
 export function postgresMessageLengthValid(length: int): bool { return length >= 4 && length <= 16777216 }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function postgresIdentifierValid(name: []u8): bool {
+    if len(name) == 0 as usize || len(name) > 63 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(name) {
+        let c: u8 = name[i]
+        let letter: bool = (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || c == 95 as u8
+        let number: bool = i > 0 as usize && c >= 48 as u8 && c <= 57 as u8
+        if !letter && !number { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function postgresPayloadLengthValid(frameBytes: usize): bool { return frameBytes >= 5 as usize && frameBytes <= 16777217 as usize }

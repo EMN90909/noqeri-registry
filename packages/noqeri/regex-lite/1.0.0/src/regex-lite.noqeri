@@ -4,3 +4,26 @@ export function regexPatternBytesValid(bytes: usize): bool { return bytes > 0 as
 export function regexCaptureCountValid(count: usize): bool { return count <= 128 as usize }
 export function regexRepeatValid(minimum: usize, maximum: usize): bool { return minimum <= maximum && maximum <= 1000000 as usize }
 export function regexMeta(value: u8): bool { return value == 46 as u8 || value == 42 as u8 || value == 43 as u8 || value == 63 as u8 || value == 40 as u8 || value == 41 as u8 || value == 91 as u8 || value == 93 as u8 || value == 123 as u8 || value == 125 as u8 || value == 94 as u8 || value == 36 as u8 || value == 124 as u8 }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function regexLiteralOnly(pattern: []u8): bool {
+    if !regexPatternBytesValid(len(pattern)) { return false }
+    let i: usize = 0 as usize
+    while i < len(pattern) {
+        if regexMeta(pattern[i]) || pattern[i] == 92 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function regexLiteralFind(haystack: []u8, needle: []u8): isize {
+    if len(needle) == 0 as usize { return 0 as isize }
+    if len(needle) > len(haystack) { return -1 as isize }
+    let start: usize = 0 as usize
+    while start <= len(haystack) - len(needle) {
+        let i: usize = 0 as usize
+        while i < len(needle) && haystack[start + i] == needle[i] { i = i + 1 as usize }
+        if i == len(needle) { return start as isize }
+        start = start + 1 as usize
+    }
+    return -1 as isize
+}

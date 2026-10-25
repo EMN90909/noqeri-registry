@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Working capability example with visible positive and negative cases.
+import "../src/yaml.noqeri"
+function main(): int {
+    let key: [u8; 3] = [107 as u8,101 as u8,121 as u8]
+    let bad: [u8; 3] = [107 as u8,58 as u8,121 as u8]
+    if !yamlPlainKeyValid(slice(key)) || yamlPlainKeyValid(slice(bad)) { return 1 }
+    let spaces: [u8; 3] = [32 as u8,32 as u8,97 as u8]
+    if yamlCountIndent(slice(spaces)) != 2 as isize { return 2 }
+
+    return 0
+}

@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Executable positive and negative capability contract.
+import "../src/postgres.noqeri"
+function main(): int {
+    let valid: [u8; 2] = [97 as u8,49 as u8]
+    let bad: [u8; 2] = [49 as u8,97 as u8]
+    if !postgresIdentifierValid(slice(valid)) || postgresIdentifierValid(slice(bad)) { return 1 }
+    if postgresPayloadLengthValid(4 as usize) || !postgresPayloadLengthValid(5 as usize) { return 2 }
+
+    return 0
+}

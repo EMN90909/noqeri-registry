@@ -3,7 +3,7 @@
 Generated from the release's Noqeri source. **Listed does not mean tested or production-qualified.**
 
 - Entry: src/tls.noqeri
-- Exported functions: 3
+- Exported functions: 4
 - Host externs: 2
 
 ## Exported API
@@ -11,6 +11,7 @@ Generated from the release's Noqeri source. **Listed does not mean tested or pro
 - tlsContentTypeValid
 - tlsHandleValid
 - tlsLegacyVersionValid
+- tlsRecordHeaderValid
 
 ## External host bindings required
 
@@ -19,6 +20,8 @@ Generated from the release's Noqeri source. **Listed does not mean tested or pro
 
 These declarations need real host implementations; compiling does not provide network, database or cryptographic services.
 
-## Capability status
+## Expanded functionality
 
-No new algorithm was introduced for this module in this pass. Existing APIs remain experimental unless separately verified.
+TLS record-header framing validation, not certificate or cryptographic verification.
+
+Run tests/capability_regression.noqeri using a compatible Noqeri compiler.

@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Executable positive and negative capability contract.
+import "../src/regex-lite.noqeri"
+function main(): int {
+    let text: [u8; 4] = [97 as u8,98 as u8,99 as u8,100 as u8]
+    let needle: [u8; 2] = [98 as u8,99 as u8]
+    let bad: [u8; 2] = [42 as u8,97 as u8]
+    if regexLiteralFind(slice(text),slice(needle)) != 1 as isize { return 1 }
+    if regexLiteralOnly(slice(bad)) || !regexLiteralOnly(slice(needle)) { return 2 }
+
+    return 0
+}

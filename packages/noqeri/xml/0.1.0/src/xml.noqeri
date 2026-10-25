@@ -4,3 +4,23 @@ export function xmlNameStart(value: u8): bool { return (value >= 65 as u8 && val
 export function xmlNameContinue(value: u8): bool { return xmlNameStart(value) || (value >= 48 as u8 && value <= 57 as u8) || value == 45 as u8 || value == 46 as u8 }
 export function xmlDepthValid(depth: usize): bool { return depth <= 128 as usize }
 export function xmlEntityExpansionValid(expandedBytes: usize, sourceBytes: usize): bool { if sourceBytes == 0 as usize { return expandedBytes == 0 as usize } return expandedBytes <= sourceBytes * 8 as usize }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function xmlNameValid(value: []u8): bool {
+    if len(value) == 0 as usize || !xmlNameStart(value[0]) { return false }
+    let i: usize = 1 as usize
+    while i < len(value) { if !xmlNameContinue(value[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function xmlAttributeQuoteValid(value: []u8): bool {
+    if len(value) < 2 as usize { return false }
+    let mark: u8 = value[0]
+    if mark != 34 as u8 && mark != 39 as u8 { return false }
+    if value[len(value) - 1 as usize] != mark { return false }
+    let i: usize = 1 as usize
+    while i + 1 as usize < len(value) {
+        if value[i] == mark || value[i] == 60 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}

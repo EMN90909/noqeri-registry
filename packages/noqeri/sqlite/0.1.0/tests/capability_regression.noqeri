@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Executable positive and negative capability contract.
+import "../src/sqlite.noqeri"
+function main(): int {
+    let good: [u8; 3] = [97 as u8,95 as u8,49 as u8]
+    let bad: [u8; 2] = [49 as u8,97 as u8]
+    if !sqliteIdentifierValid(slice(good)) || sqliteIdentifierValid(slice(bad)) { return 1 }
+    if !sqliteRetryable(5) || sqliteRetryable(19) { return 2 }
+
+    return 0
+}

@@ -8,3 +8,18 @@ extern function sqliteClose(database: usize): bool
 export function sqliteHandleValid(database: usize): bool { return database != 0 as usize }
 export function sqliteResultOk(code: int): bool { return code == 0 || code == 100 || code == 101 }
 export function sqliteBusy(code: int): bool { return code == 5 || code == 6 }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function sqliteIdentifierValid(name: []u8): bool {
+    if len(name) == 0 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(name) {
+        let c: u8 = name[i]
+        if c == 95 as u8 { i = i + 1 as usize }
+        else if (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) { i = i + 1 as usize }
+        else if i > 0 as usize && c >= 48 as u8 && c <= 57 as u8 { i = i + 1 as usize }
+        else { return false }
+    }
+    return true
+}
+export function sqliteRetryable(code: int): bool { return sqliteBusy(code) || code == 10 }

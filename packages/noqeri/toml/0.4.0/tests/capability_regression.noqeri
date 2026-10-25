@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Executable positive and negative capability contract.
+import "../src/toml.noqeri"
+function main(): int {
+    let key: [u8; 3] = [97 as u8,45 as u8,98 as u8]
+    let number: [u8; 2] = [45 as u8,49 as u8]
+    let bad: [u8; 2] = [48 as u8,49 as u8]
+    if !tomlBareKeyValid(slice(key)) { return 1 }
+    if !tomlIntegerTokenValid(slice(number)) || tomlIntegerTokenValid(slice(bad)) { return 2 }
+
+    return 0
+}

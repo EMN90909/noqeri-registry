@@ -11,3 +11,14 @@ export function websocketOpcodeValid(opcode: u8): bool { return opcode == 0 as u
 export function websocketControlOpcode(opcode: u8): bool { return opcode >= 8 as u8 && opcode <= 10 as u8 }
 export function websocketPayloadLengthValid(opcode: u8, length: usize): bool { if websocketControlOpcode(opcode) { return length <= 125 as usize } return true }
 export function websocketCloseCodeValid(code: int): bool { if code < 1000 || code >= 5000 { return false } if code == 1004 || code == 1005 || code == 1006 || code == 1015 { return false } return true }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function websocketControlFrameValid(opcode: u8, finalFrame: bool, masked: bool, length: usize): bool {
+    if !websocketControlOpcode(opcode) { return false }
+    return finalFrame && websocketPayloadLengthValid(opcode,length)
+}
+export function websocketClientFrameValid(opcode: u8, masked: bool, length: usize): bool {
+    if !websocketOpcodeValid(opcode) { return false }
+    if !masked { return false }
+    return websocketPayloadLengthValid(opcode,length)
+}

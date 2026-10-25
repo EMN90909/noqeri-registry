@@ -3,15 +3,19 @@
 Generated from the release's Noqeri source. **Listed does not mean tested or production-qualified.**
 
 - Entry: src/uuid.noqeri
-- Exported functions: 3
+- Exported functions: 5
 - Host externs: 0
 
 ## Exported API
 
 - uuidHexByte
 - uuidTextValid
+- uuidVariantRfc4122
 - uuidVersionNibble
+- uuidVersionSupported
 
-## Capability status
+## Expanded functionality
 
-No new algorithm was introduced for this module in this pass. Existing APIs remain experimental unless separately verified.
+UUID variant and version inspection with strict RFC-style structural checks.
+
+Run tests/capability_regression.noqeri using a compatible Noqeri compiler.

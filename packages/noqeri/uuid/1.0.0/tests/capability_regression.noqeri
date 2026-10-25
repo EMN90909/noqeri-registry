@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Executable positive and negative capability contract.
+import "../src/uuid.noqeri"
+function main(): int {
+    let malformed: [u8; 3] = [49 as u8,50 as u8,51 as u8]
+    if uuidVariantRfc4122(slice(malformed)) || uuidVersionSupported(slice(malformed)) { return 1 }
+
+    return 0
+}

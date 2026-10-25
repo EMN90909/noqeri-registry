@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Executable positive and negative capability contract.
+import "../src/jwt.noqeri"
+function main(): int {
+    let good: [u8; 5] = [97 as u8,46 as u8,98 as u8,46 as u8,99 as u8]
+    let bad: [u8; 4] = [97 as u8,46 as u8,98 as u8,46 as u8]
+    if !jwtCompactShapeValid(slice(good)) || jwtCompactShapeValid(slice(bad)) { return 1 }
+
+    return 0
+}

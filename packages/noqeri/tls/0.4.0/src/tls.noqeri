@@ -7,3 +7,11 @@ extern function tlsClose(handle: usize): bool
 export function tlsHandleValid(handle: usize): bool { return handle != 0 as usize }
 export function tlsContentTypeValid(value: u8): bool { return value == 20 as u8 || value == 21 as u8 || value == 22 as u8 || value == 23 as u8 }
 export function tlsLegacyVersionValid(major: u8, minor: u8): bool { return major == 3 as u8 && minor >= 1 as u8 && minor <= 4 as u8 }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function tlsRecordHeaderValid(header: []u8): bool {
+    if len(header) != 5 as usize { return false }
+    if !tlsContentTypeValid(header[0]) || !tlsLegacyVersionValid(header[1],header[2]) { return false }
+    let length: usize = header[3] as usize * 256 as usize + header[4] as usize
+    return length <= 18432 as usize
+}

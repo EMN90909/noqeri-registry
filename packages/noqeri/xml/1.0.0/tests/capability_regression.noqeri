@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Executable positive and negative capability contract.
+import "../src/xml.noqeri"
+function main(): int {
+    let name: [u8; 3] = [97 as u8,45 as u8,98 as u8]
+    let bad: [u8; 2] = [49 as u8,97 as u8]
+    if !xmlNameValid(slice(name)) || xmlNameValid(slice(bad)) { return 1 }
+    let quoted: [u8; 3] = [34 as u8,97 as u8,34 as u8]
+    if !xmlAttributeQuoteValid(slice(quoted)) { return 2 }
+
+    return 0
+}

@@ -27,3 +27,14 @@ export function uuidVersionNibble(value: []u8): int {
     if byte >= 65 as u8 && byte <= 70 as u8 { return (byte - 65 as u8 + 10 as u8) as int }
     return (byte - 97 as u8 + 10 as u8) as int
 }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function uuidVariantRfc4122(value: []u8): bool {
+    if !uuidTextValid(value) { return false }
+    let c: u8 = value[19]
+    return c == 56 as u8 || c == 57 as u8 || c == 97 as u8 || c == 98 as u8 || c == 65 as u8 || c == 66 as u8
+}
+export function uuidVersionSupported(value: []u8): bool {
+    let v: int = uuidVersionNibble(value)
+    return v >= 1 && v <= 8 && uuidVariantRfc4122(value)
+}

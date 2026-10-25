@@ -3,16 +3,20 @@
 Generated from the release's Noqeri source. **Listed does not mean tested or production-qualified.**
 
 - Entry: src/toml.noqeri
-- Exported functions: 4
+- Exported functions: 6
 - Host externs: 0
 
 ## Exported API
 
 - tomlArrayLengthValid
 - tomlBareKeyChar
+- tomlBareKeyValid
 - tomlDepthValid
 - tomlDocumentBytesValid
+- tomlIntegerTokenValid
 
-## Capability status
+## Expanded functionality
 
-No new algorithm was introduced for this module in this pass. Existing APIs remain experimental unless separately verified.
+Strict TOML bare-key and signed decimal-integer token validation.
+
+Run tests/capability_regression.noqeri using a compatible Noqeri compiler.
