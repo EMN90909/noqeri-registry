@@ -18,6 +18,8 @@ function main(): int {
     if out[0] != 49 as u8 || out[3] != 52 as u8 { return 9 }
     if coreRangeValid(4 as usize,1 as usize,4 as usize) { return 10 }
     if coreBytesFill(slice(copy),0 as u8) != 4 as usize || copy[0] != 0 as u8 { return 11 }
+    let hello: [u8; 5] = [104 as u8,101 as u8,108 as u8,108 as u8,111 as u8]
+    if coreFNV1a32(slice(hello)) != 1335831723 as u32 { return 12 }
     return 0
 }
 print(main())

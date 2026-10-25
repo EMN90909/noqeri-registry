@@ -30,6 +30,8 @@ export function cloudflareNameCharSafe(value: u8): bool {
 }
 export function cloudflareIdentifierSafe(value: []u8): bool {
     if len(value) == 0 as usize || len(value) > 128 as usize { return false }
+    if len(value) == 1 as usize && value[0] == 46 as u8 { return false }
+    if len(value) == 2 as usize && value[0] == 46 as u8 && value[1] == 46 as u8 { return false }
     let i: usize = 0 as usize
     while i < len(value) {
         if !cloudflareNameCharSafe(value[i]) { return false }

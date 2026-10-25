@@ -30,6 +30,8 @@ export function convexNameCharSafe(value: u8): bool {
 }
 export function convexIdentifierSafe(value: []u8): bool {
     if len(value) == 0 as usize || len(value) > 128 as usize { return false }
+    if len(value) == 1 as usize && value[0] == 46 as u8 { return false }
+    if len(value) == 2 as usize && value[0] == 46 as u8 && value[1] == 46 as u8 { return false }
     let i: usize = 0 as usize
     while i < len(value) {
         if !convexNameCharSafe(value[i]) { return false }
@@ -57,6 +59,7 @@ export function convexFunctionSpecUrl(deploymentUrl: string): string { return co
 
 export function convexFunctionPathValid(value: []u8): bool {
     if len(value) == 0 as usize || len(value) > 256 as usize { return false }
+    if value[0] == 58 as u8 || value[len(value) - 1 as usize] == 58 as u8 { return false }
     let separators: usize = 0 as usize
     let i: usize = 0 as usize
     while i < len(value) {

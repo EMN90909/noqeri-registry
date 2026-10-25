@@ -14,6 +14,11 @@ function main(): int {
     if cryptoDigestEqual(slice(output),slice(hex)) { return 6 }
     if cryptoZero(slice(output)) != 3 as usize || output[2] != 0 as u8 { return 7 }
     if !cryptoDigestLengthValid(32 as usize) || cryptoDigestLengthValid(31 as usize) { return 8 }
+    let left: [u8; 2] = [170 as u8,255 as u8]
+    let right: [u8; 2] = [85 as u8,15 as u8]
+    let xorOutput: [u8; 2] = [0 as u8,0 as u8]
+    if cryptoXorBytes(slice(left),slice(right),slice(xorOutput)) != 2 as isize { return 9 }
+    if xorOutput[0] != 255 as u8 || xorOutput[1] != 240 as u8 { return 10 }
     return 0
 }
 print(main())
