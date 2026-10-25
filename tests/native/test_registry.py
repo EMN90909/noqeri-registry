@@ -104,6 +104,19 @@ class NativeRegistryTest(unittest.TestCase):
         self.assertEqual(status, 405)
         self.assertEqual(json.loads(body)["error"], "method_not_allowed")
 
+    def test_compiler_download_directory_is_native_and_truthful(self):
+        code, headers, body = self.request("GET", "/downloads")
+        self.assertEqual(code, 200)
+        self.assertIn(b"One language. Your machine.", body)
+        self.assertIn("text/html", headers["Content-Type"])
+        code, _, data = self.request("GET", "/v1/releases")
+        self.assertEqual(code, 200)
+        self.assertEqual(json.loads(data), {"schema": 1, "releases": []})
+        code, headers, data = self.request("HEAD", "/downloads")
+        self.assertEqual(code, 200)
+        self.assertEqual(data, b"")
+        self.assertGreater(int(headers["Content-Length"]), 100)
+
     def test_immutable_download_is_sha256_verified(self):
         path = "/v1/packages/noqeri/core/0.1.0"
         status, _, body = self.request("GET", path)

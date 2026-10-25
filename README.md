@@ -44,6 +44,14 @@
 | Native application | `Programs/registry.noqeri` and `src/registry.noqeri` | `registryHostServe` native binding is not qualified |
 | Quality and compatibility | Policy, checkers, test fixtures and release evidence tooling | Default quality is **experimental**, not stable |
 
+## Compiler downloads for Windows, Linux, macOS, Android, BSD and custom targets
+
+The registry now includes a [responsive compiler download page](downloads/index.html), a [read-only release catalog](downloads/releases.json), and a [SHA-256 verifying installer](scripts/install_noqeri.py). Both the Noqeri-native preview server and the existing HTTP transport serve `GET /downloads` and `GET /v1/releases`.
+
+Release manifests describe a **real compiled binary**, CPU architecture, OS, optional qualified GPU architecture, archive format, SHA-256 and target execution evidence. The compiler-side distribution tool builds raw binary, .gz, .tar, .tar.gz and .zip formats. Published GitHub Release assets are imported **only after downloading and verifying their complete SHA-256 bytes**. No fabricated binary links are shown: the public catalog starts empty until an official compiler release is uploaded and synchronized.
+
+See [compiler distribution, release workflow and installation guide](docs/COMPILER_DOWNLOADS.md). The registry remains experimental and native NoeSQL production parity is independent of this compiler download feature.
+
 ## Native Noqeri executable (experimental)
 
 The repository now includes a Linux x86-64 **Noqeri-compiled** read-only registry program. Route matching and protocol guards live in `src/registry.noqeri`. C++ supplies the operating-system socket, archive and JSON boundaries. It requires **no JavaScript runtime**, but the **source-index preview is not yet connected to native NoeSQL**. The older JavaScript server is retained for its currently functioning NoeSQL-backed session until native parity has been verified.
