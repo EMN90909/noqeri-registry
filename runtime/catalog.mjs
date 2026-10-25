@@ -104,7 +104,7 @@ export async function importInitialIndex(catalog,{indexPath=join(catalog.root,'r
       const directory=safePackageDir(catalog.root,ns,name,version)
       const info=await stat(directory)
       if(!info.isDirectory())throw new Error('release directory not found')
-      const archive=await makeArchive(directory)
+      const archive=await makeArchive(directory,{allowLegacy:version!=='0.1.0'})
       if(rel.integrity && archive.fileIntegrity!==rel.integrity)throw new Error('source integrity mismatch: '+expected)
       const location=await storeArchive(catalog.archiveRoot,archive)
       versions.push({version,archive,location,yanked:rel.yanked===true})

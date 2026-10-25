@@ -33,3 +33,16 @@ test('reject traversal, wrong entries, links and absolute paths',async()=>{
   await assert.rejects(makeArchive(root),/links forbidden/)
  }finally{await rm(root,{recursive:true,force:true})}
 })
+
+test('canonical archives refuse .nqr while historical import is opt-in',async()=>{
+ const root=await mkdtemp(join(tmpdir(),'nqpkg-legacy-'))
+ try{
+  await mkdir(join(root,'src'),{recursive:true})
+  await writeFile(join(root,'package.nqr'),'package { entry: "src/main.nqr" }\n')
+  await writeFile(join(root,'src/main.nqr'),'module legacy\n')
+  await assert.rejects(makeArchive(root),/legacy source extension forbidden/)
+  const archived=await makeArchive(root,{allowLegacy:true})
+  assert.equal(archived.entry,'src/main.nqr')
+  assert.equal(archived.legacy,true)
+ }finally{await rm(root,{recursive:true,force:true})}
+})
