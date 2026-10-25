@@ -2,7 +2,7 @@
 
 Noqeri-native Sentry Web API wrapper using bearer authentication tokens. It targets management/observability API calls rather than pretending to be a full native crash SDK.
 
-```nqr
+```noqeri
 import package "noqeri/sentry"
 let projects = sentryListProjects(token, "my-org")
 ```
