@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - .github/workflows/canonical-extension-migration.yml
+      - scripts/rename_extensions.py
   workflow_dispatch:
 permissions:
   contents: write
@@ -24,8 +25,9 @@ jobs:
             echo 'Obsolete file extension remains'
             exit 1
           fi
-          if grep -REn '\\.(nqr|nqo)([^a-zA-Z0-9_]|$)' packages --include='*.noqeri' --include='*.md' | head -40; then
-            echo 'Inspect remaining obsolete extension references above'
+          if grep -REn '\\.(nqr|nqo)([^a-zA-Z0-9_]|$)' packages --include='*.noqeri' --include='*.md'; then
+            echo 'Obsolete references remain'
+            exit 1
           fi
       - name: Commit package migration
         shell: bash
