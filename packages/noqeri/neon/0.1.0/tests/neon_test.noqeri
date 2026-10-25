@@ -1,0 +1,4 @@
+import "../src/neon.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(neonDataTableUrl("https://n.example/rest/v1", "users") == "https://n.example/rest/v1/users")
+print("neon package tests: OK")

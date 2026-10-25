@@ -1,0 +1,5 @@
+import package "noqeri/yaml"
+
+function main(): int {
+    return 0
+}

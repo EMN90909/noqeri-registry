@@ -1,0 +1,5 @@
+module noqeri.core.memory
+
+function address<T>(value: *T): usize {
+    return value as usize
+}

@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.openai
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function openaiApiRoot(): string { return "https://api.openai.com/v1" }
+export function openaiCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function openaiLastStatus(): int { return providerHttpStatus() }
+export function openaiResponsesUrl(): string { return openaiApiRoot() + "/responses" }
+export function openaiModelsUrl(): string { return openaiApiRoot() + "/models" }
+export function openaiCreateResponse(apiKey: string, body: string): string { if !openaiCredentialPresent(apiKey) { return "" } return providerHttpJson("POST", openaiResponsesUrl(), "bearer", apiKey, "", "", body) }
+export function openaiListModels(apiKey: string): string { return providerHttpJson("GET", openaiModelsUrl(), "bearer", apiKey, "", "", "") }

@@ -1,0 +1,4 @@
+import "../src/sentry.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(sentryProjectsUrl("acme") == "https://sentry.io/api/0/organizations/acme/projects/")
+print("sentry package tests: OK")

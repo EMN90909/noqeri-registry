@@ -1,0 +1,3 @@
+// Requires a trusted Noqeri compiler.
+import "../src/router.noqeri"
+function main(): int { return 0 }

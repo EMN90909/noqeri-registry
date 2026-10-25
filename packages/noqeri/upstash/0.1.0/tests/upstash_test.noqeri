@@ -1,0 +1,5 @@
+import "../src/upstash.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(upstashCommandUrl("https://x.upstash.io", "get/a") == "https://x.upstash.io/get/a")
+require(upstashCredentialPresent("abcdefgh"))
+print("upstash package tests: OK")

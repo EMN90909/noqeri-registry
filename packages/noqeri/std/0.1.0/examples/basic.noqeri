@@ -1,0 +1,7 @@
+import "../src/std.nqr"
+
+function main(): int {
+    if !std_portable() { return 1 }
+    if std_checked_error_code(std_encode_error(42 as isize)) != 42 as isize { return 2 }
+    return 0
+}

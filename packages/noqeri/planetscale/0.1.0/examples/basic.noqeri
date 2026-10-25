@@ -1,0 +1,2 @@
+import package "noqeri/planetscale"
+print(planetscaleOrganizationsUrl())

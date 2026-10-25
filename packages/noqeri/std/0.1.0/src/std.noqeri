@@ -1,0 +1,104 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.std.registry
+
+record StdList<T> {
+    data: *T
+    length: usize
+    capacity: usize
+}
+
+record StdError {
+    code: isize
+    domain: string
+    message: string
+}
+
+export function std_version_major(): int { return 1 }
+export function std_version_minor(): int { return 6 }
+export function std_module_floor(): usize { return 100 as usize }
+export function std_portable(): bool { return true }
+export function std_aggregate_generics(): bool { return true }
+export function std_safe_collections_default(): bool { return true }
+export function std_try_status_model(): bool { return true }
+
+export function std_checked_status_ok(status: isize): bool { return status >= 0 as isize }
+export function std_checked_status_error(status: isize): bool { return status < 0 as isize }
+export function std_checked_error_code(status: isize): isize { if status < 0 as isize { return -status - 1 as isize } return 0 as isize }
+export function std_encode_error(code: isize): isize { if code < 0 as isize { return code } return -code - 1 as isize }
+
+export function std_index_valid(index: usize, length: usize): bool { return index < length }
+export function std_range_valid(offset: usize, count: usize, length: usize): bool { if offset > length { return false } return count <= length - offset }
+export function std_port_valid(port: u32): bool { return port > 0 as u32 && port <= 65535 as u32 }
+export function std_aes_key_bits_valid(bits: usize): bool { return bits == 128 as usize || bits == 192 as usize || bits == 256 as usize }
+export function std_rsa_key_bits_valid(bits: usize): bool { return bits >= 2048 as usize }
+
+export function std_checked_add_usize(a: usize, b: usize, out: *usize): bool {
+    if out == null { return false }
+    let limit: usize = 9223372036854775807 as usize
+    if a > limit || b > limit - a { return false }
+    out[0 as usize] = a + b
+    return true
+}
+
+export function std_checked_mul_usize(a: usize, b: usize, out: *usize): bool {
+    if out == null { return false }
+    if a == 0 as usize || b == 0 as usize { out[0 as usize] = 0 as usize return true }
+    let limit: usize = 9223372036854775807 as usize
+    if a > limit || b > limit / a { return false }
+    out[0 as usize] = a * b
+    return true
+}
+
+export function std_list_invariant<T>(list: *StdList<T>): bool {
+    if list == null { return false }
+    return list.length <= list.capacity && (list.capacity == 0 as usize || list.data != null)
+}
+
+export function std_list_is_empty<T>(list: *StdList<T>): bool { if list == null { return true } return list.length == 0 as usize }
+export function std_list_remaining<T>(list: *StdList<T>): usize { if list == null { return 0 as usize } if list.length >= list.capacity { return 0 as usize } return list.capacity - list.length }
+
+export function std_list_get_or<T>(list: *StdList<T>, index: usize, fallback: T): T {
+    if list == null { return fallback }
+    if list.data == null || index >= list.length { return fallback }
+    return list.data[index]
+}
+
+export function std_list_first_or<T>(list: *StdList<T>, fallback: T): T { return std_list_get_or(list, 0 as usize, fallback) }
+export function std_list_last_or<T>(list: *StdList<T>, fallback: T): T { if list == null { return fallback } if list.length == 0 as usize { return fallback } return std_list_get_or(list, list.length - 1 as usize, fallback) }
+export function std_list_set<T>(list: *StdList<T>, index: usize, value: T): bool { if list == null { return false } if list.data == null || index >= list.length { return false } list.data[index] = value return true }
+
+export function std_generic_contains<T: Eq>(items: []T, value: T): bool {
+    let i: usize = 0 as usize
+    while i < len(items) { if items[i] == value { return true } i = i + 1 as usize }
+    return false
+}
+
+export function std_generic_count<T: Eq>(items: []T, value: T): usize {
+    let count: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i < len(items) { if items[i] == value { count = count + 1 as usize } i = i + 1 as usize }
+    return count
+}
+
+export function std_generic_first_index<T: Eq>(items: []T, value: T): isize {
+    let i: usize = 0 as usize
+    while i < len(items) { if items[i] == value { return i as isize } i = i + 1 as usize }
+    return -1 as isize
+}
+
+export function std_generic_slice_equal<T: Eq>(left: []T, right: []T): bool {
+    if len(left) != len(right) { return false }
+    let i: usize = 0 as usize
+    while i < len(left) { if left[i] != right[i] { return false } i = i + 1 as usize }
+    return true
+}
+
+export function std_error_init(out: *StdError, code: isize, domain: string, message: string): void {
+    out.code = code
+    out.domain = domain
+    out.message = message
+}
+
+export function std_error_is_error(error: *StdError): bool { return error.code != 0 as isize }
+export function std_error_status(error: *StdError): isize { if error.code == 0 as isize { return 0 as isize } return std_encode_error(error.code) }
+export function std_error_matches(error: *StdError, code: isize): bool { return error.code == code }

@@ -1,0 +1,7 @@
+import "../src/rate_limit.nqr"
+function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
+require(rateLimitRefill(2 as i64, 10 as i64, 1000 as i64, 3 as i64) == 5 as i64)
+require(rateLimitAllowed(5 as i64, 2 as i64))
+require(rateLimitConsume(5 as i64, 2 as i64) == 3 as i64)
+require(rateLimitRetryAfterMillis(0 as i64, 2 as i64, 10 as i64) == 200 as i64)
+print("rate-limit package tests: OK")

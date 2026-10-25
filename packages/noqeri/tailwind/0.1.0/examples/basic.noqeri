@@ -1,0 +1,3 @@
+import package "noqeri/tailwind"
+let status: isize = tailwindBuild("src/input.css", "public/app.css", true)
+print(status)
