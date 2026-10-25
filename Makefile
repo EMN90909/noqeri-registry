@@ -1,4 +1,4 @@
-.PHONY: build run test verify audit check-noqeri clean
+.PHONY: build run test verify audit check-noqeri host host-test clean
 
 NOQERI_COMPILER ?= noqeri
 
@@ -10,6 +10,12 @@ run:
 
 test:
 	go test ./...
+
+host:
+	go run -tags dbdrivers ./cmd/noqeri-host
+
+host-test:
+	go test -tags dbdrivers ./internal/hostbridge ./cmd/noqeri-host -count=1
 
 verify:
 	go run ./cmd/registryctl -root . verify
