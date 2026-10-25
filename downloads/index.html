@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Download SHA-256 verified Noqeri compilers for Linux, Windows, macOS, Android, FreeBSD, OpenBSD and custom targets.">
+<title>Download Noqeri | Compilers for every platform</title>
+<style>
+:root{color-scheme:dark;--bg:#090e17;--surface:#121d2a;--edge:#374656;--text:#eff6ff;--muted:#b7cadb;--accent:#98f0d4}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% -10%,#1f414f,transparent 56%),var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}
+a{color:var(--accent)}a:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+header,main,footer{max-width:1120px;padding:22px;margin:auto}
+nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;border-bottom:1px solid var(--edge)}
+nav .brand{font-weight:800;letter-spacing:.06em}
+.hero{padding:64px 0 36px}
+.eyebrow{font-size:.77rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:750}
+h1{font-size:clamp(2.4rem,6vw,4.5rem);letter-spacing:-.05em;line-height:1.09;margin:16px 0;max-width:800px}
+h2{font-size:1.75rem;letter-spacing:-.04em}h3{margin:0;font-size:1.2rem}p{color:var(--muted);max-width:780px}
+section{margin:0 0 48px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--edge);border-radius:18px;padding:24px;min-height:160px}
+.card p{font-size:.94rem}.pill{display:inline-block;border:1px solid var(--edge);border-radius:50px;color:var(--muted);padding:3px 11px;font-size:.75rem}
+.empty{border:1px dashed var(--edge);background:#102031;border-radius:18px;padding:28px}
+.instructions{border-left:3px solid var(--accent);border-radius:8px;background:#10202b;padding:22px}
+code{background:#213442;border-radius:4px;padding:2px 5px;font-family:ui-monospace,monospace}
+footer{color:var(--muted);border-top:1px solid var(--edge);font-size:.86rem}
+</style>
+</head>
+<body>
+<header><nav><span class="brand">NOQERI / DOWNLOADS</span><a href="https://github.com/EMN90909/Noqeri">Source repository</a></nav></header>
+<main>
+<div class="hero"><span class="eyebrow">Compiler distribution</span>
+<h1>One language. Your machine.</h1>
+<p>Download a Noqeri compiler for your operating system, CPU architecture and preferred file format. GPU driver qualification is tracked separately. Only assets that have been published and verified are offered.</p></div>
+<section aria-labelledby="releases"><h2 id="releases">Published compiler builds</h2>
+<div class="empty"><h3>Binary downloads not yet published</h3><p>Build recipes for multiple OS and CPU architectures are available, but there is currently no verified public GitHub Release asset to link here. The catalog is deliberately empty instead of offering broken download buttons.</p>
+<a href="https://github.com/EMN90909/Noqeri">Get source and build instructions</a></div></section>
+<section aria-labelledby="platforms"><h2 id="platforms">Target platforms</h2>
+<div class="grid">
+<div class="card"><h3>Windows</h3><p>x86-64 and ARM64 compiler packaging. No published verified download yet.</p></div>
+<div class="card"><h3>Linux</h3><p>x86-64 and ARM64 native builds. No published verified download yet.</p></div>
+<div class="card"><h3>macOS</h3><p>Apple Silicon and Intel builds. No published verified download yet.</p></div>
+<div class="card"><h3>Android</h3><p>NDK command-line tool builds, not APKs. Requires device/emulator qualification.</p></div>
+<div class="card"><h3>FreeBSD</h3><p>Native VM builds and smoke tests. No published verified download yet.</p></div>
+<div class="card"><h3>OpenBSD</h3><p>Native VM builds and smoke tests. No published verified download yet.</p></div>
+<div class="card"><h3>Custom OS</h3><p>Build against a supplied CMake toolchain and test the target loader/ABI before offering downloads.</p></div>
+</div></section>
+<section aria-labelledby="installation"><h2 id="installation">Install and verify</h2><div class="instructions">
+<p><strong>Linux, macOS, BSD or Android CLI:</strong> unpack <code>tar -xzf FILE.tar.gz</code>, then execute <code>./noqeri-vVERSION-OS-CPU/bin/noqeri --version</code>. On Android, the NDK executable requires a compatible terminal environment and Android API level.</p>
+<p><strong>Windows:</strong> use PowerShell <code>Expand-Archive FILE.zip</code>, then execute <code>bin/noqeri.exe --version</code>.</p>
+<p><strong>Integrity:</strong> compare <code>sha256sum FILE</code> with the published release SHA-256. Windows: <code>Get-FileHash FILE -Algorithm SHA256</code>.</p>
+<p>GPU-specific packages are only displayed after validation against their GPU architecture and driver. A general WGSL shader compiler does not imply CUDA, ROCm, Vulkan, Metal or Direct3D compatibility.</p>
+</div></section>
+</main>
+<footer>Noqeri Registry · <a href="https://github.com/EMN90909/noqeri-registry">GitHub</a> · Experimental release tooling</footer>
+</body>
+</html>
