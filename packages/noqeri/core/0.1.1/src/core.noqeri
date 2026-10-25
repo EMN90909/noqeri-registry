@@ -157,12 +157,28 @@ export function coreDecimalFormatU64(input: u64, dst: []u8): isize {
     }
     return length as isize
 }
+function coreXor32(a: u32, b: u32): u32 {
+    let left: u64 = a as u64
+    let right: u64 = b as u64
+    let place: u64 = 1 as u64
+    let result: u64 = 0 as u64
+    let i: int = 0
+    while i < 32 {
+        if left % 2 as u64 != right % 2 as u64 { result = result + place }
+        left = left / 2 as u64
+        right = right / 2 as u64
+        place = place * 2 as u64
+        i = i + 1
+    }
+    return result as u32
+}
+
 export function coreFNV1a32(data: []u8): u32 {
     let value: u32 = 2166136261 as u32
     let i: usize = 0 as usize
     while i < len(data) {
         // Deliberately wrapping through the u32 domain; this is NOT a cryptographic hash.
-        value = (value ^ (data[i] as u32)) * 16777619 as u32
+        value = ((coreXor32(value,data[i] as u32) as u64 * 16777619 as u64) % 4294967296 as u64) as u32
         i = i + 1 as usize
     }
     return value
