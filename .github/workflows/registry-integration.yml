@@ -22,4 +22,5 @@ jobs:
       - run: node scripts/verify-index.mjs
       - run: npm test
       - run: python3 -m unittest discover -s tests -p test_download_catalog.py -v
+      - run: python3 -m unittest discover -s tests -p test_install_noqeri.py -v
       - run: python3 scripts/sync_downloads.py build-site --output /tmp/noqeri-downloads.html --json-output /tmp/noqeri-releases.json
