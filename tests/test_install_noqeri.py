@@ -43,9 +43,15 @@ class InstallerTests(unittest.TestCase):
             path=Path(tmp)/"good.zip"
             with zipfile.ZipFile(path,"w") as z:
                 z.writestr(BASE+"/bin/noqeri",b"test executable")
+                z.writestr(BASE+"/bin/noqeri-nqri",b"vm executable")
             root=Path(tmp)/"out"
             binary=installer.unpack(path,"zip",root,BASE,"noqeri")
             self.assertEqual((binary/"bin/noqeri").read_bytes(),b"test executable")
+            self.assertEqual((binary/"bin/noqeri-nqri").read_bytes(),b"vm executable")
+            import os
+            if os.name != "nt":
+                self.assertTrue((binary/"bin/noqeri").stat().st_mode & 0o111)
+                self.assertTrue((binary/"bin/noqeri-nqri").stat().st_mode & 0o111)
 
     def test_archive_traversal_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
