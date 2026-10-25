@@ -9,8 +9,8 @@ const HEADERS = {
   'Content-Security-Policy':"default-src 'none'", 'Access-Control-Allow-Origin':'*'
 }
 function reply(req,res,status,data,contentType='application/json; charset=utf-8',other={}){
-  const body=contentType.startsWith('application/json')?JSON.stringify(data):data
-  res.writeHead(status,{...HEADERS,'Content-Type':contentType,...other,...(contentType.startsWith('application/json')?{'Content-Length':String(Buffer.byteLength(body))}:{})})
+  const body=Buffer.isBuffer(data)?data:contentType.startsWith('application/json')?JSON.stringify(data):data
+  res.writeHead(status,{...HEADERS,'Content-Type':contentType,'Content-Length':String(Buffer.byteLength(body)),...other})
   res.end(req.method==='HEAD'?undefined:body)
 }
 const bad=(req,res,status,message)=>reply(req,res,status,{error:message})
