@@ -425,7 +425,8 @@ void service(int fd,const Catalog& catalog) {
                 else response=handle(catalog,method,target);
                 const char* names[]={"content-length:","transfer-encoding:"};
                 auto header=lower(buffer.substr(end+2,fields-end-2));
-                if(header.find(names[0])!=std::string::npos||header.find(names[1])!=std::string::npos)
+                if(registryMethodValid(reinterpret_cast<const unsigned char*>(method.data()),method.size()) &&
+                   (header.find(names[0])!=std::string::npos||header.find(names[1])!=std::string::npos))
                     response=error(400,"request_body_not_supported");
             }
         }
