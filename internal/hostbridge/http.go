@@ -47,6 +47,33 @@ func allowedHost(provider, hostname string) bool {
 	}
 	return false
 }
+
+// A provider suffix allowlist is not enough when the secret is tenant-scoped.
+// Require a preconfigured EXACT hostname before forwarding a token to a tenant.
+func tenantHostAllowed(provider, hostname string, env EnvFunc) bool {
+	name := ""
+	switch provider {
+	case "auth0":
+		name = "NOQERI_AUTH0_HOST"
+	case "convex":
+		name = "NOQERI_CONVEX_HOST"
+	case "supabase":
+		if hostname == "api.supabase.com" {
+			return true
+		}
+		name = "NOQERI_SUPABASE_HOST"
+	case "sentry":
+		if hostname == "sentry.io" {
+			return true
+		}
+		name = "NOQERI_SENTRY_HOST"
+	default:
+		return true
+	}
+	configured := env(name)
+	return configured != "" && strings.EqualFold(hostname, configured)
+}
+
 func publicIP(ip net.IP) bool {
 	if ip == nil || !ip.IsGlobalUnicast() || ip.IsLoopback() || ip.IsPrivate() || ip.IsLinkLocalUnicast() {
 		return false
@@ -116,6 +143,9 @@ func (h *HTTPHost) Execute(ctx context.Context, m Message, env EnvFunc) (int, st
 	}
 	if !allowedHost(m.Provider, u.Hostname()) {
 		return 0, "", errors.New("provider_host_not_allowed")
+	}
+	if !tenantHostAllowed(m.Provider, u.Hostname(), env) {
+		return 0, "", errors.New("provider_tenant_not_configured")
 	}
 	if net.ParseIP(u.Hostname()) != nil {
 		return 0, "", errors.New("literal_ip_denied")

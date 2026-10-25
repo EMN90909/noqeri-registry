@@ -60,6 +60,8 @@ Signatures are checked using a trusted host clock, a maximum 5-minute time diffe
 
 The host reads `NOQERI_{PROVIDER}_TOKEN` from its own environment for each API provider, for example `NOQERI_GITHUB_TOKEN`, `NOQERI_AUTH0_TOKEN`, `NOQERI_OPENAI_TOKEN`, and `NOQERI_STRIPE_TOKEN`. **Do not store credentials in source files, shell history or CI logs.** Use your secret manager or a protected runtime environment. The stdin protocol cannot choose arbitrary secret-variable names.
 
+Provider tenant isolation: **configure exact hostnames** in `NOQERI_AUTH0_HOST`, `NOQERI_CONVEX_HOST`, `NOQERI_SUPABASE_HOST`, and `NOQERI_SENTRY_HOST` when using tenant-specific endpoints. For example, `NOQERI_SUPABASE_HOST=myproject.supabase.co`. Secrets are NEVER forwarded to arbitrary tenant subdomains. Management hosts such as `api.supabase.com` remain separately allowlisted.
+
 Provider-specific details:
 
 - **Supabase:** project Data API uses `NOQERI_SUPABASE_TOKEN` as an `apikey` (new `sb_secret_*` / publishable keys are not JWTs), plus optional `NOQERI_SUPABASE_JWT` for an end-user identity and RLS. Management API uses bearer credentials. Secret keys bypass RLS and must only be used in trusted backend contexts.

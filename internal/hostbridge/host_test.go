@@ -63,7 +63,7 @@ func TestStripeAndSupabaseHeaders(t *testing.T) {
 	e := NewEngine()
 	e.Env = envValues(map[string]string{
 		"NOQERI_STRIPE_TOKEN": "sk_test_fake_value", "NOQERI_STRIPE_IDEMPOTENCY_KEY": "req-1234",
-		"NOQERI_SUPABASE_TOKEN": "sb_secret_testing", "NOQERI_SUPABASE_JWT": "valid_jwt_fixture_value",
+		"NOQERI_SUPABASE_TOKEN": "sb_secret_testing", "NOQERI_SUPABASE_JWT": "valid_jwt_fixture_value", "NOQERI_SUPABASE_HOST": "test.supabase.co",
 	})
 	e.HTTP.Client = &http.Client{Transport: fakeTransport(func(r *http.Request) (*http.Response, error) {
 		switch r.URL.Host {
@@ -243,5 +243,25 @@ func TestProviderAuthVariants(t *testing.T) {
 		if !response.OK {
 			t.Fatal(response)
 		}
+	}
+}
+
+func TestProviderTenantTokenIsolation(t *testing.T) {
+	e := NewEngine()
+	e.Env = envValues(map[string]string{"NOQERI_AUTH0_TOKEN": "secret-tenant-token", "NOQERI_AUTH0_HOST": "mytenant.auth0.com"})
+	calls := 0
+	e.HTTP.Client = &http.Client{Transport: fakeTransport(func(*http.Request) (*http.Response, error) {
+		calls++
+		return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader("{}")), Header: make(http.Header)}, nil
+	})}
+	for _, host := range []string{"othertenant.auth0.com", "evil.auth0.com"} {
+		r := e.Dispatch(context.Background(), Message{Version: 1, Op: "http", Provider: "auth0", Method: "GET", URL: "https://" + host + "/api/v2/users"})
+		if r.OK || r.Error != "provider_tenant_not_configured" {
+			t.Fatalf("cross-tenant forwarding accepted: %s: %+v", host, r)
+		}
+	}
+	allowed := e.Dispatch(context.Background(), Message{Version: 1, Op: "http", Provider: "auth0", Method: "GET", URL: "https://mytenant.auth0.com/api/v2/users"})
+	if !allowed.OK || calls != 1 {
+		t.Fatalf("configured tenant denied: %+v calls=%d", allowed, calls)
 	}
 }
