@@ -82,11 +82,27 @@ export function cryptoHexValid(src: []u8): bool {
     return true
 }
 // XOR is a byte transform, NOT encryption. Keep distinct from authenticated crypto.
+function cryptoXorByte(a: u8, b: u8): u8 {
+    let left: int = a as int
+    let right: int = b as int
+    let factor: int = 1
+    let output: int = 0
+    let i: int = 0
+    while i < 8 {
+        if left % 2 != right % 2 { output = output + factor }
+        left = left / 2
+        right = right / 2
+        factor = factor * 2
+        i = i + 1
+    }
+    return output as u8
+}
+
 export function cryptoXorBytes(a: []u8, b: []u8, dst: []u8): isize {
     if len(a) != len(b) || len(dst) < len(a) { return -1 as isize }
     let i: usize = 0 as usize
     while i < len(a) {
-        dst[i] = a[i] ^ b[i]
+        dst[i] = cryptoXorByte(a[i],b[i])
         i = i + 1 as usize
     }
     return len(a) as isize
