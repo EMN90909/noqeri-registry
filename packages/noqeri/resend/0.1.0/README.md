@@ -2,7 +2,7 @@
 
 Noqeri-native Resend Email API adapter using bearer API-key authentication.
 
-```nqr
+```noqeri
 import package "noqeri/resend"
 let result = resendSendEmail(apiKey, jsonBody)
 ```

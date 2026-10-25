@@ -17,7 +17,7 @@ No allocation or host I/O is required.
 ## Example
 
 ```noqeri
-import "src/hex.nqr"
+import "src/hex.noqeri"
 
 let bytes: [u8; 2] = [222 as u8,173 as u8]
 let text: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
@@ -31,7 +31,7 @@ if hexEncode(slice(bytes), slice(text), true) != 4 as isize {
 Test locally:
 
 ```sh
-noqeri run tests/basic_test.nqr
+noqeri run tests/basic_test.noqeri
 ```
 
 License: GPL-3.0-only.
