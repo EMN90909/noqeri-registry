@@ -64,12 +64,12 @@ for (const pkg of index.packages || []) {
     const declaredLevel = typeof declaration === 'string' ? declaration : declaration.level || quality.default_level
     if (!rank.has(declaredLevel)) throw new Error(`invalid quality level for ${key}: ${declaredLevel}`)
     const dir = resolve(root, version.path)
-    const manifestPath = join(dir, 'package.nqr')
+    const manifestPath = join(dir, 'package.noqeri')
     const manifest = existsSync(manifestPath) ? readFileSync(manifestPath, 'utf8') : ''
     const entry = parseField(manifest, 'entry')
-    const sourceFiles = walk(join(dir, 'src')).filter(path => path.endsWith('.nqr'))
-    const testFiles = walk(join(dir, 'tests')).filter(path => path.endsWith('.nqr'))
-    const exampleFiles = walk(join(dir, 'examples')).filter(path => path.endsWith('.nqr'))
+    const sourceFiles = walk(join(dir, 'src')).filter(path => path.endsWith('.noqeri'))
+    const testFiles = walk(join(dir, 'tests')).filter(path => path.endsWith('.noqeri'))
+    const exampleFiles = walk(join(dir, 'examples')).filter(path => path.endsWith('.noqeri'))
     const readmePath = join(dir, 'README.md')
     const readme = existsSync(readmePath) ? readFileSync(readmePath, 'utf8') : ''
     const metrics = sourceMetrics(sourceFiles)

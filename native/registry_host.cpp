@@ -157,13 +157,13 @@ Archive makeArchive(const fs::path& root) {
     }
     std::sort(files.begin(),files.end(),[](const auto& a,const auto& b){return a.first<b.first;});
     auto m=std::find_if(files.begin(),files.end(),[](const auto& p){return p.first=="package.noqeri";});
-    if(m==files.end())m=std::find_if(files.begin(),files.end(),[](const auto& p){return p.first=="package.nqr";});
+    
     if(m==files.end())throw std::runtime_error("manifest missing");
     std::string manifest(m->second.begin(),m->second.end());
     std::smatch entryMatch;
     if(!std::regex_search(manifest,entryMatch,std::regex(R"REG(\bentry\s*:\s*"([^"]+)")REG")))
         throw std::runtime_error("manifest entry missing");
-    Archive archive;archive.entry=entryMatch[1];archive.legacy=(m->first=="package.nqr");
+    Archive archive;archive.entry=entryMatch[1];archive.legacy=(m->first=="package.noqeri");
     if(!safeRelative(archive.entry) ||
        std::none_of(files.begin(),files.end(),[&](const auto& p){return p.first==archive.entry;}))
         throw std::runtime_error("manifest entry invalid");

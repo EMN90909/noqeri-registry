@@ -49,7 +49,7 @@ export async function makeArchive(root) {
   }
   await walk(base,0)
   files.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0)
-  const manifest=files.find(f=>f.name==='package.noqeri')||files.find(f=>f.name==='package.nqr')
+  const manifest=files.find(f=>f.name==='package.noqeri')
   if(!manifest)throw new Error('package manifest missing (package.noqeri preferred)')
   const match=/\bentry\s*:\s*"([^"]+)"/.exec(manifest.data.toString('utf8'))
   const entry=safeRelative(match?.[1])
@@ -64,7 +64,7 @@ export async function makeArchive(root) {
   tar.push(Buffer.alloc(1024))
   const bytes=gzipSync(Buffer.concat(tar),{mtime:0,level:9})
   if(bytes.length>MAX_BYTES)throw new Error('archive exceeds compressed byte limit')
-  return {bytes,integrity:'sha256:'+createHash('sha256').update(bytes).digest('hex'),fileIntegrity:'sha256:'+fileHash.digest('hex'),entry,legacy:manifest.name==='package.nqr',
+  return {bytes,integrity:'sha256:'+createHash('sha256').update(bytes).digest('hex'),fileIntegrity:'sha256:'+fileHash.digest('hex'),entry,legacy:manifest.name==='package.noqeri',
     dependencies:Object.fromEntries([...manifest.data.toString('utf8').matchAll(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*:\s*"([a-z0-9-]+\/[a-z0-9-]+@[^"]+)"\s*$/gm)].map(m=>[m[1],m[2]]))}
 }
 export function artifactFile(root, sha) {

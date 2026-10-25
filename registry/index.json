@@ -696,7 +696,7 @@
     {
       "namespace": "noqeri",
       "name": "dom",
-      "description": "Typed DOM mutation helpers for .nqo browser modules.",
+      "description": "Typed DOM mutation helpers for .nqri browser modules.",
       "versions": [
         {
           "version": "1.0.0",
@@ -726,7 +726,7 @@
     {
       "namespace": "noqeri",
       "name": "fetch",
-      "description": "Non-blocking fetch handle API for browser .nqo modules.",
+      "description": "Non-blocking fetch handle API for browser .nqri modules.",
       "versions": [
         {
           "version": "1.0.0",

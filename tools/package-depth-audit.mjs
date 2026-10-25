@@ -32,7 +32,7 @@ function walk(directory) {
 
 function packageRoots() {
   return walk(root)
-    .filter((file) => path.basename(file) === 'package.nqr')
+    .filter((file) => path.basename(file) === 'package.noqeri')
     .map((file) => path.dirname(file))
     .sort();
 }
@@ -75,11 +75,11 @@ function codeMetrics(files) {
 }
 
 function auditPackage(directory) {
-  const manifestPath = path.join(directory, 'package.nqr');
+  const manifestPath = path.join(directory, 'package.noqeri');
   const manifest = fs.readFileSync(manifestPath, 'utf8');
-  const sourceFiles = walk(path.join(directory, 'src')).filter((file) => file.endsWith('.nqr'));
-  const testFiles = walk(path.join(directory, 'tests')).filter((file) => file.endsWith('.nqr'));
-  const exampleFiles = walk(path.join(directory, 'examples')).filter((file) => file.endsWith('.nqr'));
+  const sourceFiles = walk(path.join(directory, 'src')).filter((file) => file.endsWith('.noqeri'));
+  const testFiles = walk(path.join(directory, 'tests')).filter((file) => file.endsWith('.noqeri'));
+  const exampleFiles = walk(path.join(directory, 'examples')).filter((file) => file.endsWith('.noqeri'));
   const readme = fs.existsSync(path.join(directory, 'README.md'));
   const metrics = codeMetrics(sourceFiles);
   const packageName = parseField(manifest, 'name') || path.relative(root, directory).replaceAll(path.sep, '/');

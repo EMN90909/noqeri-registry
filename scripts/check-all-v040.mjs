@@ -10,8 +10,8 @@ const catalog=JSON.parse(readFileSync(join(root,'registry/index.json'),'utf8'))
 let passed=0,failed=0
 for(const p of catalog.packages){
  const testFolder=join(root,'packages',p.namespace,p.name,'0.4.0/tests')
- const fixtures=[join(testFolder,'release_smoke.nqr')]
- if(existsSync(join(testFolder,'0_4_regression.nqr')))fixtures.push(join(testFolder,'0_4_regression.nqr'))
+ const fixtures=[join(testFolder,'release_smoke.noqeri')]
+ if(existsSync(join(testFolder,'0_4_regression.noqeri')))fixtures.push(join(testFolder,'0_4_regression.noqeri'))
  for(const fixture of fixtures){
   const r=spawnSync(compiler,['check',fixture],{cwd:root,encoding:'utf8',timeout:30000})
   if(r.status===0&&!r.error){passed++;console.log('PASS '+p.name+' '+fixture.split('/').at(-1))}

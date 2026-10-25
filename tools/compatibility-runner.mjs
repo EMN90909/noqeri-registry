@@ -68,10 +68,10 @@ for (const namespace of dirs(packageRoot)) {
   for (const name of dirs(join(packageRoot, namespace))) {
     for (const version of dirs(join(packageRoot, namespace, name))) {
       const dir = join(packageRoot, namespace, name, version)
-      const manifestPath = join(dir, 'package.nqr')
+      const manifestPath = join(dir, 'package.noqeri')
       let entry = null
       if (existsSync(manifestPath)) entry = parseEntry(readFileSync(manifestPath, 'utf8'))
-      const testFiles = files(join(dir, 'tests'), '.nqr')
+      const testFiles = files(join(dir, 'tests'), '.noqeri')
       packages.push({ coordinate: `${namespace}/${name}`, version, dir, manifestPath, entry, testFiles })
     }
   }
