@@ -18,7 +18,7 @@ The parser operates on one record at a time. File streaming, character-set conve
 ## Example
 
 ```noqeri
-import "src/csv.nqr"
+import "src/csv.noqeri"
 
 let first: [u8; 3] = [97 as u8,44 as u8,98 as u8]
 let second: [u8; 2] = [111 as u8,107 as u8]
@@ -32,7 +32,7 @@ if csvJoin2(slice(first), slice(second), slice(row), 44 as u8) != 8 as isize {
 Test locally:
 
 ```sh
-noqeri run tests/basic_test.nqr
+noqeri run tests/basic_test.noqeri
 ```
 
 License: GPL-3.0-only.
