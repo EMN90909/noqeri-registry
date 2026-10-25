@@ -44,24 +44,121 @@ export function registryQueryStringBytesValid(length: usize): bool { return leng
 // The native boundary passes a borrowed buffer: it must stay alive for this call.
 // Route IDs: 1=health, 2=status, 3=index, 4=package-list,
 //            5=search, 6=advisories, 7=package subresource, 0=unknown.
-export function registryPathMatch(path: *u8, length: usize, literal: string, expected: usize): bool {
-    if path == null || length != expected { return false }
-    let i: usize = 0 as usize
-    while i < length {
-        // literal is a native NUL-terminated UTF-8 constant on the Stage-0 backend.
-        if path[i] != (literal as *u8)[i] { return false }
-        i = i + 1 as usize
-    }
-    return true
+export function registryIsHealth(path: *u8, length: usize): bool {
+    if path == null || length != 7 as usize { return false }
+    return path[0 as usize] == 47 as u8 &&
+        path[1 as usize] == 104 as u8 &&
+        path[2 as usize] == 101 as u8 &&
+        path[3 as usize] == 97 as u8 &&
+        path[4 as usize] == 108 as u8 &&
+        path[5 as usize] == 116 as u8 &&
+        path[6 as usize] == 104 as u8
 }
-export function registryPathPrefix(path: *u8, length: usize, literal: string, expected: usize): bool {
-    if path == null || length < expected { return false }
-    let i: usize = 0 as usize
-    while i < expected {
-        if path[i] != (literal as *u8)[i] { return false }
-        i = i + 1 as usize
-    }
-    return true
+
+export function registryIsStatus(path: *u8, length: usize): bool {
+    if path == null || length != 10 as usize { return false }
+    return path[0 as usize] == 47 as u8 &&
+        path[1 as usize] == 118 as u8 &&
+        path[2 as usize] == 49 as u8 &&
+        path[3 as usize] == 47 as u8 &&
+        path[4 as usize] == 115 as u8 &&
+        path[5 as usize] == 116 as u8 &&
+        path[6 as usize] == 97 as u8 &&
+        path[7 as usize] == 116 as u8 &&
+        path[8 as usize] == 117 as u8 &&
+        path[9 as usize] == 115 as u8
+}
+
+export function registryIsIndex(path: *u8, length: usize): bool {
+    if path == null || length != 9 as usize { return false }
+    return path[0 as usize] == 47 as u8 &&
+        path[1 as usize] == 118 as u8 &&
+        path[2 as usize] == 49 as u8 &&
+        path[3 as usize] == 47 as u8 &&
+        path[4 as usize] == 105 as u8 &&
+        path[5 as usize] == 110 as u8 &&
+        path[6 as usize] == 100 as u8 &&
+        path[7 as usize] == 101 as u8 &&
+        path[8 as usize] == 120 as u8
+}
+
+export function registryIsPackages(path: *u8, length: usize): bool {
+    if path == null || length != 12 as usize { return false }
+    return path[0 as usize] == 47 as u8 &&
+        path[1 as usize] == 118 as u8 &&
+        path[2 as usize] == 49 as u8 &&
+        path[3 as usize] == 47 as u8 &&
+        path[4 as usize] == 112 as u8 &&
+        path[5 as usize] == 97 as u8 &&
+        path[6 as usize] == 99 as u8 &&
+        path[7 as usize] == 107 as u8 &&
+        path[8 as usize] == 97 as u8 &&
+        path[9 as usize] == 103 as u8 &&
+        path[10 as usize] == 101 as u8 &&
+        path[11 as usize] == 115 as u8
+}
+
+export function registryIsSearch(path: *u8, length: usize): bool {
+    if path == null || length != 10 as usize { return false }
+    return path[0 as usize] == 47 as u8 &&
+        path[1 as usize] == 118 as u8 &&
+        path[2 as usize] == 49 as u8 &&
+        path[3 as usize] == 47 as u8 &&
+        path[4 as usize] == 115 as u8 &&
+        path[5 as usize] == 101 as u8 &&
+        path[6 as usize] == 97 as u8 &&
+        path[7 as usize] == 114 as u8 &&
+        path[8 as usize] == 99 as u8 &&
+        path[9 as usize] == 104 as u8
+}
+
+export function registryIsAdvisories(path: *u8, length: usize): bool {
+    if path == null || length != 14 as usize { return false }
+    return path[0 as usize] == 47 as u8 &&
+        path[1 as usize] == 118 as u8 &&
+        path[2 as usize] == 49 as u8 &&
+        path[3 as usize] == 47 as u8 &&
+        path[4 as usize] == 97 as u8 &&
+        path[5 as usize] == 100 as u8 &&
+        path[6 as usize] == 118 as u8 &&
+        path[7 as usize] == 105 as u8 &&
+        path[8 as usize] == 115 as u8 &&
+        path[9 as usize] == 111 as u8 &&
+        path[10 as usize] == 114 as u8 &&
+        path[11 as usize] == 105 as u8 &&
+        path[12 as usize] == 101 as u8 &&
+        path[13 as usize] == 115 as u8
+}
+
+export function registryIsPackageSubresource(path: *u8, length: usize): bool {
+    if path == null || length < 13 as usize { return false }
+    return path[0 as usize] == 47 as u8 &&
+        path[1 as usize] == 118 as u8 &&
+        path[2 as usize] == 49 as u8 &&
+        path[3 as usize] == 47 as u8 &&
+        path[4 as usize] == 112 as u8 &&
+        path[5 as usize] == 97 as u8 &&
+        path[6 as usize] == 99 as u8 &&
+        path[7 as usize] == 107 as u8 &&
+        path[8 as usize] == 97 as u8 &&
+        path[9 as usize] == 103 as u8 &&
+        path[10 as usize] == 101 as u8 &&
+        path[11 as usize] == 115 as u8 &&
+        path[12 as usize] == 47 as u8
+}
+export function registryIsGet(path: *u8, length: usize): bool {
+    if path == null || length != 3 as usize { return false }
+    return path[0 as usize] == 71 as u8 &&
+        path[1 as usize] == 69 as u8 &&
+        path[2 as usize] == 84 as u8
+}
+
+export function registryIsHead(path: *u8, length: usize): bool {
+    if path == null || length != 4 as usize { return false }
+    return path[0 as usize] == 72 as u8 &&
+        path[1 as usize] == 69 as u8 &&
+        path[2 as usize] == 65 as u8 &&
+        path[3 as usize] == 68 as u8
 }
 export function registryIdentityBytesValid(value: *u8, length: usize): bool {
     if value == null || length == 0 as usize || length > 128 as usize { return false }
@@ -73,8 +170,7 @@ export function registryIdentityBytesValid(value: *u8, length: usize): bool {
     return true
 }
 export function registryMethodValid(method: *u8, length: usize): bool {
-    return registryPathMatch(method, length, "GET", 3 as usize) ||
-        registryPathMatch(method, length, "HEAD", 4 as usize)
+    return registryIsGet(method, length) || registryIsHead(method, length)
 }
 export function registryPathSafe(path: *u8, length: usize): bool {
     if path == null || length == 0 as usize || !registryRequestPathBytesValid(length) { return false }
@@ -92,13 +188,13 @@ export function registryPathSafe(path: *u8, length: usize): bool {
 }
 export function registryRouteCode(path: *u8, length: usize): int {
     if !registryPathSafe(path, length) { return 0 }
-    if registryPathMatch(path, length, "/health", 7 as usize) { return 1 }
-    if registryPathMatch(path, length, "/v1/status", 10 as usize) { return 2 }
-    if registryPathMatch(path, length, "/v1/index", 9 as usize) { return 3 }
-    if registryPathMatch(path, length, "/v1/packages", 12 as usize) { return 4 }
-    if registryPathMatch(path, length, "/v1/search", 10 as usize) { return 5 }
-    if registryPathMatch(path, length, "/v1/advisories", 14 as usize) { return 6 }
-    if registryPathPrefix(path, length, "/v1/packages/", 13 as usize) { return 7 }
+    if registryIsHealth(path, length) { return 1 }
+    if registryIsStatus(path, length) { return 2 }
+    if registryIsIndex(path, length) { return 3 }
+    if registryIsPackages(path, length) { return 4 }
+    if registryIsSearch(path, length) { return 5 }
+    if registryIsAdvisories(path, length) { return 6 }
+    if registryIsPackageSubresource(path, length) { return 7 }
     return 0
 }
 
