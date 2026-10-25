@@ -1,5 +1,5 @@
 name = noqeri-registry
-version = 1.0.0
+version = 0.1.0
 edition = 2026
 entry = Programs/registry.noqeri
 profile = application
