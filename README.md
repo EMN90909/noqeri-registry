@@ -30,7 +30,7 @@
 
 **Noqeri Registry** hosts the official source catalog for [Noqeri](https://github.com/EMN90909/Noqeri) packages and an **experimental, read-only Registry HTTP API v1**. It contains historical library releases, deterministic `.nqpkg` archive tooling, a one-time catalog importer, metadata/advisory endpoints, quality policies and compatibility tests.
 
-**Current state:** The running HTTP service is a **Node.js 22** transport that loads metadata through an **external NoeSQL session**. The Noqeri-native application and its native host ABI are present as source but **not yet end-to-end qualified**. There is **no public package publishing API**, no production deployment guarantee and no verified stable package channel.
+**Current state:** The existing NoeSQL-backed production-style HTTP path remains a **Node.js 22** transport. A separate **Noqeri Stage-0 AOT + C++ POSIX native preview** is now available without any JavaScript runtime. It is explicitly source-index-backed and **not yet native NoeSQL qualified**. See [native preview](docs/NATIVE_PREVIEW.md). The legacy Node service loads metadata through an **external NoeSQL session**. The Noqeri-native application and its native host ABI are present as source but **not yet end-to-end qualified**. There is **no public package publishing API**, no production deployment guarantee and no verified stable package channel.
 
 ## At a glance
 
@@ -38,10 +38,22 @@
 | :--- | :--- | :--- |
 | Package catalog | `registry/index.json` and versioned `packages/` source tree | Historical source includes the legacy `.nqr` extension |
 | HTTP API | `GET` / `HEAD` metadata, search, advisories, and download routes | Node transport; experimental deployment |
+| Native Noqeri preview | Stage-0 compiled Noqeri routing plus C++ Linux HTTP/archives without a JavaScript runtime | Explicit source-index mode only; native NoeSQL integration pending |
 | Metadata storage | NoeSQL-backed `registry.noedb` and explicit one-time import | Requires a separately installed NoeSQL session |
 | Package archives | Deterministic tar.gz `.nqpkg` with SHA-256 integrity and input limits | Existing releases are not proof of native Stage-2 compatibility |
 | Native application | `Programs/registry.noqeri` and `src/registry.noqeri` | `registryHostServe` native binding is not qualified |
 | Quality and compatibility | Policy, checkers, test fixtures and release evidence tooling | Default quality is **experimental**, not stable |
+
+## Native Noqeri executable (experimental)
+
+The repository now includes a Linux x86-64 **Noqeri-compiled** read-only registry program. Route matching and protocol guards live in `src/registry.noqeri`. C++ supplies the operating-system socket, archive and JSON boundaries. It requires **no JavaScript runtime**, but the **source-index preview is not yet connected to native NoeSQL**. The older JavaScript server is retained for its currently functioning NoeSQL-backed session until native parity has been verified.
+
+```sh
+NOQERI_COMPILER=/path/to/noqeri make native
+REGISTRY_SOURCE_INDEX_PREVIEW=1 REGISTRY_ROOT="$PWD" ./build/native/noqeri-registry
+```
+
+See [native build, security boundaries and tests](docs/NATIVE_PREVIEW.md).
 
 ## Quick start
 
