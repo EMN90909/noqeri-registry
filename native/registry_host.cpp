@@ -489,5 +489,10 @@ extern "C" std::int64_t registryHostServe(const char*,const char*,std::int64_t d
         if(port<0||port>65535)throw std::runtime_error("invalid port");
         const char* host=std::getenv("REGISTRY_HOST");
         return startServer(catalog,int(port),host?host:"127.0.0.1");
-    }catch(const std::exception& e){std::cerr<<"registry native startup failed: "<<e.what()<<"\n";return -1;}
+    }catch(const std::exception& e){
+        std::cerr<<"registry native startup failed: "<<e.what()<<"\n";
+        // The Stage-0 top-level entry currently discards the main() return code.
+        // Fail closed with a nonzero process status instead of reporting success.
+        std::exit(EXIT_FAILURE);
+    }
 }
