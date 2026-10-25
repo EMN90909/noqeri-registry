@@ -9,6 +9,10 @@ async function walk(dir){let out=[];for(const item of await readdir(dir,{withFil
 test('all 55 registry packages have exactly one active canonical 0.1.0 source release',async()=>{
  const index=JSON.parse(await readFile(join(root,'registry/index.json'),'utf8'))
  assert.equal(index.packages.length,55)
+ const project=await readFile(join(root,'project.nqon'),'utf8')
+ assert.match(project,/version\s*=\s*0\.1\.0/)
+ const service=JSON.parse(await readFile(join(root,'package.json'),'utf8'))
+ assert.equal(service.version,'0.1.0')
  const seen=new Set()
  for(const pkg of index.packages){
    const key=pkg.namespace+'/'+pkg.name
@@ -17,6 +21,8 @@ test('all 55 registry packages have exactly one active canonical 0.1.0 source re
    assert.equal(active.length,1,key+' active release count')
    assert.equal(active[0].version,'0.1.0',key+' active release version')
    const dir=join(root,active[0].path)
+   const readme=await readFile(join(dir,'README.md'),'utf8')
+   assert.ok(readme.includes(key),key+' README identity')
    const manifest=await readFile(join(dir,'package.noqeri'),'utf8')
    assert.match(manifest,/\bversion:\s*"0\.1\.0"/,key)
    assert.ok(manifest.includes('name: "'+key+'"')||manifest.includes('namespace: "'+pkg.namespace+'"'),key+' manifest identity')

@@ -21,3 +21,4 @@ jobs:
           node-version: '22'
       - run: npm test
       - run: npm run verify:index
+      - run: node --check scripts/check-all-v010.mjs
