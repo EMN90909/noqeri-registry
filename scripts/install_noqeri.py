@@ -154,7 +154,10 @@ def unpack(path,fmt,folder,root_name,exe):
     executable=folder/root_name/"bin"/exe
     if not executable.is_file() or executable.stat().st_size==0:
         raise ValueError("bundle does not contain the Noqeri compiler")
-    if os.name!="nt": executable.chmod(executable.stat().st_mode | stat.S_IXUSR)
+    if os.name!="nt":
+        for binary in (executable, folder/root_name/"bin"/"noqeri-nqri"):
+            if binary.is_file():
+                binary.chmod(binary.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
     return folder/root_name
 
 def install(args):
