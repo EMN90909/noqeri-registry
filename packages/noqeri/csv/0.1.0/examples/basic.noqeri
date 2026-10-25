@@ -1,4 +1,4 @@
-import "../src/csv.nqr"
+import "../src/csv.noqeri"
 
 function main(): int {
     let first: [u8; 3] = [97 as u8,44 as u8,98 as u8]
