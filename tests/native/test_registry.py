@@ -34,8 +34,10 @@ class NativeRegistryTest(unittest.TestCase):
         line = cls.proc.stdout.readline().strip()
         matched = re.search(r"127\.0\.0\.1:(\d+)$", line)
         if not matched:
-            cls.proc.kill()
-            raise RuntimeError(f"native server did not start: {line}")
+            if cls.proc.poll() is None:
+                cls.proc.terminate()
+            _, stderr = cls.proc.communicate(timeout=5)
+            raise RuntimeError(f"native server did not start: {line!r}; exit={cls.proc.returncode}; stderr={stderr[-4000:]}")
         cls.port = int(matched.group(1))
 
     @classmethod
