@@ -1,4 +1,4 @@
-import "../src/toml.nqr"
+import "../src/toml.noqeri"
 
 function main(): int {
     if !(tomlBareKeyChar(95 as u8)) { return 1 }

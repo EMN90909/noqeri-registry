@@ -30,9 +30,9 @@ for (const namespace of dirs(packageRoot)) {
   for (const name of dirs(join(packageRoot, namespace))) {
     for (const version of dirs(join(packageRoot, namespace, name))) {
       const dir = join(packageRoot, namespace, name, version)
-      const manifest = join(dir, 'package.nqr')
+      const manifest = join(dir, 'package.noqeri')
       const testDir = join(dir, 'tests')
-      const hasTests = existsSync(testDir) && readdirSync(testDir).some(x => x.endsWith('.nqr'))
+      const hasTests = existsSync(testDir) && readdirSync(testDir).some(x => x.endsWith('.noqeri'))
       const hasExamples = existsSync(join(dir, 'examples'))
       for (const compiler of releases) {
         const coordinate = `${namespace}/${name}`

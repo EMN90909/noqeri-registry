@@ -1,4 +1,4 @@
-import "../src/std.nqr"
+import "../src/std.noqeri"
 
 function main(): int {
     if !std_portable() { return 1 }

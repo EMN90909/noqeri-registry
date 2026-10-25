@@ -143,7 +143,7 @@ All 54 library packages now have separate `0.1.0` release trees with `package.no
 | `.noedb` | NoeSQL metadata database file |
 | `.noqeri` / `.nqri` | Legacy language/bytecode names; **not** canonical for new releases |
 
-**Breaking change:** Every versioned `.nqr` source has been renamed to `.noqeri`. The previous `.nqr` and `.nqo` extensions are no longer supported.
+**Breaking change:** Every versioned `.noqeri` source has been renamed to `.noqeri`. The previous `.noqeri` and `.nqri` extensions are no longer supported.
 
 The `noqeri/pgas` packages demonstrate the current `.noqeri` layout: [PGAS 0.1.4 manifest](packages/noqeri/pgas/0.1.4/package.noqeri). Older package trees are archival compatibility surfaces, not automatically rewritten sources.
 

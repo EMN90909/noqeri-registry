@@ -2,7 +2,7 @@ package {
     name: "noqeri/websocket"
     version: "1.0.0"
     edition: "2026"
-    entry: "src/websocket.nqr"
+    entry: "src/websocket.noqeri"
     profile: "library"
     target: "portable"
     license: "GPL-3.0-only"

@@ -1,4 +1,4 @@
-import "../src/retry.nqr"
+import "../src/retry.noqeri"
 function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
 require(retryStatusTransient(429))
 require(!retryStatusTransient(400))

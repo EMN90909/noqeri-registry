@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
-import "../src/std.nqr"
+import "../src/std.noqeri"
 function main(): int {
     let value: usize = 0 as usize
     if !std_checked_add_usize(4 as usize, 5 as usize, &value) { return 1 }

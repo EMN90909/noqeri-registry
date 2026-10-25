@@ -1,4 +1,4 @@
-import "../src/resend.nqr"
+import "../src/resend.noqeri"
 function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
 require(resendEmailsUrl() == "https://api.resend.com/emails")
 require(resendCredentialPresent("re_12345678"))

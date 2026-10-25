@@ -2,7 +2,7 @@ package {
     name: "noqeri/fetch"
     version: "1.0.0"
     edition: "2026"
-    entry: "src/fetch.nqr"
+    entry: "src/fetch.noqeri"
     profile: "library"
     target: "portable"
     license: "GPL-3.0-only"

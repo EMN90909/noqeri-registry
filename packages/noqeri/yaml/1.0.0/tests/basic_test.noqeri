@@ -1,4 +1,4 @@
-import "../src/yaml.nqr"
+import "../src/yaml.noqeri"
 
 function main(): int {
     if !(yamlDepthValid(32 as usize)) { return 1 }

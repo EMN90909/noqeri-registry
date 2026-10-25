@@ -1,3 +1,3 @@
 // SPDX-License-Identifier: GPL-3.0-only
-import "../src/sentry.nqr"
+import "../src/sentry.noqeri"
 function main(): int { return 0 }

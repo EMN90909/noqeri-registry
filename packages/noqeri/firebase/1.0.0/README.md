@@ -2,7 +2,7 @@
 
 Noqeri-native access to Firebase Authentication REST and Cloud Firestore REST endpoints. Firestore user calls use Firebase ID-token bearer authentication so Firestore Security Rules remain active.
 
-```nqr
+```noqeri
 import package "noqeri/firebase"
 let url = firebaseDocumentUrl("my-project", "cities/Nairobi")
 ```

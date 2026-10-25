@@ -16,7 +16,7 @@ The package performs no allocation and no I/O. This makes it suitable for files,
 ## Example
 
 ```noqeri
-import "src/base64.nqr"
+import "src/base64.noqeri"
 
 let input: [u8; 3] = [77 as u8,97 as u8,110 as u8]
 let output: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
@@ -30,7 +30,7 @@ if base64Encode(slice(input), slice(output)) != 4 as isize {
 Run the package test with the Noqeri compiler from this version directory:
 
 ```sh
-noqeri run tests/basic_test.nqr
+noqeri run tests/basic_test.noqeri
 ```
 
 License: GPL-3.0-only.

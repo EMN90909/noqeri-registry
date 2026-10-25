@@ -2,7 +2,7 @@
 
 Native Noqeri wrapper for Supabase Data REST, Auth and Storage URL surfaces. Data requests use the project API key and optional user bearer token so Supabase Row Level Security can remain the authorization boundary.
 
-```nqr
+```noqeri
 import package "noqeri/supabase"
 let rows = supabaseSelect(url, publishableKey, userJwt, "profiles", "select=id,name")
 ```

@@ -1,4 +1,4 @@
-import "../src/base64.nqr"
+import "../src/base64.noqeri"
 
 function main(): int {
     let message: [u8; 3] = [77 as u8,97 as u8,110 as u8]

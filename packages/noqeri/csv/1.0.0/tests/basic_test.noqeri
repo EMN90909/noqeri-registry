@@ -1,4 +1,4 @@
-import "../src/csv.nqr"
+import "../src/csv.noqeri"
 
 function main(): int {
     let record: [u8; 19] = [65 as u8,108 as u8,105 as u8,99 as u8,101 as u8,44 as u8,34 as u8,78 as u8,97 as u8,105 as u8,114 as u8,111 as u8,98 as u8,105 as u8,44 as u8,32 as u8,75 as u8,69 as u8,34 as u8]

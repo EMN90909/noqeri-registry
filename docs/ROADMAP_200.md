@@ -4,7 +4,7 @@ Noqeri 1.0 begins the move from a compiler-focused repository into a usable appl
 
 ## 1.0 implemented/usable surfaces
 
-Core/std/security/test plus json, http, http-server, url, html, web, dom, fetch, router, fs, env, crypto, db, time and websocket are published as 1.0 package surfaces. Browser implementations are supplied by the `.nqo` runtime. Server-only interfaces require a host provider. PostgreSQL, SQLite interoperability, low-level net and TLS are explicitly experimental until provider implementations and integration tests exist.
+Core/std/security/test plus json, http, http-server, url, html, web, dom, fetch, router, fs, env, crypto, db, time and websocket are published as 1.0 package surfaces. Browser implementations are supplied by the `.nqri` runtime. Server-only interfaces require a host provider. PostgreSQL, SQLite interoperability, low-level net and TLS are explicitly experimental until provider implementations and integration tests exist.
 
 ## Production rule
 

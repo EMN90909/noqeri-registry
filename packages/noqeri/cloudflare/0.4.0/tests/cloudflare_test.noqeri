@@ -1,4 +1,4 @@
-import "../src/cloudflare.nqr"
+import "../src/cloudflare.noqeri"
 function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
 require(cloudflareZonesUrl() == "https://api.cloudflare.com/client/v4/zones")
 require(!cloudflareCredentialPresent("tiny"))

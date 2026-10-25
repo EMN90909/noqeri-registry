@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
-import "../src/glob.nqr"
+import "../src/glob.noqeri"
 
 function main(): int {
     let pattern: [u8; 9] = [115 as u8,114 as u8,99 as u8,47 as u8,42 as u8,46 as u8,110 as u8,113 as u8,114 as u8]

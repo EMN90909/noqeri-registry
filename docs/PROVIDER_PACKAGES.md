@@ -4,7 +4,7 @@ The registry now carries Noqeri-authored adapters for common hosted services. Pa
 
 Use the new package import form:
 
-```nqr
+```noqeri
 import package "noqeri/supabase"
 import package "noqeri/firebase"
 ```

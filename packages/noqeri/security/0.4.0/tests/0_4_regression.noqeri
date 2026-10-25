@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
-import "../src/memory.nqr"
+import "../src/memory.noqeri"
 function main(): int {
     if !zeroMemoryChecked(null as *volatile u8, 0 as usize) { return 1 }
     if zeroMemoryChecked(null as *volatile u8, 2 as usize) { return 2 }

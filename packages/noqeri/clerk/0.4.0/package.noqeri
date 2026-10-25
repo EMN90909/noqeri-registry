@@ -2,7 +2,7 @@ package {
     name: "noqeri/clerk"
     version: "0.4.0"
     edition: "2026"
-    entry: "src/clerk.nqr"
+    entry: "src/clerk.noqeri"
     profile: "library"
     target: "portable"
     license: "GPL-3.0-only"

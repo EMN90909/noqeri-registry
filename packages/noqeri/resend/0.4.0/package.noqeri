@@ -2,7 +2,7 @@ package {
     name: "noqeri/resend"
     version: "0.4.0"
     edition: "2026"
-    entry: "src/resend.nqr"
+    entry: "src/resend.noqeri"
     profile: "library"
     target: "portable"
     license: "GPL-3.0-only"

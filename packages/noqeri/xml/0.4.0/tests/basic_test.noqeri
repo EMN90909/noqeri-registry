@@ -1,4 +1,4 @@
-import "../src/xml.nqr"
+import "../src/xml.noqeri"
 
 function main(): int {
     if !(xmlNameStart(65 as u8)) { return 1 }
