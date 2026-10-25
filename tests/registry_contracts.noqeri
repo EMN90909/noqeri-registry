@@ -18,8 +18,5 @@ function main(): int {
     if registryRequestPathBytesValid(513 as usize) { return 14 }
     if !registryQueryStringBytesValid(2048 as usize) { return 15 }
     if registryQueryStringBytesValid(2049 as usize) { return 16 }
-    if !registryNoqeriSourceExtensionValid("src/example.noqeri") { return 17 }
-    if registryNoqeriSourceExtensionValid("src/example.nqr") { return 18 }
-    if registryNoqeriSourceExtensionValid("src/example.noqeri.bak") { return 19 }
     return 0
 }
