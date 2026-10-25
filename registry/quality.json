@@ -9,5 +9,5 @@
     "core": "Stable requirements plus at least two stable release cycles, migration policy, verified offline installation and an identified maintainer."
   },
   "packages": {},
-  "note": "The conservative default is intentional. Packages are promoted explicitly only after tools/package-quality.mjs shows the requested level is supported by evidence."
+  "note": "The conservative default is intentional. Packages are promoted explicitly only after new Go-based tests and independently reviewed package evidence establish the requested level."
 }
