@@ -22,8 +22,9 @@ Open `http://localhost:8080/health` or `/v1/packages`.
 Set `PORT` to override the port. Compile native Noqeri policy with
 `make check-noqeri` when the standalone Noqeri compiler is installed.
 
-The service uses only the Go standard library. The prior Node.js, Python
-and C++ implementations have been removed.
+The public registry server uses the Go standard library. The separate privileged
+host runtime uses pinned Go PostgreSQL and SQLite drivers. The prior Node.js,
+Python and C++ registry implementation has been removed.
 
 ## API
 
@@ -56,6 +57,14 @@ by Go tests. Run `make audit` for package counts.
 
 ## Forty-two international-preview packages (0.1.1)
 
-Forty-two packages now have independently authored MIT Noqeri `0.1.1` sources, executable regressions, examples and API references. The third release batch adds `http`, `json`, `jwt`, `neon`, `net`, `openai`, `pgas`, `planetscale`, `postgres`, `rate-limit`, `regex-lite`, `resend`, `retry`, `router`, `security`, `semver`, `sentry`, `sqlite`, `std`, `stripe`, `supabase` and `tailwind`. Their network-facing adapters still require a secure host implementation for the declared transport interfaces. Use the version-qualified package path to choose `0.1.1`; higher-version experimental packages are not implicitly overwritten.
+Forty-two packages now have independently authored MIT Noqeri `0.1.1` sources, executable regressions, examples and API references. The third release batch adds `http`, `json`, `jwt`, `neon`, `net`, `openai`, `pgas`, `planetscale`, `postgres`, `rate-limit`, `regex-lite`, `resend`, `retry`, `router`, `security`, `semver`, `sentry`, `sqlite`, `std`, `stripe`, `supabase` and `tailwind`. A real, credential-isolated **Go host process** now implements HTTPS transport,
+SQLite/PostgreSQL SQL execution, transaction APIs, and Stripe webhook-signature
+verification through a versioned JSON-lines bridge. Its tested host operations
+can be accessed by a trusted launcher; direct Noqeri Stage-0 ABI service
+registration remains an outstanding compiler integration task. Use the version-qualified package path to choose `0.1.1`; higher-version experimental packages are not implicitly overwritten.
 
 **Licensing:** MIT is the default license for original new work and these forty-two `0.1.1` releases. Older GPL-3.0-only files remain GPL-3.0-only. See [license scope](LICENSES/README.md).
+
+## Privileged API and database host
+
+Use `make host` for the stdin/stdout Go host and `make host-test` for real SQLite integration checks. Provider credentials and database DSNs stay in environment variables, not package source code or messages. See [host runtime, security contract, and integration examples](docs/HOST_RUNTIME.md). Auth0, Clerk, Supabase, Stripe, Firebase, Neon, PlanetScale, Resend, GitHub and other provider operations are restricted to provider-approved HTTPS hosts. Authenticated live tests require operator-supplied scoped secrets and are never run by default.
