@@ -22,7 +22,29 @@ SHA256=re.compile(r"^[a-f0-9]{64}$")
 SAFE_FILE=re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,127}$")
 OS={"windows":"Windows","macos":"macOS","linux":"Linux","android":"Android","freebsd":"FreeBSD","openbsd":"OpenBSD"}
 CPU={"x86_64":"x86-64 / AMD64","arm64":"ARM64 / AArch64","armv7":"ARMv7","x86":"x86 32-bit","riscv64":"RISC-V 64","ppc64le":"PowerPC LE","s390x":"IBM Z"}
-FORMAT={"binary":"Executable","gz":"Gzip binary","tar":"TAR","tar.gz":"TAR.GZ","zip":"ZIP"}
+FORMAT={"binary":"Executable","gz":"Gzip binary","tar":"TAR","tar.gz":"TAR.GZ","zip":"ZIP",
+        "deb":"Debian / Ubuntu (.deb)","rpm":"Fedora / RHEL (.rpm)",
+        "msi":"Windows installer (.msi)","setup.exe":"Windows Setup (.exe)",
+        "pkg":"Native .pkg installer","pkg.tgz":"OpenBSD .pkg.tgz",
+        "termux.deb":"Android Termux (.deb)","apk":"Android APK (debug, multi-ABI)"}
+INSTALLERS={
+    "deb":{"linux"},"rpm":{"linux"},"msi":{"windows"},"setup.exe":{"windows"},
+    "pkg":{"macos","freebsd"},"pkg.tgz":{"openbsd"},
+    "termux.deb":{"android"},"apk":{"android"},
+}
+
+def correct_name(version,os_name,cpu,fmt,filename):
+    if fmt not in INSTALLERS:
+        return filename.startswith(f"noqeri-v{version}-{os_name}-{cpu}")
+    if os_name not in INSTALLERS[fmt]: return False
+    if fmt=="apk":
+        return filename==f"noqeri-{version}-android-universal-debug.apk"
+    old_cpu="aarch64" if cpu=="arm64" else cpu
+    base=f"noqeri-{version}-{os_name}-{old_cpu}"
+    tails={"deb":".deb","rpm":".rpm","msi":".msi",
+           "setup.exe":"-setup.exe","pkg":".pkg",
+           "pkg.tgz":".pkg.tgz","termux.deb":"-termux.deb"}
+    return filename==base+tails[fmt]
 
 def fail(msg):
     raise ValueError(msg)
@@ -88,7 +110,7 @@ def verify_release(release,manifest,verify_bytes=True):
         for item in target.get("assets",[]):
             filename,sha=item.get("filename"),item.get("sha256")
             if not isinstance(filename,str) or not SAFE_FILE.fullmatch(filename): fail("unsafe filename")
-            if not filename.startswith(f"noqeri-v{version}-{os_name}-{cpu}"): fail("mislabelled binary target")
+            if not correct_name(version,os_name,cpu,item.get("format"),filename): fail("mislabelled OS/CPU installer or binary target")
             if filename in files: fail("duplicate target asset")
             files.add(filename)
             if item.get("format") not in FORMAT or not isinstance(sha,str) or not SHA256.fullmatch(sha):
