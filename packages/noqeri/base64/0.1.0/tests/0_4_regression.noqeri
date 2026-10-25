@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
-import "../src/base64.nqr"
+import "../src/base64.noqeri"
 function main(): int {
     let safe: [u8; 2] = [45 as u8, 95 as u8]
     let standard: [u8; 2] = [43 as u8, 47 as u8]

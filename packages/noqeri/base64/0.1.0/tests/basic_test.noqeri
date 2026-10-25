@@ -1,4 +1,4 @@
-import "../src/base64.nqr"
+import "../src/base64.noqeri"
 
 function main(): int {
     let source: [u8; 6] = [79 as u8,112 as u8,101 as u8,110 as u8,65 as u8,73 as u8]
