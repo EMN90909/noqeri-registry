@@ -1,4 +1,4 @@
-# Noqeri Registry
+# Noqeri Registry (0.1.0 canonical package baseline)
 
 Official package registry source and **experimental NoeSQL-backed Registry API v1**. Canonical Registry application, test and policy sources use `.noqeri`; package releases are distributed in deterministic, checksum-verified `.nqpkg` archives.
 
@@ -37,18 +37,19 @@ The canonical Noqeri-native application source is `Programs/registry.noqeri`, im
 ```sh
 npm test                  # public transport, semver and artifact integrity checks
 npm run test:integration  # requires private NoeSQL session, persists/reopens registry.noedb
+NOQERI_BIN=/absolute/path/to/noqeri npm run test:compiler # explicit native compiler qualification
 node scripts/verify-index.mjs
 ```
 
 Public GitHub Actions CI runs these public contract tests. The genuine NoeSQL metadata persistence test reopens the file with a fresh engine session and is separately gated behind the private NoeSQL checkout. An authorized workflow is available at [NoeSQL E2E (manual)](.github/workflows/noesql-e2e-manual.yml); it needs a scoped read-only `NOESQL_READ_TOKEN` secret. **Passing public mocks does not establish private engine qualification.**
 
-## Historical package releases
+## Canonical package baseline (0.1.0)
 
-As of October 21, 2026, `main` contains **8 active `.noqeri` files and 425 historical `.nqr` files**. The `packages/` tree contains immutable historical `.nqr` and `package.nqr` sources. Those files are **legacy release contents**, not current application source. Renaming or overwriting already-published files would break reproducibility, archival checksums, and existing lockfiles. New packages should use canonical `.noqeri` and `package.noqeri` and publish new versions, not mutate historical versions. Use the `tests/fixtures/legacy/` pattern for compatibility tests as needed.
+The registry contains 55 package coordinates, each with a canonical `0.1.0` source release under `packages/noqeri/<name>/0.1.0`. Package manifests, entrypoints, tests and examples in those new directories use `.noqeri`. Compiled Noqeri output uses `.nqri`; this repository contained no `.nqo` files.
 
-The `0.4.0` package refresh is in the historical index, and earlier `1.x` versions may be yanked. The current Registry API declines public downloads of yanked versions, so restoring old pinned online installs needs an explicitly reviewed policy change. Do not claim all 54 package releases have native Stage-2 compiler parity.
+**Historical releases are intentionally retained.** The older `.nqr` files under older version directories are immutable. Renaming historical release bytes would invalidate reproducibility and checksum assurances. The bootstrap index marks previous active releases yanked as part of the requested `0.1.0` reset; this can break online installs with pinned older versions. See [migration notes](docs/MIGRATION_0_1_0.md) before deploying.
 
-`registry/index.json` may also contain historical names like NoqeriDB, NoqeriSQL or references to `.nqo`. These are archive descriptions and **not** endorsements of those superseded active formats.
+The new sources are experimental migration candidates, not evidence of native compiler parity. The Node 22 `.mjs` compatibility transport still serves HTTP because the Noqeri host ABI, native NoeSQL connection and Stage-2 executable have not been qualified. **The registry has not been fully rewritten from JavaScript into a working pure-Noqeri service.**
 
 ## License
 

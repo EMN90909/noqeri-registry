@@ -28,7 +28,7 @@ function header(name, bytes) {
   h.write(oct(total,8),148,8,'ascii')
   return h
 }
-export async function makeArchive(root) {
+export async function makeArchive(root,{allowLegacy=false}={}) {
   const base = resolve(root), files = []
   let total = 0, directories = 0
   async function walk(dir, depth) {
@@ -49,10 +49,12 @@ export async function makeArchive(root) {
   }
   await walk(base,0)
   files.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0)
-  const manifest=files.find(f=>f.name==='package.noqeri')||files.find(f=>f.name==='package.nqr')
+  if(!allowLegacy && files.some(f=>/\.(?:nqr|nqo)$/.test(f.name)))throw new Error('legacy source extension forbidden in canonical package')
+  const manifest=files.find(f=>f.name==='package.noqeri')||(allowLegacy?files.find(f=>f.name==='package.nqr'):undefined)
   if(!manifest)throw new Error('package manifest missing (package.noqeri preferred)')
   const match=/\bentry\s*:\s*"([^"]+)"/.exec(manifest.data.toString('utf8'))
   const entry=safeRelative(match?.[1])
+  if(!allowLegacy && !entry.endsWith('.noqeri'))throw new Error('canonical package entry must be .noqeri')
   if(!files.some(f=>f.name===entry))throw new Error('entry absent from archive')
   const fileHash=createHash('sha256')
   const tar=[]

@@ -22,3 +22,30 @@ export function registryServe(port: int): isize {
     if !registryPortValid(port) { return -1 }
     return registryHostServe("registry.noedb", "artifacts", port)
 }
+
+// Pure Noqeri-side validation for eventual native HTTP integration.
+// The host implementation must apply identical checks before touching storage.
+export function registryReadMethodValid(method: []u8): bool {
+    if len(method) == 3 as usize {
+        return method[0] == 71 as u8 && method[1] == 69 as u8 && method[2] == 84 as u8
+    }
+    if len(method) == 4 as usize {
+        return method[0] == 72 as u8 && method[1] == 69 as u8 && method[2] == 65 as u8 && method[3] == 68 as u8
+    }
+    return false
+}
+export function registryPaginationValid(offset: int, limit: int): bool {
+    return offset >= 0 && offset <= 99999999 && limit >= 1 && limit <= 100
+}
+export function registryHexDigitValid(value: u8): bool {
+    return (value >= 48 as u8 && value <= 57 as u8) || (value >= 97 as u8 && value <= 102 as u8)
+}
+export function registryDigestValid(digest: []u8): bool {
+    if len(digest) != 64 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(digest) {
+        if !registryHexDigitValid(digest[i]) { return false }
+        i = i + 1 as usize
+    }
+    return true
+}

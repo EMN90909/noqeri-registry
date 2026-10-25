@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/std.noqeri"
+function main(): int {
+    let value: usize = 0 as usize
+    if !std_checked_add_usize(4 as usize, 5 as usize, &value) { return 1 }
+    if value != 9 as usize { return 2 }
+    if std_checked_add_usize(1 as usize, 2 as usize, null as *usize) { return 3 }
+    if std_checked_mul_usize(9223372036854775807 as usize, 2 as usize, &value) { return 4 }
+    return 0
+}
