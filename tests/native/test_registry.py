@@ -59,6 +59,14 @@ class NativeRegistryTest(unittest.TestCase):
         finally:
             conn.close()
 
+    def test_preview_opt_in_required(self):
+        env = dict(os.environ)
+        env.pop("REGISTRY_SOURCE_INDEX_PREVIEW", None)
+        result = subprocess.run([str(BINARY)], cwd=ROOT, env=env,
+                                capture_output=True, text=True, timeout=5)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("REGISTRY_SOURCE_INDEX_PREVIEW=1", result.stderr)
+
     def test_registry_index_matches_canonical_source(self):
         status, _, body = self.request("GET", "/v1/index")
         self.assertEqual(status, 200)
