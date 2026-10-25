@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
-import "../src/rate_limit.nqr"
+import "../src/rate_limit.noqeri"
 function main(): int {
     if rateLimitRefill(5 as i64, 100 as i64, 1000 as i64, 5 as i64) != 10 as i64 { return 1 }
     if rateLimitRefill(5 as i64, 100 as i64, 9223372036854775807 as i64, 9223372036854775807 as i64) != 100 as i64 { return 2 }

@@ -1,4 +1,4 @@
-import "../src/hex.nqr"
+import "../src/hex.noqeri"
 
 function main(): int {
     let source: [u8; 4] = [0 as u8,15 as u8,160 as u8,255 as u8]
