@@ -13,7 +13,8 @@ struct Abi {
     void* context;
     std::int32_t (*write)(void*,const char*,std::size_t);
     std::int64_t (*clockMillis)(void*);
-    struct Name {const char* data;std::size_t size;} (*platform)(void*);
+    struct Name {const char* data;std::size_t size;};
+    Name (*platform)(void*);
     std::size_t services;
     const void* serviceTable;
 };
