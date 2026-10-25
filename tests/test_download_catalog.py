@@ -52,6 +52,21 @@ class RegistryReleaseCatalogTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             sync.verify_release(release,manifest,verify_bytes=False)
 
+    def test_native_os_installers_require_exact_published_architecture(self):
+        self.assertTrue(sync.correct_name(VERSION,"linux","x86_64","deb","noqeri-0.1.3-linux-x86_64.deb"))
+        self.assertTrue(sync.correct_name(VERSION,"windows","arm64","setup.exe","noqeri-0.1.3-windows-aarch64-setup.exe"))
+        self.assertTrue(sync.correct_name(VERSION,"freebsd","arm64","pkg","noqeri-0.1.3-freebsd-aarch64.pkg"))
+        self.assertTrue(sync.correct_name(VERSION,"android","x86_64","apk","noqeri-0.1.3-android-universal-debug.apk"))
+        self.assertFalse(sync.correct_name(VERSION,"android","x86_64","msi","noqeri-0.1.3-android-x86_64.msi"))
+        self.assertFalse(sync.correct_name(VERSION,"linux","arm64","rpm","noqeri-0.1.3-linux-x86_64.rpm"))
+        release,manifest=fixture()
+        filename="noqeri-0.1.3-linux-x86_64.deb"
+        release["assets"].append({"name":filename,"size":123,
+            "browser_download_url":"https://github.com/EMN90909/Noqeri/releases/download/v0.1.3/"+filename})
+        manifest["targets"][0]["assets"].append({"filename":filename,"format":"deb","bytes":123,"sha256":SHA})
+        result=sync.verify_release(release,manifest,verify_bytes=False)
+        self.assertIn("Debian / Ubuntu (.deb)",sync.page([result]))
+
     def test_fake_release_and_gpu_are_rejected(self):
         release,manifest=fixture()
         release["draft"]=True
