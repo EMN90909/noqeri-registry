@@ -1,0 +1,68 @@
+name: Build and publish twenty-two Noqeri 0.1.1 packages
+on:
+  push:
+    branches: [main]
+    paths:
+      - release-011-batch3.json
+      - cmd/releasebatch3/**
+      - .github/workflows/release-batch3.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  generate-compile-test-commit:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - name: Generate 0.1.1 package files and catalog
+        run: |
+          go run ./cmd/releasebatch3
+          go test ./...
+          go run ./cmd/registryctl -root . verify
+          go run ./cmd/releasebatch3
+          git diff --check
+      - uses: actions/checkout@v4
+        with:
+          repository: EMN90909/Noqeri
+          path: .noqeri-toolchain
+      - name: Build official Noqeri compiler
+        run: |
+          cmake -S .noqeri-toolchain -B /tmp/batch3-compiler -DCMAKE_BUILD_TYPE=Release -DNOQERI_GRAPHICS_PORTABLE_BUILD=ON
+          cmake --build /tmp/batch3-compiler --target noqeri -j 2
+      - name: Compile and execute twenty-two regression tests and examples
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in http json jwt neon net openai pgas planetscale postgres rate-limit regex-lite resend retry router security semver sentry sqlite std stripe supabase tailwind; do
+            dir="packages/noqeri/$name/0.1.1"
+            /tmp/batch3-compiler/noqeri check "$dir/tests/regression.noqeri"
+            if ! actual=$(/tmp/batch3-compiler/noqeri run "$dir/tests/regression.noqeri" 2>&1); then
+              printf '%s\n' "$actual"
+              exit 1
+            fi
+            echo "$name: $actual"
+            if ! printf '%s\n' "$actual" | tail -n 1 | grep -Fxq '0'; then
+              echo "::error::$name behavioral regression failed"
+              exit 1
+            fi
+            /tmp/batch3-compiler/noqeri check "$dir/examples/basic.noqeri"
+            grep -q 'license: "MIT"' "$dir/package.noqeri"
+            grep -q 'SPDX-License-Identifier: MIT' "$dir/src/"*.noqeri
+          done
+      - name: Commit generated package releases and registry entries
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add packages/ registry/index.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Ship twenty-two MIT Noqeri 0.1.1 libraries with tested implementations'
+            git push origin HEAD:main
+          fi
