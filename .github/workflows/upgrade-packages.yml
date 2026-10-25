@@ -1,0 +1,58 @@
+name: Strengthen Noqeri package catalog
+on:
+  push:
+    branches: [main]
+    paths:
+      - cmd/packageupgrade/**
+      - package-upgrades.json
+      - .github/workflows/upgrade-packages.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  upgrade:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - name: Generate and audit every versioned package
+        run: |
+          go run ./cmd/packageupgrade
+          go run ./cmd/packageupgrade --check
+          go test ./...
+          go run ./cmd/registryctl -root . verify
+      - uses: actions/checkout@v4
+        with:
+          repository: EMN90909/Noqeri
+          path: .compiler-toolchain
+      - name: Build Noqeri language compiler
+        run: |
+          cmake -S .compiler-toolchain -B /tmp/noqeri-package-compiler -DCMAKE_BUILD_TYPE=Release -DNOQERI_GRAPHICS_PORTABLE_BUILD=ON
+          cmake --build /tmp/noqeri-package-compiler --target noqeri -j 2
+      - name: Check enhanced canonical package source and capability tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          for t in packages/noqeri/*/0.1.0/tests/capability_regression.noqeri; do
+            src="${t%/tests/capability_regression.noqeri}"
+            /tmp/noqeri-package-compiler/noqeri check "$t"
+            count=$((count + 1))
+          done
+          echo "Checked $count enhanced package contracts with Noqeri compiler"
+      - name: Commit package implementation and documentation upgrade
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add packages/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Expand foundational Noqeri capabilities across versioned package catalog'
+            git push origin HEAD:main
+          fi
