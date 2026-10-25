@@ -32,6 +32,10 @@ test('Registry v1 transport exposes deterministic metadata and SHA-verified arch
   const url='http://127.0.0.1:'+server.address().port
   const index=await(await fetch(url+'/v1/index')).json()
   assert.equal(index.packages[0].name,'demo')
+  const indexHead=await fetch(url+'/v1/index',{method:'HEAD'})
+  assert.equal(indexHead.status,200)
+  assert.ok(Number(indexHead.headers.get('content-length'))>0)
+  assert.equal((await fetch(url+'/v1/search?q='+('x'.repeat(2050)))).status,414)
   assert.deepEqual((await(await fetch(url+'/v1/packages/noqeri/demo/versions')).json()).versions.map(v=>v.version),['2.0.0','1.0.0'])
   assert.equal((await fetch(url+'/v1/packages/noqeri/demo/2.0.0/download')).status,404)
   assert.equal((await fetch(url+'/v1/packages/noqeri/%2e%2e%2fbad/1.0.0/download')).status,400)
