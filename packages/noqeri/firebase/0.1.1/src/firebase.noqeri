@@ -1,0 +1,72 @@
+// SPDX-License-Identifier: MIT
+module noqeri.firebase
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+export function firebaseAuthRoot(): string { return "https://identitytoolkit.googleapis.com/v1" }
+export function firebaseTokenRoot(): string { return "https://securetoken.googleapis.com/v1" }
+export function firebaseFirestoreRoot(): string { return "https://firestore.googleapis.com/v1" }
+export function firebaseCredentialPresent(token: string): bool { return textLength(token) >= 8 }
+export function firebaseLastStatus(): int { return providerHttpStatus() }
+export function firebaseSuccess(code: int): bool { return code >= 200 && code <= 299 }
+export function firebaseRetryable(code: int): bool { return code == 408 || code == 429 || code == 500 || code == 502 || code == 503 || code == 504 }
+export function firebaseIdentifierAllowed(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 45 as u8 || c == 95 as u8
+}
+export function firebaseProjectIdValid(value: []u8): bool {
+    if len(value) < 6 as usize || len(value) > 30 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(value) {
+        if !firebaseIdentifierAllowed(value[i]) { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function firebaseAuthSignInUrl(key: string): string {
+    return firebaseAuthRoot() + "/accounts:signInWithPassword?key=" + key
+}
+export function firebaseAuthSignUpUrl(key: string): string {
+    return firebaseAuthRoot() + "/accounts:signUp?key=" + key
+}
+export function firebaseAuthLookupUrl(key: string): string {
+    return firebaseAuthRoot() + "/accounts:lookup?key=" + key
+}
+export function firebaseAuthPasswordResetUrl(key: string): string {
+    return firebaseAuthRoot() + "/accounts:sendOobCode?key=" + key
+}
+export function firebaseTokenRefreshUrl(key: string): string {
+    return firebaseTokenRoot() + "/token?key=" + key
+}
+export function firebaseDocumentsRoot(project: string): string {
+    return firebaseFirestoreRoot() + "/projects/" + project + "/databases/(default)/documents"
+}
+export function firebaseDocumentUrl(project: string, relative: string): string {
+    return firebaseDocumentsRoot(project) + "/" + relative
+}
+export function firebaseRunQueryUrl(project: string): string {
+    return firebaseDocumentsRoot(project) + ":runQuery"
+}
+export function firebaseCommitUrl(project: string): string {
+    return firebaseDocumentsRoot(project) + ":commit"
+}
+export function firebaseAuthRequest(key: string, endpoint: string, body: string): string {
+    if textLength(key) < 8 || textLength(body) == 0 || textLength(body) > 1048576 { return "" }
+    return providerHttpJson("POST",endpoint,"none","","","",body)
+}
+export function firebaseSignInPassword(key: string, body: string): string {
+    return firebaseAuthRequest(key,firebaseAuthSignInUrl(key),body)
+}
+export function firebaseSignUp(key: string, body: string): string {
+    return firebaseAuthRequest(key,firebaseAuthSignUpUrl(key),body)
+}
+export function firebaseGetDocument(project: string, token: string, relative: string): string {
+    if !firebaseCredentialPresent(token) || textLength(project) == 0 || textLength(relative) == 0 { return "" }
+    return providerHttpJson("GET",firebaseDocumentUrl(project,relative),"bearer",token,"","","")
+}
+export function firebaseRunQuery(project: string, token: string, body: string): string {
+    if !firebaseCredentialPresent(token) || textLength(project) == 0 { return "" }
+    return providerHttpJson("POST",firebaseRunQueryUrl(project),"bearer",token,"","",body)
+}
+export function firebaseCommit(project: string, token: string, body: string): string {
+    if !firebaseCredentialPresent(token) || textLength(project) == 0 { return "" }
+    return providerHttpJson("POST",firebaseCommitUrl(project),"bearer",token,"","",body)
+}

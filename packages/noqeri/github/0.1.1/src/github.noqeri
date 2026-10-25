@@ -1,0 +1,47 @@
+// SPDX-License-Identifier: MIT
+module noqeri.github
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+export function githubApiRoot(): string { return "https://api.github.com" }
+export function githubLastStatus(): int { return providerHttpStatus() }
+export function githubCredentialPresent(token: string): bool { return textLength(token) >= 8 }
+export function githubStatusSuccess(status: int): bool { return status >= 200 && status <= 299 }
+export function githubStatusRateLimited(status: int): bool { return status == 403 || status == 429 }
+export function githubStatusRetryable(status: int): bool { return status == 408 || status == 429 || status == 502 || status == 503 || status == 504 }
+export function githubPathChar(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 95 as u8 || c == 45 as u8 || c == 46 as u8
+}
+export function githubRepoNameValid(name: []u8): bool {
+    if len(name) == 0 as usize || len(name) > 100 as usize { return false }
+    if len(name) == 1 as usize && name[0] == 46 as u8 { return false }
+    if len(name) == 2 as usize && name[0] == 46 as u8 && name[1] == 46 as u8 { return false }
+    let i: usize = 0 as usize
+    while i < len(name) { if !githubPathChar(name[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function githubRepoUrl(owner: string, repo: string): string { return githubApiRoot() + "/repos/" + owner + "/" + repo }
+export function githubIssuesUrl(owner: string, repo: string): string { return githubRepoUrl(owner,repo) + "/issues" }
+export function githubIssueUrl(owner: string, repo: string, numberText: string): string {
+    return githubIssuesUrl(owner,repo) + "/" + numberText
+}
+export function githubPullsUrl(owner: string, repo: string): string { return githubRepoUrl(owner,repo) + "/pulls" }
+export function githubPullUrl(owner: string, repo: string, numberText: string): string { return githubPullsUrl(owner,repo) + "/" + numberText }
+export function githubReleasesUrl(owner: string, repo: string): string { return githubRepoUrl(owner,repo) + "/releases" }
+export function githubCommitsUrl(owner: string, repo: string): string { return githubRepoUrl(owner,repo) + "/commits" }
+export function githubContentsUrl(owner: string, repo: string, path: string): string { return githubRepoUrl(owner,repo) + "/contents/" + path }
+export function githubActionsRunsUrl(owner: string, repo: string): string { return githubRepoUrl(owner,repo) + "/actions/runs" }
+export function githubActionsWorkflowsUrl(owner: string, repo: string): string { return githubRepoUrl(owner,repo) + "/actions/workflows" }
+export function githubBranchesUrl(owner: string, repo: string): string { return githubRepoUrl(owner,repo) + "/branches" }
+export function githubTagsUrl(owner: string, repo: string): string { return githubRepoUrl(owner,repo) + "/tags" }
+export function githubCollaboratorsUrl(owner: string, repo: string): string { return githubRepoUrl(owner,repo) + "/collaborators" }
+export function githubRequest(method: string, token: string, endpoint: string, body: string): string {
+    if !githubCredentialPresent(token) || textLength(endpoint) < 20 || textLength(body) > 1048576 { return "" }
+    if method != "GET" && method != "POST" && method != "PATCH" && method != "PUT" && method != "DELETE" { return "" }
+    return providerHttpJson(method,endpoint,"bearer",token,"Accept","application/vnd.github+json",body)
+}
+export function githubGetRepo(token: string, owner: string, repo: string): string { return githubRequest("GET",token,githubRepoUrl(owner,repo),"") }
+export function githubListIssues(token: string, owner: string, repo: string): string { return githubRequest("GET",token,githubIssuesUrl(owner,repo),"") }
+export function githubListPulls(token: string, owner: string, repo: string): string { return githubRequest("GET",token,githubPullsUrl(owner,repo),"") }
+export function githubListReleases(token: string, owner: string, repo: string): string { return githubRequest("GET",token,githubReleasesUrl(owner,repo),"") }
+export function githubCreateIssue(token: string, owner: string, repo: string, jsonBody: string): string { return githubRequest("POST",token,githubIssuesUrl(owner,repo),jsonBody) }
+export function githubCreatePull(token: string, owner: string, repo: string, jsonBody: string): string { return githubRequest("POST",token,githubPullsUrl(owner,repo),jsonBody) }

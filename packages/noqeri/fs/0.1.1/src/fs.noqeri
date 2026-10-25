@@ -1,0 +1,74 @@
+// SPDX-License-Identifier: MIT
+module noqeri.fs
+extern function fsReadText(path: string): string
+extern function fsWriteText(path: string, data: string): bool
+extern function fsExists(path: string): bool
+extern function fsRemove(path: string): bool
+export function fsSeparator(c: u8): bool { return c == 47 as u8 || c == 92 as u8 }
+export function fsRelativeSafe(path: []u8): bool {
+    if len(path) == 0 as usize || len(path) > 4096 as usize { return false }
+    if fsSeparator(path[0]) { return false }
+    let start: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i <= len(path) {
+        if i == len(path) || fsSeparator(path[i]) {
+            let size: usize = i - start
+            if size == 0 as usize { return false }
+            if size == 1 as usize && path[start] == 46 as u8 { return false }
+            if size == 2 as usize && path[start] == 46 as u8 && path[start + 1 as usize] == 46 as u8 { return false }
+            start = i + 1 as usize
+        } else {
+            if path[i] == 0 as u8 || path[i] == 58 as u8 { return false }
+        }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function fsExtensionStart(path: []u8): isize {
+    let last: isize = -1 as isize
+    let i: usize = 0 as usize
+    while i < len(path) {
+        if fsSeparator(path[i]) { last = -1 as isize }
+        if path[i] == 46 as u8 { last = i as isize }
+        i = i + 1 as usize
+    }
+    return last
+}
+export function fsJoinSize(left: []u8, right: []u8): isize {
+    if !fsRelativeSafe(left) || !fsRelativeSafe(right) { return -1 as isize }
+    return (len(left) + 1 as usize + len(right)) as isize
+}
+export function fsJoinRelative(left: []u8, right: []u8, dst: []u8): isize {
+    let length: isize = fsJoinSize(left,right)
+    if length < 0 as isize || len(dst) < length as usize { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(left) { dst[i] = left[i] i = i + 1 as usize }
+    dst[i] = 47 as u8
+    i = i + 1 as usize
+    let j: usize = 0 as usize
+    while j < len(right) { dst[i + j] = right[j] j = j + 1 as usize }
+    return length
+}
+export function fsReadIfPresent(path: string): string {
+    if !fsExists(path) { return "" }
+    return fsReadText(path)
+}
+export function fsWriteNonEmpty(path: string, data: string): bool {
+    if textLength(path) == 0 || textLength(data) == 0 { return false }
+    return fsWriteText(path,data)
+}
+export function fsDeleteIfExists(path: string): bool {
+    if !fsExists(path) { return true }
+    return fsRemove(path)
+}
+export function fsFileNameStart(path: []u8): usize {
+    let begin: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i < len(path) { if fsSeparator(path[i]) { begin = i + 1 as usize } i = i + 1 as usize }
+    return begin
+}
+export function fsPathHasNul(path: []u8): bool {
+    let i: usize = 0 as usize
+    while i < len(path) { if path[i] == 0 as u8 { return true } i = i + 1 as usize }
+    return false
+}

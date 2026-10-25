@@ -1,0 +1,17 @@
+// SPDX-License-Identifier: MIT
+import "../src/glob.noqeri"
+function main(): int {
+let pattern: [u8; 5] = [97 as u8,42 as u8,98 as u8,63 as u8,99 as u8]
+    let yes: [u8; 6] = [97 as u8,120 as u8,120 as u8,98 as u8,49 as u8,99 as u8]
+    let no: [u8; 4] = [97 as u8,98 as u8,47 as u8,99 as u8]
+    if !globMatch(slice(pattern),slice(yes)) { return 1 }
+    if globMatchPath(slice(pattern),slice(no)) { return 2 }
+    let star: [u8; 2] = [97 as u8,42 as u8]
+    let path: [u8; 3] = [97 as u8,47 as u8,98 as u8]
+    if globMatchPath(slice(star),slice(path)) || !globMatch(slice(star),slice(path)) { return 3 }
+    let malformed: [u8; 1] = [92 as u8]
+    if globPatternValid(slice(malformed)) { return 4 }
+    if globLiteralPrefix(slice(pattern)) != 1 as usize { return 5 }
+    return 0
+}
+print(main())

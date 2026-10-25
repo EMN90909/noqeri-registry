@@ -1,0 +1,104 @@
+// SPDX-License-Identifier: MIT
+module noqeri.hex
+export function hexValue(c: u8): int {
+    if c >= 48 as u8 && c <= 57 as u8 { return (c - 48 as u8) as int }
+    if c >= 65 as u8 && c <= 70 as u8 { return (c - 65 as u8) as int + 10 }
+    if c >= 97 as u8 && c <= 102 as u8 { return (c - 97 as u8) as int + 10 }
+    return -1
+}
+export function hexSymbol(digit: u8, upper: bool): u8 {
+    if digit < 10 as u8 { return digit + 48 as u8 }
+    if upper { return digit - 10 as u8 + 65 as u8 }
+    return digit - 10 as u8 + 97 as u8
+}
+export function hexEncodedSize(bytes: usize): usize { return bytes * 2 as usize }
+export function hexDecodedSize(chars: usize): isize {
+    if chars % 2 as usize != 0 as usize { return -1 as isize }
+    return (chars / 2 as usize) as isize
+}
+export function hexValid(input: []u8): bool {
+    if len(input) % 2 as usize != 0 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(input) {
+        if hexValue(input[i]) < 0 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function hexEncode(src: []u8, dst: []u8, uppercase: bool): isize {
+    if len(src) > len(dst) / 2 as usize { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(src) {
+        dst[i * 2 as usize] = hexSymbol(src[i] / 16 as u8,uppercase)
+        dst[i * 2 as usize + 1 as usize] = hexSymbol(src[i] % 16 as u8,uppercase)
+        i = i + 1 as usize
+    }
+    return (len(src) * 2 as usize) as isize
+}
+export function hexDecode(src: []u8, dst: []u8): isize {
+    if !hexValid(src) || len(src) / 2 as usize > len(dst) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(src) {
+        let a: int = hexValue(src[i])
+        let b: int = hexValue(src[i + 1 as usize])
+        dst[i / 2 as usize] = (a * 16 + b) as u8
+        i = i + 2 as usize
+    }
+    return (len(src) / 2 as usize) as isize
+}
+export function hexDecodePair(hi: u8, lo: u8): int {
+    let a: int = hexValue(hi)
+    let b: int = hexValue(lo)
+    if a < 0 || b < 0 { return -1 }
+    return a * 16 + b
+}
+export function hexParseU64(src: []u8, dst: []u64): bool {
+    if len(src) == 0 as usize || len(dst) == 0 as usize { return false }
+    let number: u64 = 0 as u64
+    let i: usize = 0 as usize
+    while i < len(src) {
+        let digit: int = hexValue(src[i])
+        if digit < 0 { return false }
+        let next: u64 = digit as u64
+        if number > (18446744073709551615 as u64 - next) / 16 as u64 { return false }
+        number = number * 16 as u64 + next
+        i = i + 1 as usize
+    }
+    dst[0 as usize] = number
+    return true
+}
+export function hexFormatU64(value: u64, dst: []u8, uppercase: bool): isize {
+    let test: u64 = value
+    let width: usize = 1 as usize
+    while test >= 16 as u64 { width = width + 1 as usize test = test / 16 as u64 }
+    if width > len(dst) { return -1 as isize }
+    let pos: usize = width
+    let n: u64 = value
+    while pos > 0 as usize {
+        pos = pos - 1 as usize
+        dst[pos] = hexSymbol((n % 16 as u64) as u8,uppercase)
+        n = n / 16 as u64
+    }
+    return width as isize
+}
+export function hexIsAsciiHex(c: u8): bool { return hexValue(c) >= 0 }
+export function hexChecksumXor(src: []u8): u8 {
+    // Arithmetic parity only; NOT a cryptographic checksum.
+    let result: u8 = 0 as u8
+    let i: usize = 0 as usize
+    while i < len(src) {
+        let a: u8 = result
+        let b: u8 = src[i]
+        let digit: int = 1
+        let x: u8 = 0 as u8
+        let bit: int = 0
+        while bit < 8 {
+            if (a as int / digit) % 2 != (b as int / digit) % 2 { x = (x as int + digit) as u8 }
+            digit = digit * 2
+            bit = bit + 1
+        }
+        result = x
+        i = i + 1 as usize
+    }
+    return result
+}

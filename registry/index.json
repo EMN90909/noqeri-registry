@@ -1,1765 +1,1869 @@
 {
-  "protocol": "v1",
   "packageFormat": "nqpkg-1",
   "packages": [
     {
-      "namespace": "noqeri",
-      "name": "core",
       "description": "Noqeri core foundations.",
+      "name": "core",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/core/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "1.5.0",
           "path": "packages/noqeri/core/1.5.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.5.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/core/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/core/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         },
         {
-          "version": "0.1.1",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/core/0.1.1",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "std",
       "description": "Noqeri standard utilities.",
+      "name": "std",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/std/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "1.5.0",
           "path": "packages/noqeri/std/1.5.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.5.0",
+          "yanked": true
         },
         {
-          "version": "1.6.0",
           "path": "packages/noqeri/std/1.6.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.6.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/std/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/std/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "security",
       "description": "Memory clearing and validation helpers; cryptography remains provider-backed.",
+      "name": "security",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/security/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "1.5.0",
           "path": "packages/noqeri/security/1.5.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
-        },
-        {
-          "version": "0.4.0",
-          "path": "packages/noqeri/security/0.4.0",
-          "yanked": false,
-          "experimental": false,
-          "quality": "experimental",
-          "evidence": "test-contract"
-        },
-        {
-          "version": "0.1.0",
-          "path": "packages/noqeri/security/0.1.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "test",
-      "description": "Testing helpers.",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "path": "packages/noqeri/test/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
-        },
-        {
+          "replacedBy": "0.4.0",
           "version": "1.5.0",
+          "yanked": true
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": false,
+          "path": "packages/noqeri/security/0.4.0",
+          "quality": "experimental",
+          "version": "0.4.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
+          "path": "packages/noqeri/security/0.1.0",
+          "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "description": "Testing helpers.",
+      "name": "test",
+      "namespace": "noqeri",
+      "versions": [
+        {
+          "path": "packages/noqeri/test/1.0.0",
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
+        },
+        {
           "path": "packages/noqeri/test/1.5.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.5.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/test/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/test/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "base64",
       "description": "Base64 encoding and validation helpers.",
+      "name": "base64",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/base64/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/base64/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/base64/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         },
         {
-          "version": "0.1.1",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/base64/0.1.1",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "csv",
       "description": "CSV parsing and validation helpers.",
+      "name": "csv",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/csv/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/csv/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/csv/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/csv/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "hex",
       "description": "Hexadecimal encoding and decoding helpers.",
+      "name": "hex",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/hex/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/hex/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/hex/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/hex/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "json",
       "description": "JSON validation and portable codec surface.",
+      "name": "json",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/json/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/json/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/json/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "toml",
       "description": "TOML parsing and validation helpers.",
+      "name": "toml",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/toml/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/toml/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/toml/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "xml",
       "description": "XML escaping and validation helpers.",
+      "name": "xml",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/xml/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/xml/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/xml/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "yaml",
       "description": "YAML parsing and validation helpers.",
+      "name": "yaml",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/yaml/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/yaml/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/yaml/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "regex-lite",
       "description": "Small portable regular-expression helpers.",
+      "name": "regex-lite",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/regex-lite/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/regex-lite/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/regex-lite/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "semver",
       "description": "Strict Semantic Versioning 2.0.0 parsing and precedence helpers.",
+      "name": "semver",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/semver/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/semver/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/semver/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "glob",
       "description": "Allocation-free wildcard and path-glob matching.",
+      "name": "glob",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/glob/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/glob/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/glob/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/glob/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "uuid",
       "description": "UUID text validation and version helpers written in Noqeri.",
+      "name": "uuid",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/uuid/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/uuid/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/uuid/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "jwt",
       "description": "JSON Web Token structure and validation helpers.",
+      "name": "jwt",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/jwt/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/jwt/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/jwt/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "http",
       "description": "HTTP method and response primitives.",
+      "name": "http",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/http/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/http/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/http/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "http-server",
       "description": "Host-neutral HTTP server and static-file capability surface.",
+      "name": "http-server",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/http-server/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/http-server/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/http-server/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/http-server/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "http-client",
       "description": "Portable HTTPS provider contract and validation helpers.",
+      "name": "http-client",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/http-client/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/http-client/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/http-client/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/http-client/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "url",
       "description": "URL component encoding and decoding.",
+      "name": "url",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/url/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/url/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/url/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "html",
       "description": "HTML escaping helpers.",
+      "name": "html",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/html/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/html/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/html/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/html/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "web",
       "description": "Shared browser/server web capability declarations.",
+      "name": "web",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/web/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/web/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/web/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "dom",
       "description": "Typed DOM mutation helpers for .nqri browser modules.",
+      "name": "dom",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/dom/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/dom/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/dom/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/dom/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "fetch",
       "description": "Non-blocking fetch handle API for browser .nqri modules.",
+      "name": "fetch",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/fetch/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/fetch/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/fetch/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/fetch/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "router",
       "description": "Simple client/server route surface.",
+      "name": "router",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/router/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/router/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/router/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "fs",
       "description": "Host filesystem capability surface.",
+      "name": "fs",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/fs/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/fs/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/fs/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/fs/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "env",
       "description": "Environment capability surface.",
+      "name": "env",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/env/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/env/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/env/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/env/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "crypto",
       "description": "Provider-backed secure random and SHA-256 surface.",
+      "name": "crypto",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/crypto/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/crypto/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/crypto/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         },
         {
-          "version": "0.1.1",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/crypto/0.1.1",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "postgres",
       "description": "PostgreSQL provider capability declarations.",
+      "name": "postgres",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/postgres/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/postgres/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/postgres/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "sqlite",
       "description": "SQLite provider capability declarations for interoperability.",
+      "name": "sqlite",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/sqlite/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/sqlite/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/sqlite/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "db",
       "description": "NoqeriDB embedded database capability declarations.",
+      "name": "db",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/db/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/db/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/db/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/db/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "time",
       "description": "Portable wall-clock helpers.",
+      "name": "time",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/time/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/time/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/time/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "net",
       "description": "Network provider capability declarations.",
+      "name": "net",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/net/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/net/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/net/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "tls",
       "description": "TLS provider capability declarations.",
+      "name": "tls",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/tls/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/tls/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/tls/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "websocket",
       "description": "WebSocket handle API for browser/server hosts.",
+      "name": "websocket",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/websocket/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": false,
           "path": "packages/noqeri/websocket/0.4.0",
-          "yanked": false,
-          "experimental": false,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/websocket/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "supabase",
       "description": "Supabase Data REST, Auth and Storage adapter written in Noqeri.",
+      "name": "supabase",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/supabase/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/supabase/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/supabase/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "firebase",
       "description": "Firebase Authentication and Firestore REST adapter written in Noqeri.",
+      "name": "firebase",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/firebase/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/firebase/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/firebase/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/firebase/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "convex",
       "description": "Convex Functions HTTP API adapter written in Noqeri.",
+      "name": "convex",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/convex/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/convex/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/convex/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         },
         {
-          "version": "0.1.1",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/convex/0.1.1",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "clerk",
       "description": "Clerk Backend API adapter written in Noqeri.",
+      "name": "clerk",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/clerk/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/clerk/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/clerk/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         },
         {
-          "version": "0.1.1",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/clerk/0.1.1",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "stripe",
       "description": "Stripe REST API adapter written in Noqeri.",
+      "name": "stripe",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/stripe/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/stripe/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/stripe/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "resend",
       "description": "Resend Email API adapter written in Noqeri.",
+      "name": "resend",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/resend/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/resend/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/resend/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "cloudflare",
       "description": "Cloudflare API adapter written in Noqeri.",
+      "name": "cloudflare",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/cloudflare/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/cloudflare/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/cloudflare/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         },
         {
-          "version": "0.1.1",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/cloudflare/0.1.1",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "vercel",
-      "description": "Vercel REST API adapter written in Noqeri.",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "path": "packages/noqeri/vercel/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
-        },
-        {
-          "version": "0.4.0",
-          "path": "packages/noqeri/vercel/0.4.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract"
-        },
-        {
-          "version": "0.1.0",
-          "path": "packages/noqeri/vercel/0.1.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "neon",
-      "description": "Neon PostgREST-compatible Data API adapter written in Noqeri.",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "path": "packages/noqeri/neon/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
-        },
-        {
-          "version": "0.4.0",
-          "path": "packages/noqeri/neon/0.4.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract"
-        },
-        {
-          "version": "0.1.0",
-          "path": "packages/noqeri/neon/0.1.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "upstash",
-      "description": "Upstash Redis REST API adapter written in Noqeri.",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "path": "packages/noqeri/upstash/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
-        },
-        {
-          "version": "0.4.0",
-          "path": "packages/noqeri/upstash/0.4.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract"
-        },
-        {
-          "version": "0.1.0",
-          "path": "packages/noqeri/upstash/0.1.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "sentry",
-      "description": "Sentry Web API adapter written in Noqeri.",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "path": "packages/noqeri/sentry/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
-        },
-        {
-          "version": "0.4.0",
-          "path": "packages/noqeri/sentry/0.4.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract"
-        },
-        {
-          "version": "0.1.0",
-          "path": "packages/noqeri/sentry/0.1.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "openai",
-      "description": "OpenAI Responses and Models API adapter written in Noqeri.",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "path": "packages/noqeri/openai/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
-        },
-        {
-          "version": "0.4.0",
-          "path": "packages/noqeri/openai/0.4.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract"
-        },
-        {
-          "version": "0.1.0",
-          "path": "packages/noqeri/openai/0.1.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "auth0",
-      "description": "Auth0 Management API adapter written in Noqeri.",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "path": "packages/noqeri/auth0/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
-        },
-        {
-          "version": "0.4.0",
-          "path": "packages/noqeri/auth0/0.4.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract"
-        },
-        {
-          "version": "0.1.0",
-          "path": "packages/noqeri/auth0/0.1.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
-        },
-        {
           "version": "0.1.1",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "description": "Vercel REST API adapter written in Noqeri.",
+      "name": "vercel",
+      "namespace": "noqeri",
+      "versions": [
+        {
+          "experimental": true,
+          "path": "packages/noqeri/vercel/1.0.0",
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/vercel/0.4.0",
+          "quality": "experimental",
+          "version": "0.4.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
+          "path": "packages/noqeri/vercel/0.1.0",
+          "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "description": "Neon PostgREST-compatible Data API adapter written in Noqeri.",
+      "name": "neon",
+      "namespace": "noqeri",
+      "versions": [
+        {
+          "experimental": true,
+          "path": "packages/noqeri/neon/1.0.0",
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/neon/0.4.0",
+          "quality": "experimental",
+          "version": "0.4.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
+          "path": "packages/noqeri/neon/0.1.0",
+          "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "description": "Upstash Redis REST API adapter written in Noqeri.",
+      "name": "upstash",
+      "namespace": "noqeri",
+      "versions": [
+        {
+          "experimental": true,
+          "path": "packages/noqeri/upstash/1.0.0",
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/upstash/0.4.0",
+          "quality": "experimental",
+          "version": "0.4.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
+          "path": "packages/noqeri/upstash/0.1.0",
+          "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "description": "Sentry Web API adapter written in Noqeri.",
+      "name": "sentry",
+      "namespace": "noqeri",
+      "versions": [
+        {
+          "experimental": true,
+          "path": "packages/noqeri/sentry/1.0.0",
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/sentry/0.4.0",
+          "quality": "experimental",
+          "version": "0.4.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
+          "path": "packages/noqeri/sentry/0.1.0",
+          "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "description": "OpenAI Responses and Models API adapter written in Noqeri.",
+      "name": "openai",
+      "namespace": "noqeri",
+      "versions": [
+        {
+          "experimental": true,
+          "path": "packages/noqeri/openai/1.0.0",
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/openai/0.4.0",
+          "quality": "experimental",
+          "version": "0.4.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
+          "path": "packages/noqeri/openai/0.1.0",
+          "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "description": "Auth0 Management API adapter written in Noqeri.",
+      "name": "auth0",
+      "namespace": "noqeri",
+      "versions": [
+        {
+          "experimental": true,
+          "path": "packages/noqeri/auth0/1.0.0",
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/auth0/0.4.0",
+          "quality": "experimental",
+          "version": "0.4.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
+          "path": "packages/noqeri/auth0/0.1.0",
+          "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/auth0/0.1.1",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "planetscale",
       "description": "PlanetScale management API adapter written in Noqeri.",
+      "name": "planetscale",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/planetscale/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/planetscale/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/planetscale/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "turso",
       "description": "Turso SQL-over-HTTP adapter written in Noqeri.",
+      "name": "turso",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/turso/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/turso/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/turso/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "github",
       "description": "GitHub REST API adapter written in Noqeri.",
+      "name": "github",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/github/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/github/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/github/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": true,
+          "path": "packages/noqeri/github/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "tailwind",
       "description": "Tailwind CLI and standalone-binary integration written in Noqeri.",
+      "name": "tailwind",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
+          "experimental": true,
           "path": "packages/noqeri/tailwind/1.0.0",
-          "yanked": true,
-          "experimental": true,
-          "replacedBy": "0.4.0"
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
         },
         {
-          "version": "0.4.0",
+          "evidence": "test-contract",
+          "experimental": true,
           "path": "packages/noqeri/tailwind/0.4.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract"
+          "version": "0.4.0",
+          "yanked": false
         },
         {
-          "version": "0.1.0",
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
           "path": "packages/noqeri/tailwind/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
-      "namespace": "noqeri",
-      "name": "retry",
       "description": "Bounded retry/backoff policy helpers written in Noqeri.",
+      "name": "retry",
+      "namespace": "noqeri",
       "versions": [
         {
-          "version": "1.0.0",
           "path": "packages/noqeri/retry/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
-        },
-        {
-          "version": "0.4.0",
-          "path": "packages/noqeri/retry/0.4.0",
-          "yanked": false,
-          "experimental": false,
-          "quality": "experimental",
-          "evidence": "test-contract"
-        },
-        {
-          "version": "0.1.0",
-          "path": "packages/noqeri/retry/0.1.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
-          "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "rate-limit",
-      "description": "Token-bucket rate-limit policy helpers written in Noqeri.",
-      "versions": [
-        {
+          "replacedBy": "0.4.0",
           "version": "1.0.0",
-          "path": "packages/noqeri/rate-limit/1.0.0",
-          "yanked": true,
-          "replacedBy": "0.4.0"
+          "yanked": true
         },
         {
-          "version": "0.4.0",
-          "path": "packages/noqeri/rate-limit/0.4.0",
-          "yanked": false,
-          "experimental": false,
-          "quality": "experimental",
-          "evidence": "test-contract"
-        },
-        {
-          "version": "0.1.0",
-          "path": "packages/noqeri/rate-limit/0.1.0",
-          "yanked": false,
-          "experimental": true,
-          "quality": "experimental",
           "evidence": "test-contract",
-          "migrationFrom": "0.4.0"
+          "experimental": false,
+          "path": "packages/noqeri/retry/0.4.0",
+          "quality": "experimental",
+          "version": "0.4.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
+          "path": "packages/noqeri/retry/0.1.0",
+          "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
         }
       ]
     },
     {
+      "description": "Token-bucket rate-limit policy helpers written in Noqeri.",
+      "name": "rate-limit",
       "namespace": "noqeri",
-      "name": "pgas",
-      "description": "Experimental local PGAS partition mapping and native loopback ABI; TLS/RDMA/multi-host not available.",
       "versions": [
         {
+          "path": "packages/noqeri/rate-limit/1.0.0",
+          "replacedBy": "0.4.0",
+          "version": "1.0.0",
+          "yanked": true
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": false,
+          "path": "packages/noqeri/rate-limit/0.4.0",
+          "quality": "experimental",
+          "version": "0.4.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "migrationFrom": "0.4.0",
+          "path": "packages/noqeri/rate-limit/0.1.0",
+          "quality": "experimental",
           "version": "0.1.0",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "description": "Experimental local PGAS partition mapping and native loopback ABI; TLS/RDMA/multi-host not available.",
+      "name": "pgas",
+      "namespace": "noqeri",
+      "versions": [
+        {
+          "evidence": "native-cpp-loopback-tests",
+          "experimental": true,
           "path": "packages/noqeri/pgas/0.1.0",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "native-cpp-loopback-tests"
+          "version": "0.1.0",
+          "yanked": false
         },
         {
-          "version": "0.1.3",
+          "evidence": "mTLS-WAL-local-CI",
+          "experimental": true,
           "path": "packages/noqeri/pgas/0.1.3",
-          "yanked": false,
-          "experimental": true,
           "quality": "experimental",
-          "evidence": "mTLS-WAL-local-CI"
+          "version": "0.1.3",
+          "yanked": false
         },
         {
-          "version": "0.1.4",
-          "path": "packages/noqeri/pgas/0.1.4",
-          "yanked": false,
+          "evidence": "stage0-partition+native-abi-contract",
           "experimental": true,
+          "path": "packages/noqeri/pgas/0.1.4",
           "quality": "experimental",
-          "evidence": "stage0-partition+native-abi-contract"
+          "version": "0.1.4",
+          "yanked": false
         }
       ]
     }
-  ]
+  ],
+  "protocol": "v1"
 }

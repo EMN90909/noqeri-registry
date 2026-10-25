@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: MIT
+import "../src/html.noqeri"
+function main(): int {
+let src: [u8; 2] = [60 as u8,38 as u8]
+    let dst: [u8; 9] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    if htmlEscapeText(slice(src),slice(dst)) != 9 as isize { return 1 }
+    if dst[0] != 38 as u8 || dst[1] != 108 as u8 || dst[4] != 38 as u8 { return 2 }
+    let tag: [u8; 3] = [100 as u8,105 as u8,118 as u8]
+    let bad: [u8; 2] = [49 as u8,97 as u8]
+    if !htmlTagValid(slice(tag)) || htmlTagValid(slice(bad)) { return 3 }
+    let amp: [u8; 1] = [38 as u8]
+    let tooSmall: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    if htmlEscapeText(slice(amp),slice(tooSmall)) >= 0 as isize { return 4 }
+    return 0
+}
+print(main())

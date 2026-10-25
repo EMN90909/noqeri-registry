@@ -1,0 +1,4 @@
+// SPDX-License-Identifier: MIT
+import "../src/env.noqeri"
+let line: [u8; 3] = [65 as u8,61 as u8,49 as u8]
+print(envAssignmentValid(slice(line)))

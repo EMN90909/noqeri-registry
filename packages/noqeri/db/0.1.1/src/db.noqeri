@@ -1,0 +1,66 @@
+// SPDX-License-Identifier: MIT
+// This is an adapter, not a database engine or SQL query parameterizer.
+module noqeri.db
+extern function noqeriDbOpen(path: string): usize
+extern function noqeriDbExecute(handle: usize, sql: string): isize
+extern function noqeriDbClose(handle: usize): bool
+export function dbHandleValid(h: usize): bool { return h != 0 as usize }
+export function dbSuccess(status: isize): bool { return status >= 0 as isize }
+export function dbFailure(status: isize): bool { return status < 0 as isize }
+export function dbRetryable(status: isize): bool { return status == -5 as isize || status == -6 as isize || status == -11 as isize }
+export function dbQuerySizeValid(n: usize): bool { return n > 0 as usize && n <= 1048576 as usize }
+export function dbIdentifierChar(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 95 as u8
+}
+export function dbIdentifierValid(name: []u8): bool {
+    if len(name) == 0 as usize || len(name) > 128 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(name) {
+        if name[i] == 0 as u8 || name[i] == 10 as u8 || name[i] == 13 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function dbQuotedIdentifierSize(name: []u8): isize {
+    if !dbIdentifierValid(name) { return -1 as isize }
+    let required: usize = len(name) + 2 as usize
+    let i: usize = 0 as usize
+    while i < len(name) { if name[i] == 34 as u8 { required = required + 1 as usize } i = i + 1 as usize }
+    return required as isize
+}
+export function dbQuoteIdentifier(name: []u8, dst: []u8): isize {
+    let need: isize = dbQuotedIdentifierSize(name)
+    if need < 0 as isize || len(dst) < need as usize { return -1 as isize }
+    dst[0] = 34 as u8
+    let out: usize = 1 as usize
+    let i: usize = 0 as usize
+    while i < len(name) {
+        dst[out] = name[i]
+        out = out + 1 as usize
+        if name[i] == 34 as u8 { dst[out] = 34 as u8 out = out + 1 as usize }
+        i = i + 1 as usize
+    }
+    dst[out] = 34 as u8
+    return (out + 1 as usize) as isize
+}
+export function dbBeginSql(): string { return "BEGIN" }
+export function dbCommitSql(): string { return "COMMIT" }
+export function dbRollbackSql(): string { return "ROLLBACK" }
+export function dbTransactionValid(current: int, next: int): bool {
+    if current == 0 { return next == 1 }
+    if current == 1 { return next == 2 || next == 3 }
+    if current == 2 || current == 3 { return next == 0 }
+    return false
+}
+export function dbExecuteIfValid(handle: usize, sql: string): isize {
+    if !dbHandleValid(handle) || textLength(sql) == 0 || textLength(sql) > 1048576 { return -1 as isize }
+    return noqeriDbExecute(handle,sql)
+}
+export function dbCloseIfValid(handle: usize): bool { if !dbHandleValid(handle) { return false } return noqeriDbClose(handle) }
+export function dbRetryDelayMillis(attempt: int): int {
+    if attempt <= 0 { return 50 }
+    if attempt == 1 { return 100 }
+    if attempt == 2 { return 200 }
+    if attempt == 3 { return 400 }
+    return 800
+}

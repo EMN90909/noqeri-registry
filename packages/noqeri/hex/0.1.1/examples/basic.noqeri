@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+import "../src/hex.noqeri"
+let bytes: [u8; 2] = [10 as u8,255 as u8]
+let dst: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+print(hexEncode(slice(bytes),slice(dst),false))

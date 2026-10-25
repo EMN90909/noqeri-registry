@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+import "../src/glob.noqeri"
+let pattern: [u8; 3] = [97 as u8,42 as u8,99 as u8]
+let filename: [u8; 4] = [97 as u8,98 as u8,98 as u8,99 as u8]
+print(globMatch(slice(pattern),slice(filename)))

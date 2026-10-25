@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: MIT
+module noqeri.http_client
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+export function httpClientMethodAllowed(method: string): bool {
+    return method == "GET" || method == "HEAD" || method == "POST" || method == "PUT" || method == "PATCH" || method == "DELETE"
+}
+export function httpClientMethodIdempotent(method: string): bool {
+    return method == "GET" || method == "HEAD" || method == "PUT" || method == "DELETE"
+}
+export function httpClientStatusOk(status: int): bool { return status >= 200 && status <= 299 }
+export function httpClientStatusRedirect(status: int): bool { return status >= 300 && status <= 399 }
+export function httpClientStatusRetry(status: int): bool { return status == 408 || status == 425 || status == 429 || status == 500 || status == 502 || status == 503 || status == 504 }
+export function httpClientStatusUnauthorized(status: int): bool { return status == 401 || status == 403 }
+export function httpClientContentLengthValid(bytes: usize): bool { return bytes <= 8388608 as usize }
+export function httpClientBodyLengthValid(bytes: usize): bool { return bytes <= 1048576 as usize }
+export function httpClientRetryDelay(attempt: int): int {
+    if attempt <= 0 { return 125 }
+    if attempt == 1 { return 250 }
+    if attempt == 2 { return 500 }
+    if attempt == 3 { return 1000 }
+    return 2000
+}
+export function httpClientHeaderToken(c: u8): bool {
+    if (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) { return true }
+    return c == 33 as u8 || c == 35 as u8 || c == 36 as u8 || c == 37 as u8 || c == 38 as u8 || c == 39 as u8 || c == 42 as u8 || c == 43 as u8 || c == 45 as u8 || c == 46 as u8 || c == 94 as u8 || c == 95 as u8 || c == 96 as u8 || c == 124 as u8 || c == 126 as u8
+}
+export function httpClientHeaderNameValid(name: []u8): bool {
+    if len(name) == 0 as usize || len(name) > 256 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(name) { if !httpClientHeaderToken(name[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function httpClientHeaderValueValid(value: []u8): bool {
+    if len(value) > 8192 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(value) {
+        if value[i] == 0 as u8 || value[i] == 10 as u8 || value[i] == 13 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function httpClientHttpsUrl(url: []u8): bool {
+    if len(url) < 9 as usize || len(url) > 4096 as usize { return false }
+    let scheme: [u8; 8] = [104 as u8,116 as u8,116 as u8,112 as u8,115 as u8,58 as u8,47 as u8,47 as u8]
+    let i: usize = 0 as usize
+    while i < 8 as usize { if url[i] != scheme[i] { return false } i = i + 1 as usize }
+    while i < len(url) {
+        if url[i] < 33 as u8 || url[i] == 92 as u8 || url[i] == 64 as u8 || url[i] == 35 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function httpClientLastStatus(): int { return providerHttpStatus() }
+export function httpClientCredentialPresent(secret: string): bool { return textLength(secret) >= 8 }
+export function httpClientJson(method: string, url: string, bearer: string, body: string): string {
+    if !httpClientMethodAllowed(method) || textLength(url) < 9 || textLength(url) > 4096 || textLength(body) > 1048576 { return "" }
+    return providerHttpJson(method,url,"bearer",bearer,"Accept","application/json",body)
+}
+export function httpClientGet(url: string, bearer: string): string { return httpClientJson("GET",url,bearer,"") }
+export function httpClientPost(url: string, bearer: string, body: string): string { return httpClientJson("POST",url,bearer,body) }
+export function httpClientPatch(url: string, bearer: string, body: string): string { return httpClientJson("PATCH",url,bearer,body) }
+export function httpClientDelete(url: string, bearer: string): string { return httpClientJson("DELETE",url,bearer,"") }

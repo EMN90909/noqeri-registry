@@ -1,0 +1,4 @@
+// SPDX-License-Identifier: MIT
+import "../src/dom.noqeri"
+let name: [u8; 4] = [109 as u8,97 as u8,105 as u8,110 as u8]
+print(domCssIdValid(slice(name)))

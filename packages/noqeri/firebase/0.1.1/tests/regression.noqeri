@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+import "../src/firebase.noqeri"
+function main(): int {
+let project: [u8; 8] = [109 as u8,121 as u8,45 as u8,97 as u8,112 as u8,112 as u8,49 as u8,50 as u8]
+    let bad: [u8; 3] = [46 as u8,46 as u8,47 as u8]
+    if !firebaseProjectIdValid(slice(project)) || firebaseProjectIdValid(slice(bad)) { return 1 }
+    if !(firebaseAuthSignInUrl("apikey000") == "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=apikey000") { return 2 }
+    if !(firebaseDocumentUrl("my-app12","users/alice") == "https://firestore.googleapis.com/v1/projects/my-app12/databases/(default)/documents/users/alice") { return 3 }
+    if !firebaseRetryable(429) || firebaseRetryable(404) { return 4 }
+    if !(firebaseSignInPassword("bad","{}") == "") { return 5 }
+    return 0
+}
+print(main())

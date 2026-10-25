@@ -1,0 +1,4 @@
+// SPDX-License-Identifier: MIT
+import "../src/fs.noqeri"
+let path: [u8; 5] = [97 as u8,46 as u8,116 as u8,120 as u8,116 as u8]
+print(fsRelativeSafe(slice(path)))

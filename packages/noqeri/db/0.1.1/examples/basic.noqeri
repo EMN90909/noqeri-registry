@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+import "../src/db.noqeri"
+let column: [u8; 2] = [105 as u8,100 as u8]
+let buf: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+print(dbQuoteIdentifier(slice(column),slice(buf)))

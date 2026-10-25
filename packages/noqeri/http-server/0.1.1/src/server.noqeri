@@ -1,0 +1,61 @@
+// SPDX-License-Identifier: MIT
+module noqeri.http_server
+extern function httpServerListen(port: int): usize
+extern function httpServerClose(handle: usize): bool
+export function httpServerPortValid(port: int): bool { return port > 0 && port <= 65535 }
+export function httpServerHandleValid(handle: usize): bool { return handle != 0 as usize }
+export function httpServerBodyAllowed(status: int): bool {
+    if status >= 100 && status <= 199 { return false }
+    return status != 204 && status != 304
+}
+export function httpServerStatusValid(status: int): bool { return status >= 100 && status <= 599 }
+export function httpServerDefaultPort(tls: bool): int { if tls { return 443 } return 80 }
+export function httpServerMethodValid(method: string): bool {
+    return method == "GET" || method == "HEAD" || method == "POST" || method == "PUT" || method == "PATCH" || method == "DELETE" || method == "OPTIONS"
+}
+export function httpServerMethodSafe(method: string): bool {
+    return method == "GET" || method == "HEAD" || method == "OPTIONS"
+}
+export function httpServerRequestBodyMax(bytes: usize): bool { return bytes <= 8388608 as usize }
+export function httpServerHeaderCountValid(count: usize): bool { return count <= 100 as usize }
+export function httpServerRouteValid(path: []u8): bool {
+    if len(path) == 0 as usize || path[0] != 47 as u8 || len(path) > 2048 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(path) {
+        if path[i] == 0 as u8 || path[i] == 13 as u8 || path[i] == 10 as u8 || path[i] == 92 as u8 { return false }
+        if i + 1 as usize < len(path) && path[i] == 47 as u8 && path[i + 1 as usize] == 47 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function httpServerHeaderNameValid(name: []u8): bool {
+    if len(name) == 0 as usize || len(name) > 256 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(name) {
+        let c: u8 = name[i]
+        let allowed: bool = (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 45 as u8
+        if !allowed { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function httpServerHeaderValueValid(value: []u8): bool {
+    if len(value) > 8192 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(value) {
+        if value[i] == 0 as u8 || value[i] == 10 as u8 || value[i] == 13 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function httpServerStart(port: int): usize {
+    if !httpServerPortValid(port) { return 0 as usize }
+    return httpServerListen(port)
+}
+export function httpServerStop(handle: usize): bool {
+    if !httpServerHandleValid(handle) { return false }
+    return httpServerClose(handle)
+}
+export function httpServerRedirectStatusValid(status: int): bool {
+    return status == 301 || status == 302 || status == 303 || status == 307 || status == 308
+}
