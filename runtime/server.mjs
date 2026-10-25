@@ -1,5 +1,5 @@
 import { createServer } from 'node:http'
-import { readFile } from 'node:fs/promises'
+import { readFile, stat } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { openCatalog, catalogSnapshot } from './catalog.mjs'
 import { artifactFile, IDENT, SEMVER, MAX_BYTES } from './archive.mjs'
@@ -9,8 +9,9 @@ const HEADERS = {
   'Content-Security-Policy':"default-src 'none'", 'Access-Control-Allow-Origin':'*'
 }
 function reply(req,res,status,data,contentType='application/json; charset=utf-8',other={}){
-  res.writeHead(status,{...HEADERS,'Content-Type':contentType,...other})
-  res.end(req.method==='HEAD'?undefined:contentType.startsWith('application/json')?JSON.stringify(data):data)
+  const body=contentType.startsWith('application/json')?JSON.stringify(data):data
+  res.writeHead(status,{...HEADERS,'Content-Type':contentType,...other,...(contentType.startsWith('application/json')?{'Content-Length':String(Buffer.byteLength(body))}:{})})
+  res.end(req.method==='HEAD'?undefined:body)
 }
 const bad=(req,res,status,message)=>reply(req,res,status,{error:message})
 const validName=(value)=>typeof value==='string'&&IDENT.test(value)
@@ -23,6 +24,7 @@ export function createRegistryHandler(catalog){
     try {const url=new URL(req.url||'/', 'http://localhost');path=url.pathname;searchParams=url.searchParams}
     catch{return bad(req,res,400,'invalid_url')}
     if(path.length>512)return bad(req,res,414,'uri_too_long')
+    if(searchParams.toString().length>2048)return bad(req,res,414,'query_too_long')
     try{
       if(path==='/health')return reply(req,res,200,{status:'ok',storage:'noesql',database:'registry.noedb',nativeQualified:false})
       if(path==='/v1/status')return reply(req,res,200,{status:'experimental',protocol:'v1',storage:'noesql',nativeQualified:false,publishingEnabled:false})
@@ -68,7 +70,10 @@ export function createRegistryHandler(catalog){
       const id=ids.get(ns+'/'+name),stored=locations.get(id+'/'+version)
       const m=/^sha256-([0-9a-f]{64})\.nqpkg$/.exec(stored||'')
       if(!m || 'sha256:'+m[1]!==release.archiveIntegrity)return bad(req,res,503,'invalid_artifact_metadata')
-      const bytes=await readFile(artifactFile(catalog.archiveRoot,m[1]))
+      const artifactPath=artifactFile(catalog.archiveRoot,m[1])
+      const fileInfo=await stat(artifactPath)
+      if(!fileInfo.isFile() || fileInfo.size>MAX_BYTES)return bad(req,res,503,'artifact_integrity_mismatch')
+      const bytes=await readFile(artifactPath)
       if(bytes.length>MAX_BYTES || 'sha256:'+createHash('sha256').update(bytes).digest('hex')!==release.archiveIntegrity)
         return bad(req,res,503,'artifact_integrity_mismatch')
       return reply(req,res,200,bytes,'application/vnd.noqeri.package+gzip',{
