@@ -83,9 +83,9 @@ func main(){
    }
    if write(src,updated,*check)!=nil{edited++}
    if found&&rule.Test!=""{
-    contract:="// SPDX-License-Identifier: GPL-3.0-only\n// Executable positive and negative capability contract.\nimport "+fmt.Sprintf("%q","../"+filepath.ToSlash(entry))+"\nfunction main(): int {\n"+rule.Test+"\n    return 0\n}\nlet capabilityExitCode: int = main()\nif capabilityExitCode != 0 { throw capabilityExitCode }\n"
+    contract:="// SPDX-License-Identifier: GPL-3.0-only\n// Executable positive and negative capability contract.\nimport "+fmt.Sprintf("%q","../"+filepath.ToSlash(entry))+"\nfunction main(): int {\n"+rule.Test+"\n    return 0\n}\nprint(main())\n"
     if write(filepath.Join(dir,"tests","capability_regression.noqeri"),contract,*check)!=nil{edited++}
-    usage:="// SPDX-License-Identifier: GPL-3.0-only\n// Working capability example with visible positive and negative cases.\nimport "+fmt.Sprintf("%q","../"+filepath.ToSlash(entry))+"\nfunction main(): int {\n"+rule.Test+"\n    return 0\n}\nlet capabilityExitCode: int = main()\nif capabilityExitCode != 0 { throw capabilityExitCode }\n"
+    usage:="// SPDX-License-Identifier: GPL-3.0-only\n// Working capability example with visible positive and negative cases.\nimport "+fmt.Sprintf("%q","../"+filepath.ToSlash(entry))+"\nfunction main(): int {\n"+rule.Test+"\n    return 0\n}\nprint(main())\n"
     if write(filepath.Join(dir,"examples","capability_walkthrough.noqeri"),usage,*check)!=nil{edited++}
    }
    funcs,ext,err:=exportNames(filepath.Join(dir,"src"));if err!=nil{fail(err)}
