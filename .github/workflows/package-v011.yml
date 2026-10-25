@@ -29,13 +29,16 @@ jobs:
       - name: Verify 0.1.1 manifests, MIT notices, and case-sensitive files
         run: |
           set -eu
-          for name in auth0 base64 clerk cloudflare convex core crypto csv db dom env fetch firebase fs github glob hex html http-client http-server; do
+          for name in auth0 base64 clerk cloudflare convex core crypto csv db dom env fetch firebase fs github glob hex html http-client http-server http json jwt neon net openai pgas planetscale postgres rate-limit regex-lite resend retry router security semver sentry sqlite std stripe supabase tailwind; do
             release="packages/noqeri/$name/0.1.1"
             test -f "$release/package.noqeri"
             test -f "$release/LICENSE"
             source="$name"
             if [ "$name" = "http-client" ]; then source="http_client"; fi
             if [ "$name" = "http-server" ]; then source="server"; fi
+            if [ "$name" = "rate-limit" ]; then source="rate_limit"; fi
+            if [ "$name" = "regex-lite" ]; then source="regex_lite"; fi
+            if [ "$name" = "security" ]; then source="validation"; fi
             test -f "$release/src/$source.noqeri"
             test -f "$release/tests/regression.noqeri"
             grep -q 'version: "0.1.1"' "$release/package.noqeri"
@@ -59,7 +62,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for name in auth0 base64 clerk cloudflare convex core crypto csv db dom env fetch firebase fs github glob hex html http-client http-server; do
+          for name in auth0 base64 clerk cloudflare convex core crypto csv db dom env fetch firebase fs github glob hex html http-client http-server http json jwt neon net openai pgas planetscale postgres rate-limit regex-lite resend retry router security semver sentry sqlite std stripe supabase tailwind; do
             package="packages/noqeri/$name/0.1.1"
             /tmp/nq-v011/noqeri check "$package/tests/regression.noqeri"
             if ! actual=$(/tmp/nq-v011/noqeri run "$package/tests/regression.noqeri" 2>&1); then

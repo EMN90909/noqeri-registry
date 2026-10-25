@@ -54,8 +54,8 @@ Versioned package contents are in `packages/noqeri/`. Release identity,
 archive integrity, symlink rules and yanked-release behavior are verified
 by Go tests. Run `make audit` for package counts.
 
-## Twenty international-preview packages (0.1.1)
+## Forty-two international-preview packages (0.1.1)
 
-The seven original packages (`auth0`, `base64`, `clerk`, `cloudflare`, `convex`, `core`, `crypto`) and thirteen new packages (`csv`, `db`, `dom`, `env`, `fetch`, `firebase`, `fs`, `github`, `glob`, `hex`, `html`, `http-client`, `http-server`) have independently authored MIT Noqeri `0.1.1` sources, runnable regressions, examples, and API references. Their network-facing adapters still require a secure host implementation for the declared transport interfaces. Use the version-qualified package path to choose `0.1.1`; higher-version experimental packages are not implicitly overwritten.
+Forty-two packages now have independently authored MIT Noqeri `0.1.1` sources, executable regressions, examples and API references. The third release batch adds `http`, `json`, `jwt`, `neon`, `net`, `openai`, `pgas`, `planetscale`, `postgres`, `rate-limit`, `regex-lite`, `resend`, `retry`, `router`, `security`, `semver`, `sentry`, `sqlite`, `std`, `stripe`, `supabase` and `tailwind`. Their network-facing adapters still require a secure host implementation for the declared transport interfaces. Use the version-qualified package path to choose `0.1.1`; higher-version experimental packages are not implicitly overwritten.
 
-**Licensing:** MIT is the default license for original new work and these twenty `0.1.1` releases. Older GPL-3.0-only files remain GPL-3.0-only. See [license scope](LICENSES/README.md).
+**Licensing:** MIT is the default license for original new work and these forty-two `0.1.1` releases. Older GPL-3.0-only files remain GPL-3.0-only. See [license scope](LICENSES/README.md).
