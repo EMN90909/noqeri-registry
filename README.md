@@ -74,7 +74,8 @@ npm run bootstrap
 npm start
 ```
 
-PowerShell uses `$env:NOESQL_SESSION_MODULE = "C:\absolute\path\to\NoeSQL\Runtime\noesql-session.mjs"`.
+PowerShell uses `$env:NOESQL_SESSION_MODULE = "C:\absolute\path\to\NoeSQL\Runtime
+oesql-session.mjs"`.
 
 The service reads `PORT` (default `8080`) and listens on `0.0.0.0` by default; use a trusted local environment and secure network isolation for experiments. **Do not run the importer against an existing database.** The importer deliberately rejects initialized package metadata, and partial imports require operator recovery. Back up both metadata and artifacts before any manual changes.
 
@@ -95,7 +96,8 @@ If NoeSQL is not installed, start with the **public tests** above; `npm start` i
 
 | Release family | Catalog entries | Notes |
 | :--- | ---: | :--- |
-| `0.1.0` | 55 | 54 canonical `.noqeri` library migrations and one PGAS release |\n| `0.4.0` | 54 | Preserved, non-yanked historical `.nqr` library releases |
+| `0.1.0` | 55 | 54 canonical `.noqeri` library migrations and one PGAS release |
+| `0.4.0` | 54 | Preserved, non-yanked historical `.nqr` library releases |
 | `0.1.3`, `0.1.4` | 2 | Later experimental `noqeri/pgas` releases |
 | Historical `1.0.0`, `1.5.0`, `1.6.0` | 59 | Retained on disk but **yanked** in the catalog |
 | **Total** | **170** | **111 non-yanked**, 59 yanked |
@@ -104,7 +106,13 @@ Examples of package areas include foundations (`core`, `std`, `test`), encoding 
 
 Explore the [catalog](registry/index.json), [source packages](packages/noqeri) and [provider-package limits](docs/PROVIDER_PACKAGES.md).
 
-### Canonical `0.1.0` library release migration\n\nAll 54 library packages now have separate `0.1.0` release trees with `package.noqeri`, `.noqeri` sources, tests and examples, and corrected relative imports. `noqeri/pgas@0.1.0` already used canonical source extensions. Run `python3 scripts/migrate_canonical.py --check` to verify package identities, entry files and source references without rewriting anything. The one-time `--write` operation can regenerate the release set from the immutable `0.4.0` trees in an earlier checkout.\n\n**SemVer migration caveat:** `0.4.0` sorts after `0.1.0` and remains non-yanked to avoid breaking existing downloads. To select the canonical migration, pin `@0.1.0` explicitly. This is a source-format migration, **not** evidence of native compiler parity or live provider integration. The Node.js transport remains the working HTTP host until the Noqeri native host ABI and NoeSQL runtime are qualified.\n\n### Canonical extensions and release immutability
+### Canonical `0.1.0` library release migration
+
+All 54 library packages now have separate `0.1.0` release trees with `package.noqeri`, `.noqeri` sources, tests and examples, and corrected relative imports. `noqeri/pgas@0.1.0` already used canonical source extensions. Run `python3 scripts/migrate_canonical.py --check` to verify package identities, entry files and source references without rewriting anything. The one-time `--write` operation can regenerate the release set from the immutable `0.4.0` trees in an earlier checkout.
+
+**SemVer migration caveat:** `0.4.0` sorts after `0.1.0` and remains non-yanked to avoid breaking existing downloads. To select the canonical migration, pin `@0.1.0` explicitly. This is a source-format migration, **not** evidence of native compiler parity or live provider integration. The Node.js transport remains the working HTTP host until the Noqeri native host ABI and NoeSQL runtime are qualified.
+
+### Canonical extensions and release immutability
 
 | File | Meaning |
 | :--- | :--- |
