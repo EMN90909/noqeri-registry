@@ -1,4 +1,4 @@
-import "../src/turso.nqr"
+import "../src/turso.noqeri"
 function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
 require(tursoPipelineUrl("https://x.turso.io") == "https://x.turso.io/v2/pipeline")
 require(tursoCredentialPresent("abcdefgh"))

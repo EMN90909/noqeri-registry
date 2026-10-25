@@ -1,4 +1,4 @@
-import "../src/supabase.nqr"
+import "../src/supabase.noqeri"
 function require(ok: bool): void { if !ok { let invalid: *u8 = 0 as *u8 print(invalid[0]) } }
 require(supabaseRestUrl("https://demo.supabase.co", "users") == "https://demo.supabase.co/rest/v1/users")
 require(supabaseCredentialPresent("abcdefgh"))
