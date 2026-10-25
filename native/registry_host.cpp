@@ -221,13 +221,13 @@ public:
         json_object* source=field(data.value,"packages");
         if(!source || !json_object_is_type(source,json_type_array))throw std::runtime_error("packages array missing");
         std::size_t reserved=0;
-        for(int i=0;i<json_object_array_length(source);++i) {
+        for(std::size_t i=0;i<json_object_array_length(source);++i) {
             json_object* p=json_object_array_get_idx(source,i);
             Package pkg;pkg.ns=val(p,"namespace");pkg.name=val(p,"name");pkg.description=val(p,"description");
             if(!validIdentity(pkg.ns) || !validIdentity(pkg.name))throw std::runtime_error("bad package identity");
             json_object* releases=field(p,"versions");
             if(!releases || !json_object_is_type(releases,json_type_array))throw std::runtime_error("invalid releases");
-            for(int j=0;j<json_object_array_length(releases);++j) {
+            for(std::size_t j=0;j<json_object_array_length(releases);++j) {
                 json_object* rel=json_object_array_get_idx(releases,j);
                 Release release;release.version=val(rel,"version");release.yanked=flag(rel,"yanked");
                 if(!std::regex_match(release.version,std::regex(R"((0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[A-Za-z0-9.-]+)?(?:\+[A-Za-z0-9.-]+)?)")))
@@ -303,7 +303,8 @@ std::map<std::string,std::string> queryParams(const std::string& q) {
     std::map<std::string,std::string> out;
     std::size_t start=0;
     while(start<q.size()){auto end=q.find('&',start);if(end==std::string::npos)end=q.size();
-        auto item=q.substr(start,end-start),equal=item.find('=');
+        auto item=q.substr(start,end-start);
+        auto equal=item.find('=');
         auto name=decode(item.substr(0,equal)),value=equal==std::string::npos?"":decode(item.substr(equal+1));
         if(!out.count(name))out.emplace(std::move(name),std::move(value));
         start=end+1;
