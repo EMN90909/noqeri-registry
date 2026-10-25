@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/core.noqeri"
+function main(): int {
+    if identity(42) != 42 { return 1 }
+    if !status_ok(0 as isize) { return 2 }
+    if !status_error(-1 as isize) { return 3 }
+    return 0
+}

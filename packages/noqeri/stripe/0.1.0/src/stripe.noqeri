@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.stripe
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function stripeApiRoot(): string { return "https://api.stripe.com/v1" }
+export function stripeCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function stripeLastStatus(): int { return providerHttpStatus() }
+export function stripeCustomersUrl(): string { return stripeApiRoot() + "/customers" }
+export function stripePaymentIntentsUrl(): string { return stripeApiRoot() + "/payment_intents" }
+export function stripeGetCustomer(secretKey: string, customerId: string): string { if !stripeCredentialPresent(secretKey) { return "" } return providerHttpJson("GET", stripeCustomersUrl() + "/" + customerId, "basic-user", secretKey, "", "", "") }
+export function stripeCreatePaymentIntent(secretKey: string, formBody: string): string { if !stripeCredentialPresent(secretKey) { return "" } return providerHttpJson("POST", stripePaymentIntentsUrl(), "basic-user", secretKey, "Content-Type", "application/x-www-form-urlencoded", formBody) }

@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/base64.noqeri"
+function main(): int {
+    let safe: [u8; 2] = [45 as u8, 95 as u8]
+    let standard: [u8; 2] = [43 as u8, 47 as u8]
+    let padded: [u8; 4] = [84 as u8, 81 as u8, 61 as u8, 61 as u8]
+    if !base64UrlValid(slice(safe), false) { return 1 }
+    if base64UrlValid(slice(standard), false) { return 2 }
+    if !base64UrlValid(slice(padded), true) { return 3 }
+    if base64UrlValid(slice(padded), false) { return 4 }
+    return 0
+}
