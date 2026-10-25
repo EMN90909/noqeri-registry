@@ -13,7 +13,7 @@ TEXT_SUFFIXES = {".noqeri", ".nqri", ".nqon", ".md", ".json", ".mjs",
                  ".js", ".py", ".cpp", ".h", ".html", ".yml", ".yaml",
                  ".sh", ".txt", ".toml"}
 SKIP_DIRS = {".git", "node_modules", ".venv", "__pycache__"}
-PATTERN = re.compile(r"\\.(?:nqr|nqo)(?![a-zA-Z0-9_])")
+PATTERN = re.compile(r"\.(?:nqr|nqo)(?![a-zA-Z0-9_])")
 
 def new_extension(match: re.Match[str]) -> str:
     return OLD[match.group()]
@@ -41,8 +41,8 @@ def main() -> None:
         except UnicodeDecodeError:
             continue
         updated = PATTERN.sub(new_extension, original)
-        updated = re.sub(r"(?m)^(```)nqr\\s*$", r"\\1noqeri", updated)
-        updated = re.sub(r"(?m)^(```)nqo\\s*$", r"\\1nqri", updated)
+        updated = re.sub(r"(?m)^(```)nqr\s*$", r"\1noqeri", updated)
+        updated = re.sub(r"(?m)^(```)nqo\s*$", r"\1nqri", updated)
         if updated != original:
             path.write_text(updated, encoding="utf-8")
             changed += 1
