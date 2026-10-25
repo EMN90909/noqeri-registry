@@ -1,0 +1,51 @@
+// SPDX-License-Identifier: MIT
+// Explicit host boundary: this module is an API adapter, not a bundled HTTP stack.
+module noqeri.sentry
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+export function sentryRoot(): string { return "https://sentry.io/api/0" }
+export function sentryStatus(): int { return providerHttpStatus() }
+export function sentrySuccess(code: int): bool { return code >= 200 && code < 300 }
+export function sentryRateLimited(code: int): bool { return code == 429 }
+export function sentryRetryable(code: int): bool { return code == 408 || code == 423 || code == 429 || code == 500 || code == 502 || code == 503 || code == 504 }
+export function sentryMethodAllowed(method: string): bool { return method == "GET" || method == "POST" || method == "PATCH" || method == "PUT" || method == "DELETE" }
+export function sentryCredentialValid(token: string): bool { return textLength(token) >= 8 && textLength(token) <= 8192 }
+export function sentryBodyValid(size: usize): bool { return size <= 1048576 as usize }
+export function sentryPageSizeValid(size: int): bool { return size > 0 && size <= 100 }
+export function sentryIdentifierChar(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 45 as u8 || c == 95 as u8 || c == 46 as u8
+}
+export function sentryIdentifierValid(id: []u8): bool {
+    if len(id) == 0 as usize || len(id) > 128 as usize { return false }
+    if len(id) == 1 as usize && id[0] == 46 as u8 { return false }
+    if len(id) == 2 as usize && id[0] == 46 as u8 && id[1] == 46 as u8 { return false }
+    let i: usize = 0 as usize
+    while i < len(id) { if !sentryIdentifierChar(id[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function sentryDelayMillis(attempt: int): int {
+    if attempt <= 0 { return 200 }
+    if attempt == 1 { return 400 }
+    if attempt == 2 { return 800 }
+    if attempt == 3 { return 1600 }
+    return 3200
+}
+export function sentryRequest(method: string, token: string, url: string, body: string): string {
+    if !sentryMethodAllowed(method) || !sentryCredentialValid(token) || textLength(url) < 10 || textLength(body) > 1048576 { return "" }
+    return providerHttpJson(method,url,"bearer",token,"Accept","application/json",body)
+}
+export function sentryOrganizationsUrl(): string { return sentryRoot() + "/organizations" }
+export function sentryProjectsUrl(): string { return sentryRoot() + "/projects" }
+export function sentryTeamsUrl(): string { return sentryRoot() + "/teams" }
+export function sentryIssuesUrl(): string { return sentryRoot() + "/issues" }
+export function sentryReleasesUrl(): string { return sentryRoot() + "/organizations" }
+export function sentryMonitorsUrl(): string { return sentryRoot() + "/organizations" }
+export function sentryAlertsUrl(): string { return sentryRoot() + "/organizations" }
+export function sentryEventsUrl(project: string): string { return sentryRoot() + "/projects/" + project + "/events" }
+export function sentryOrganizationProjectsUrl(org: string): string { return sentryRoot() + "/organizations/" + org + "/projects" }
+export function sentryGet(token: string, url: string): string { return sentryRequest("GET",token,url,"") }
+export function sentryPost(token: string, url: string, body: string): string { return sentryRequest("POST",token,url,body) }
+export function sentryPatch(token: string, url: string, body: string): string { return sentryRequest("PATCH",token,url,body) }
+export function sentryDelete(token: string, url: string): string { return sentryRequest("DELETE",token,url,"") }
+export function sentryDsnSizeValid(bytes: usize): bool { return bytes >= 20 as usize && bytes <= 2048 as usize }
+export function sentryTimestampValid(milliseconds: i64): bool { return milliseconds >= 0 as i64 }

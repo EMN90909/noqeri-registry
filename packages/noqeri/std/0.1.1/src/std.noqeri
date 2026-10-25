@@ -1,0 +1,70 @@
+// SPDX-License-Identifier: MIT
+module noqeri.std
+export function stdMin(a: int, b: int): int { if a < b { return a } return b }
+export function stdMax(a: int, b: int): int { if a > b { return a } return b }
+export function stdClamp(value: int, minimum: int, maximum: int): int {
+    if value < minimum { return minimum }
+    if value > maximum { return maximum }
+    return value
+}
+export function stdRangeValid(offset: usize, count: usize, total: usize): bool {
+    return offset <= total && count <= total - offset
+}
+export function stdAsciiLetter(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8)
+}
+export function stdAsciiDigit(c: u8): bool { return c >= 48 as u8 && c <= 57 as u8 }
+export function stdAsciiSpace(c: u8): bool { return c == 32 as u8 || c == 9 as u8 || c == 10 as u8 || c == 13 as u8 }
+export function stdLower(c: u8): u8 {
+    if c >= 65 as u8 && c <= 90 as u8 { return c + 32 as u8 }
+    return c
+}
+export function stdUpper(c: u8): u8 {
+    if c >= 97 as u8 && c <= 122 as u8 { return c - 32 as u8 }
+    return c
+}
+export function stdBytesEqual(a: []u8, b: []u8): bool {
+    if len(a) != len(b) { return false }
+    let i: usize = 0 as usize
+    while i < len(a) { if a[i] != b[i] { return false } i = i + 1 as usize }
+    return true
+}
+export function stdBytesCopy(src: []u8, dst: []u8): isize {
+    if len(src) > len(dst) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(src) { dst[i] = src[i] i = i + 1 as usize }
+    return len(src) as isize
+}
+export function stdFindByte(src: []u8, value: u8): isize {
+    let i: usize = 0 as usize
+    while i < len(src) { if src[i] == value { return i as isize } i = i + 1 as usize }
+    return -1 as isize
+}
+export function stdParseU64(src: []u8, dst: []u64): bool {
+    if len(src) == 0 as usize || len(dst) == 0 as usize { return false }
+    let n: u64 = 0 as u64
+    let i: usize = 0 as usize
+    while i < len(src) {
+        if !stdAsciiDigit(src[i]) { return false }
+        let digit: u64 = (src[i] - 48 as u8) as u64
+        if n > (18446744073709551615 as u64 - digit) / 10 as u64 { return false }
+        n = n * 10 as u64 + digit
+        i = i + 1 as usize
+    }
+    dst[0 as usize] = n
+    return true
+}
+export function stdFormatU64(number: u64, dst: []u8): isize {
+    let n: u64 = number
+    let width: usize = 1 as usize
+    while n >= 10 as u64 { n = n / 10 as u64 width = width + 1 as usize }
+    if len(dst) < width { return -1 as isize }
+    n = number
+    let i: usize = width
+    while i > 0 as usize {
+        i = i - 1 as usize
+        dst[i] = (n % 10 as u64) as u8 + 48 as u8
+        n = n / 10 as u64
+    }
+    return width as isize
+}

@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+import "../src/regex_lite.noqeri"
+let pattern: [u8; 3] = [97 as u8,42 as u8,99 as u8]
+let text: [u8; 3] = [97 as u8,98 as u8,99 as u8]
+print(regexWildcardMatch(slice(pattern),slice(text)))

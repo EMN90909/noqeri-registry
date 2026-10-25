@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+import "../src/openai.noqeri"
+function main(): int {
+if !(openaiResponsesUrl() == "https://api.openai.com/v1/responses") { return 1 }
+    if !(openaiModelsUrl() == "https://api.openai.com/v1/models") { return 2 }
+    if !openaiRetryable(503) || openaiRetryable(404) { return 3 }
+    let safe: [u8; 3] = [97 as u8,45 as u8,49 as u8]
+    let unsafeId: [u8; 2] = [46 as u8,46 as u8]
+    if !openaiIdentifierValid(slice(safe)) || openaiIdentifierValid(slice(unsafeId)) { return 4 }
+    if !(openaiGet("bad",openaiRoot()) == "") { return 5 }
+    return 0
+}
+print(main())

@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: MIT
+import "../src/rate_limit.noqeri"
+function main(): int {
+if rateLimitWindowStart(12 as i64,10 as i64) != 10 as i64 { return 1 }
+    if !rateLimitAllow(4 as i64,5 as i64) || rateLimitAllow(5 as i64,5 as i64) { return 2 }
+    if rateLimitRemaining(3 as i64,5 as i64) != 2 as i64 { return 3 }
+    if rateLimitRefill(1 as i64,5 as i64,2 as i64,1 as i64) != 3 as i64 { return 4 }
+    if rateLimitConsume(3 as i64,4 as i64) >= 0 as i64 { return 5 }
+    return 0
+}
+print(main())

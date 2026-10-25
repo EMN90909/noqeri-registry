@@ -1,0 +1,69 @@
+// SPDX-License-Identifier: MIT
+module noqeri.postgres
+export function postgresIdentifierValid(name: []u8): bool {
+    if len(name) == 0 as usize || len(name) > 63 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(name) {
+        if name[i] == 0 as u8 || name[i] == 10 as u8 || name[i] == 13 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function postgresQuotedSize(name: []u8): isize {
+    if !postgresIdentifierValid(name) { return -1 as isize }
+    let n: usize = len(name) + 2 as usize
+    let i: usize = 0 as usize
+    while i < len(name) { if name[i] == 34 as u8 { n = n + 1 as usize } i = i + 1 as usize }
+    return n as isize
+}
+export function postgresQuoteIdentifier(name: []u8, dst: []u8): isize {
+    let need: isize = postgresQuotedSize(name)
+    if need < 0 as isize || len(dst) < need as usize { return -1 as isize }
+    dst[0] = 34 as u8
+    let j: usize = 1 as usize
+    let i: usize = 0 as usize
+    while i < len(name) {
+        dst[j] = name[i]
+        j = j + 1 as usize
+        if name[i] == 34 as u8 { dst[j] = 34 as u8 j = j + 1 as usize }
+        i = i + 1 as usize
+    }
+    dst[j] = 34 as u8
+    return (j + 1 as usize) as isize
+}
+export function postgresSQLStateChar(c: u8): bool { return (c >= 48 as u8 && c <= 57 as u8) || (c >= 65 as u8 && c <= 90 as u8) }
+export function postgresSQLStateValid(value: []u8): bool {
+    if len(value) != 5 as usize { return false }
+    let i: usize = 0 as usize
+    while i < 5 as usize { if !postgresSQLStateChar(value[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function postgresRetryable(state: []u8): bool {
+    if !postgresSQLStateValid(state) { return false }
+    // 40001 serialization_failure, 40P01 deadlock_detected, 55P03 lock_not_available.
+    if state[0] == 52 as u8 && state[1] == 48 as u8 {
+        if state[2] == 48 as u8 && state[3] == 48 as u8 && state[4] == 49 as u8 { return true }
+        if state[2] == 80 as u8 && state[3] == 48 as u8 && state[4] == 49 as u8 { return true }
+    }
+    return state[0] == 53 as u8 && state[1] == 53 as u8 && state[2] == 80 as u8 && state[3] == 48 as u8 && state[4] == 51 as u8
+}
+export function postgresFrameLengthValid(bytes: usize): bool { return bytes >= 4 as usize && bytes <= 16777216 as usize }
+export function postgresReadU32BE(bytes: []u8): isize {
+    if len(bytes) < 4 as usize { return -1 as isize }
+    let x: u64 = bytes[0] as u64 * 16777216 as u64 + bytes[1] as u64 * 65536 as u64 + bytes[2] as u64 * 256 as u64 + bytes[3] as u64
+    if x > 16777216 as u64 { return -1 as isize }
+    return x as isize
+}
+export function postgresWriteU32BE(value: usize, dst: []u8): bool {
+    if value > 16777216 as usize || len(dst) < 4 as usize { return false }
+    dst[0] = (value / 16777216 as usize) as u8
+    dst[1] = ((value / 65536 as usize) % 256 as usize) as u8
+    dst[2] = ((value / 256 as usize) % 256 as usize) as u8
+    dst[3] = (value % 256 as usize) as u8
+    return true
+}
+export function postgresTransactionTransition(current: int, next: int): bool {
+    if current == 0 { return next == 1 }
+    if current == 1 { return next == 2 || next == 3 }
+    return (current == 2 || current == 3) && next == 0
+}

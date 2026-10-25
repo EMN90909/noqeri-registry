@@ -1,0 +1,62 @@
+// SPDX-License-Identifier: MIT
+module noqeri.semver
+export function semverDigit(c: u8): bool { return c >= 48 as u8 && c <= 57 as u8 }
+export function semverIdentifierByte(c: u8): bool {
+    return semverDigit(c) || (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || c == 45 as u8 || c == 46 as u8
+}
+export function semverParseCore(src: []u8, dst: []u64): bool {
+    if len(dst) < 3 as usize || len(src) < 5 as usize { return false }
+    let part: usize = 0 as usize
+    let number: u64 = 0 as u64
+    let digits: usize = 0 as usize
+    let leadingZero: bool = false
+    let i: usize = 0 as usize
+    while i < len(src) {
+        let c: u8 = src[i]
+        if c == 46 as u8 {
+            if digits == 0 as usize || part >= 2 as usize { return false }
+            dst[part] = number
+            part = part + 1 as usize
+            number = 0 as u64
+            digits = 0 as usize
+            leadingZero = false
+        } else {
+            if !semverDigit(c) || digits > 19 as usize { return false }
+            if digits == 0 as usize { leadingZero = c == 48 as u8 }
+            if digits > 0 as usize && leadingZero { return false }
+            let digit: u64 = (c - 48 as u8) as u64
+            if number > (18446744073709551615 as u64 - digit) / 10 as u64 { return false }
+            number = number * 10 as u64 + digit
+            digits = digits + 1 as usize
+        }
+        i = i + 1 as usize
+    }
+    if part != 2 as usize || digits == 0 as usize { return false }
+    dst[2 as usize] = number
+    return true
+}
+export function semverCompareCore(a: []u64, b: []u64): int {
+    if len(a) < 3 as usize || len(b) < 3 as usize { return 0 }
+    let i: usize = 0 as usize
+    while i < 3 as usize {
+        if a[i] < b[i] { return -1 }
+        if a[i] > b[i] { return 1 }
+        i = i + 1 as usize
+    }
+    return 0
+}
+export function semverSuffixValid(suffix: []u8): bool {
+    if len(suffix) == 0 as usize || len(suffix) > 256 as usize { return false }
+    if suffix[0] == 46 as u8 || suffix[len(suffix) - 1 as usize] == 46 as u8 { return false }
+    let i: usize = 0 as usize
+    while i < len(suffix) {
+        if !semverIdentifierByte(suffix[i]) { return false }
+        if i > 0 as usize && suffix[i] == 46 as u8 && suffix[i - 1 as usize] == 46 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function semverMajorCompatible(a: []u64, b: []u64): bool {
+    if len(a) < 3 as usize || len(b) < 3 as usize { return false }
+    return a[0] == b[0] && a[0] != 0 as u64
+}

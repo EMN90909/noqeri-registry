@@ -1,0 +1,3 @@
+// SPDX-License-Identifier: MIT
+import "../src/pgas.noqeri"
+print(pgasBlockOwner(10 as usize,3 as usize,8 as usize))

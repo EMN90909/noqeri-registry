@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+import "../src/semver.noqeri"
+let version: [u8; 5] = [49 as u8,46 as u8,50 as u8,46 as u8,51 as u8]
+let parts: [u64; 3] = [0 as u64,0 as u64,0 as u64]
+print(semverParseCore(slice(version),slice(parts)))

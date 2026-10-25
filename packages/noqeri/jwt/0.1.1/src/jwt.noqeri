@@ -1,0 +1,60 @@
+// SPDX-License-Identifier: MIT
+module noqeri.jwt
+export function jwtBase64Byte(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 45 as u8 || c == 95 as u8
+}
+export function jwtTokenSizeValid(bytes: usize): bool { return bytes >= 5 as usize && bytes <= 16384 as usize }
+export function jwtCompactValid(src: []u8): bool {
+    if !jwtTokenSizeValid(len(src)) { return false }
+    let separators: usize = 0 as usize
+    let field: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i < len(src) {
+        let c: u8 = src[i]
+        if c == 46 as u8 {
+            if field == 0 as usize || separators >= 2 as usize { return false }
+            separators = separators + 1 as usize
+            field = 0 as usize
+        } else {
+            if !jwtBase64Byte(c) { return false }
+            field = field + 1 as usize
+        }
+        i = i + 1 as usize
+    }
+    return separators == 2 as usize && field > 0 as usize
+}
+export function jwtSegmentOffset(src: []u8, segment: int): isize {
+    if segment < 0 || segment > 2 || !jwtCompactValid(src) { return -1 as isize }
+    if segment == 0 { return 0 as isize }
+    let dots: int = 0
+    let i: usize = 0 as usize
+    while i < len(src) {
+        if src[i] == 46 as u8 {
+            dots = dots + 1
+            if dots == segment { return (i + 1 as usize) as isize }
+        }
+        i = i + 1 as usize
+    }
+    return -1 as isize
+}
+export function jwtSegmentLength(src: []u8, segment: int): isize {
+    let start: isize = jwtSegmentOffset(src,segment)
+    if start < 0 as isize { return -1 as isize }
+    let i: usize = start as usize
+    while i < len(src) && src[i] != 46 as u8 { i = i + 1 as usize }
+    return (i - start as usize) as isize
+}
+export function jwtExpired(expiry: i64, now: i64, leeway: i64): bool {
+    if leeway < 0 as i64 || leeway > 3600 as i64 { return true }
+    return expiry < now - leeway
+}
+export function jwtNotYetValid(issued: i64, now: i64, leeway: i64): bool {
+    if leeway < 0 as i64 || leeway > 3600 as i64 { return true }
+    return issued > now + leeway
+}
+export function jwtIssuerNameValid(src: []u8): bool {
+    if len(src) == 0 as usize || len(src) > 1024 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(src) { if src[i] < 33 as u8 || src[i] == 127 as u8 { return false } i = i + 1 as usize }
+    return true
+}

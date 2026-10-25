@@ -1,0 +1,69 @@
+// SPDX-License-Identifier: MIT
+module noqeri.net
+export function netPortValid(port: int): bool { return port > 0 && port <= 65535 }
+export function netEphemeralPort(port: int): bool { return port >= 49152 && port <= 65535 }
+export function netIpv4Valid(src: []u8): bool {
+    if len(src) < 7 as usize || len(src) > 15 as usize { return false }
+    let dots: usize = 0 as usize
+    let digits: usize = 0 as usize
+    let octet: int = 0
+    let leading: bool = false
+    let i: usize = 0 as usize
+    while i < len(src) {
+        let c: u8 = src[i]
+        if c == 46 as u8 {
+            if dots >= 3 as usize || digits == 0 as usize || octet > 255 { return false }
+            dots = dots + 1 as usize
+            digits = 0 as usize
+            octet = 0
+            leading = false
+        } else {
+            if c < 48 as u8 || c > 57 as u8 || digits >= 3 as usize { return false }
+            if digits == 0 as usize { leading = c == 48 as u8 }
+            if digits > 0 as usize && leading { return false }
+            octet = octet * 10 + (c - 48 as u8) as int
+            if octet > 255 { return false }
+            digits = digits + 1 as usize
+        }
+        i = i + 1 as usize
+    }
+    return dots == 3 as usize && digits > 0 as usize
+}
+export function netIpv4ToOctets(src: []u8, dst: []u8): bool {
+    if !netIpv4Valid(src) || len(dst) < 4 as usize { return false }
+    let n: int = 0
+    let group: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i < len(src) {
+        if src[i] == 46 as u8 {
+            dst[group] = n as u8
+            group = group + 1 as usize
+            n = 0
+        } else { n = n * 10 + (src[i] - 48 as u8) as int }
+        i = i + 1 as usize
+    }
+    dst[group] = n as u8
+    return true
+}
+export function netPrivateIpv4(ip: []u8): bool {
+    if len(ip) < 4 as usize { return false }
+    if ip[0] == 10 as u8 || ip[0] == 127 as u8 { return true }
+    if ip[0] == 192 as u8 && ip[1] == 168 as u8 { return true }
+    if ip[0] == 172 as u8 && ip[1] >= 16 as u8 && ip[1] <= 31 as u8 { return true }
+    if ip[0] == 169 as u8 && ip[1] == 254 as u8 { return true }
+    return false
+}
+export function netCidrPrefixValid(prefix: int): bool { return prefix >= 0 && prefix <= 32 }
+export function netHostNameChar(c: u8): bool {
+    return (c >= 97 as u8 && c <= 122 as u8) || (c >= 65 as u8 && c <= 90 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 45 as u8 || c == 46 as u8
+}
+export function netHostNameValid(host: []u8): bool {
+    if len(host) == 0 as usize || len(host) > 253 as usize || host[0] == 46 as u8 || host[0] == 45 as u8 { return false }
+    let i: usize = 0 as usize
+    while i < len(host) {
+        if !netHostNameChar(host[i]) { return false }
+        if i > 0 as usize && host[i] == 46 as u8 && host[i - 1 as usize] == 46 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return host[len(host) - 1 as usize] != 46 as u8 && host[len(host) - 1 as usize] != 45 as u8
+}

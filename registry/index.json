@@ -84,6 +84,14 @@
           "quality": "experimental",
           "version": "0.1.0",
           "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/std/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
@@ -119,6 +127,14 @@
           "path": "packages/noqeri/security/0.1.0",
           "quality": "experimental",
           "version": "0.1.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/security/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
           "yanked": false
         }
       ]
@@ -300,6 +316,14 @@
           "quality": "experimental",
           "version": "0.1.0",
           "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/json/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
@@ -420,6 +444,14 @@
           "quality": "experimental",
           "version": "0.1.0",
           "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/regex-lite/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
@@ -449,6 +481,14 @@
           "path": "packages/noqeri/semver/0.1.0",
           "quality": "experimental",
           "version": "0.1.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/semver/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
           "yanked": false
         }
       ]
@@ -548,6 +588,14 @@
           "quality": "experimental",
           "version": "0.1.0",
           "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/jwt/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
@@ -577,6 +625,14 @@
           "path": "packages/noqeri/http/0.1.0",
           "quality": "experimental",
           "version": "0.1.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/http/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
           "yanked": false
         }
       ]
@@ -859,6 +915,14 @@
           "quality": "experimental",
           "version": "0.1.0",
           "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/router/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
@@ -1004,6 +1068,14 @@
           "quality": "experimental",
           "version": "0.1.0",
           "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/postgres/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
@@ -1034,6 +1106,14 @@
           "path": "packages/noqeri/sqlite/0.1.0",
           "quality": "experimental",
           "version": "0.1.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/sqlite/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
           "yanked": false
         }
       ]
@@ -1134,6 +1214,14 @@
           "quality": "experimental",
           "version": "0.1.0",
           "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/net/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
@@ -1225,6 +1313,14 @@
           "path": "packages/noqeri/supabase/0.1.0",
           "quality": "experimental",
           "version": "0.1.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/supabase/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
           "yanked": false
         }
       ]
@@ -1374,6 +1470,14 @@
           "quality": "experimental",
           "version": "0.1.0",
           "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/stripe/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
@@ -1404,6 +1508,14 @@
           "path": "packages/noqeri/resend/0.1.0",
           "quality": "experimental",
           "version": "0.1.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/resend/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
           "yanked": false
         }
       ]
@@ -1506,6 +1618,14 @@
           "quality": "experimental",
           "version": "0.1.0",
           "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/neon/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
@@ -1568,6 +1688,14 @@
           "quality": "experimental",
           "version": "0.1.0",
           "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/sentry/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
@@ -1598,6 +1726,14 @@
           "path": "packages/noqeri/openai/0.1.0",
           "quality": "experimental",
           "version": "0.1.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/openai/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
           "yanked": false
         }
       ]
@@ -1668,6 +1804,14 @@
           "path": "packages/noqeri/planetscale/0.1.0",
           "quality": "experimental",
           "version": "0.1.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/planetscale/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
           "yanked": false
         }
       ]
@@ -1770,6 +1914,14 @@
           "quality": "experimental",
           "version": "0.1.0",
           "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/tailwind/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
@@ -1799,6 +1951,14 @@
           "path": "packages/noqeri/retry/0.1.0",
           "quality": "experimental",
           "version": "0.1.0",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/retry/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
           "yanked": false
         }
       ]
@@ -1830,6 +1990,14 @@
           "quality": "experimental",
           "version": "0.1.0",
           "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/rate-limit/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
+          "yanked": false
         }
       ]
     },
@@ -1860,6 +2028,14 @@
           "path": "packages/noqeri/pgas/0.1.4",
           "quality": "experimental",
           "version": "0.1.4",
+          "yanked": false
+        },
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/pgas/0.1.1",
+          "quality": "experimental",
+          "version": "0.1.1",
           "yanked": false
         }
       ]

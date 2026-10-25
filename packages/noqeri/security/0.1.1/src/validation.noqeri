@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: MIT
+module noqeri.security
+export function securityBytesEqual(a: []u8, b: []u8): bool {
+    if len(a) != len(b) { return false }
+    let mismatch: int = 0
+    let i: usize = 0 as usize
+    while i < len(a) {
+        if a[i] != b[i] { mismatch = mismatch + 1 }
+        i = i + 1 as usize
+    }
+    return mismatch == 0
+}
+export function securityZero(buffer: []u8): usize {
+    let i: usize = 0 as usize
+    while i < len(buffer) { buffer[i] = 0 as u8 i = i + 1 as usize }
+    return len(buffer)
+}
+export function securityPathSegmentValid(segment: []u8): bool {
+    if len(segment) == 0 as usize || len(segment) > 255 as usize { return false }
+    if len(segment) == 1 as usize && segment[0] == 46 as u8 { return false }
+    if len(segment) == 2 as usize && segment[0] == 46 as u8 && segment[1] == 46 as u8 { return false }
+    let i: usize = 0 as usize
+    while i < len(segment) {
+        if segment[i] == 0 as u8 || segment[i] == 47 as u8 || segment[i] == 92 as u8 || segment[i] == 58 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function securityHeaderSafe(value: []u8): bool {
+    if len(value) > 8192 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(value) {
+        if value[i] == 0 as u8 || value[i] == 10 as u8 || value[i] == 13 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function securityPasswordPolicy(password: []u8): bool {
+    if len(password) < 12 as usize || len(password) > 1024 as usize { return false }
+    let letters: bool = false
+    let numbers: bool = false
+    let i: usize = 0 as usize
+    while i < len(password) {
+        let c: u8 = password[i]
+        if c == 0 as u8 || c == 10 as u8 || c == 13 as u8 { return false }
+        if (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) { letters = true }
+        if c >= 48 as u8 && c <= 57 as u8 { numbers = true }
+        i = i + 1 as usize
+    }
+    return letters && numbers
+}
+export function securityTokenLengthValid(length: usize): bool { return length >= 16 as usize && length <= 8192 as usize }
+export function securityValueWithinLimits(bytes: usize, maximum: usize): bool { return bytes <= maximum }

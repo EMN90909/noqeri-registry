@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: MIT
+// Explicit host boundary: this module is an API adapter, not a bundled HTTP stack.
+module noqeri.supabase
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+export function supabaseRoot(): string { return "https://api.supabase.com/v1" }
+export function supabaseStatus(): int { return providerHttpStatus() }
+export function supabaseSuccess(code: int): bool { return code >= 200 && code < 300 }
+export function supabaseRateLimited(code: int): bool { return code == 429 }
+export function supabaseRetryable(code: int): bool { return code == 408 || code == 423 || code == 429 || code == 500 || code == 502 || code == 503 || code == 504 }
+export function supabaseMethodAllowed(method: string): bool { return method == "GET" || method == "POST" || method == "PATCH" || method == "PUT" || method == "DELETE" }
+export function supabaseCredentialValid(token: string): bool { return textLength(token) >= 8 && textLength(token) <= 8192 }
+export function supabaseBodyValid(size: usize): bool { return size <= 1048576 as usize }
+export function supabasePageSizeValid(size: int): bool { return size > 0 && size <= 100 }
+export function supabaseIdentifierChar(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 45 as u8 || c == 95 as u8 || c == 46 as u8
+}
+export function supabaseIdentifierValid(id: []u8): bool {
+    if len(id) == 0 as usize || len(id) > 128 as usize { return false }
+    if len(id) == 1 as usize && id[0] == 46 as u8 { return false }
+    if len(id) == 2 as usize && id[0] == 46 as u8 && id[1] == 46 as u8 { return false }
+    let i: usize = 0 as usize
+    while i < len(id) { if !supabaseIdentifierChar(id[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function supabaseDelayMillis(attempt: int): int {
+    if attempt <= 0 { return 200 }
+    if attempt == 1 { return 400 }
+    if attempt == 2 { return 800 }
+    if attempt == 3 { return 1600 }
+    return 3200
+}
+export function supabaseRequest(method: string, token: string, url: string, body: string): string {
+    if !supabaseMethodAllowed(method) || !supabaseCredentialValid(token) || textLength(url) < 10 || textLength(body) > 1048576 { return "" }
+    return providerHttpJson(method,url,"bearer",token,"Accept","application/json",body)
+}
+export function supabaseProjectsUrl(): string { return supabaseRoot() + "/projects" }
+export function supabaseProjectUrl(ref: string): string { return supabaseRoot() + "/projects/" + ref }
+export function supabaseOrganizationsUrl(): string { return supabaseRoot() + "/organizations" }
+export function supabaseApiKeysUrl(ref: string): string { return supabaseRoot() + "/projects/" + ref + "/api-keys" }
+export function supabaseSecretsUrl(ref: string): string { return supabaseRoot() + "/projects/" + ref + "/secrets" }
+export function supabaseFunctionsUrl(ref: string): string { return supabaseRoot() + "/projects/" + ref + "/functions" }
+export function supabaseDomainsUrl(ref: string): string { return supabaseRoot() + "/projects/" + ref + "/custom-hostname" }
+export function supabaseBranchesUrl(ref: string): string { return supabaseRoot() + "/projects/" + ref + "/branches" }
+export function supabaseGet(token: string, url: string): string { return supabaseRequest("GET",token,url,"") }
+export function supabasePost(token: string, url: string, body: string): string { return supabaseRequest("POST",token,url,body) }
+export function supabasePatch(token: string, url: string, body: string): string { return supabaseRequest("PATCH",token,url,body) }
+export function supabaseDelete(token: string, url: string): string { return supabaseRequest("DELETE",token,url,"") }
+export function supabaseDataRoot(projectUrl: string): string { return projectUrl + "/rest/v1" }
+export function supabaseAuthRoot(projectUrl: string): string { return projectUrl + "/auth/v1" }
+export function supabaseStorageRoot(projectUrl: string): string { return projectUrl + "/storage/v1" }
+export function supabaseEdgeFunctionsRoot(projectUrl: string): string { return projectUrl + "/functions/v1" }
+export function supabaseTableUrl(projectUrl: string, table: string): string { return supabaseDataRoot(projectUrl) + "/" + table }

@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: MIT
+import "../src/validation.noqeri"
+function main(): int {
+let safe: [u8; 3] = [97 as u8,98 as u8,49 as u8]
+    let dot: [u8; 2] = [46 as u8,46 as u8]
+    if !securityPathSegmentValid(slice(safe)) || securityPathSegmentValid(slice(dot)) { return 1 }
+    let copy: [u8; 3] = [97 as u8,98 as u8,49 as u8]
+    if !securityBytesEqual(slice(safe),slice(copy)) { return 2 }
+    if securityZero(slice(copy)) != 3 as usize || copy[0] != 0 as u8 { return 3 }
+    let cr: [u8; 2] = [13 as u8,10 as u8]
+    if securityHeaderSafe(slice(cr)) { return 4 }
+    return 0
+}
+print(main())

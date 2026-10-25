@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+import "../src/sentry.noqeri"
+function main(): int {
+if !(sentryOrganizationsUrl() == "https://sentry.io/api/0/organizations") { return 1 }
+    if !(sentryIssuesUrl() == "https://sentry.io/api/0/issues") { return 2 }
+    if !sentryRetryable(503) || sentryRetryable(404) { return 3 }
+    let safe: [u8; 3] = [97 as u8,45 as u8,49 as u8]
+    let unsafeId: [u8; 2] = [46 as u8,46 as u8]
+    if !sentryIdentifierValid(slice(safe)) || sentryIdentifierValid(slice(unsafeId)) { return 4 }
+    if !(sentryGet("bad",sentryRoot()) == "") { return 5 }
+    return 0
+}
+print(main())

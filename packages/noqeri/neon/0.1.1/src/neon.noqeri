@@ -1,0 +1,52 @@
+// SPDX-License-Identifier: MIT
+// Explicit host boundary: this module is an API adapter, not a bundled HTTP stack.
+module noqeri.neon
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+export function neonRoot(): string { return "https://console.neon.tech/api/v2" }
+export function neonStatus(): int { return providerHttpStatus() }
+export function neonSuccess(code: int): bool { return code >= 200 && code < 300 }
+export function neonRateLimited(code: int): bool { return code == 429 }
+export function neonRetryable(code: int): bool { return code == 408 || code == 423 || code == 429 || code == 500 || code == 502 || code == 503 || code == 504 }
+export function neonMethodAllowed(method: string): bool { return method == "GET" || method == "POST" || method == "PATCH" || method == "PUT" || method == "DELETE" }
+export function neonCredentialValid(token: string): bool { return textLength(token) >= 8 && textLength(token) <= 8192 }
+export function neonBodyValid(size: usize): bool { return size <= 1048576 as usize }
+export function neonPageSizeValid(size: int): bool { return size > 0 && size <= 100 }
+export function neonIdentifierChar(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 45 as u8 || c == 95 as u8 || c == 46 as u8
+}
+export function neonIdentifierValid(id: []u8): bool {
+    if len(id) == 0 as usize || len(id) > 128 as usize { return false }
+    if len(id) == 1 as usize && id[0] == 46 as u8 { return false }
+    if len(id) == 2 as usize && id[0] == 46 as u8 && id[1] == 46 as u8 { return false }
+    let i: usize = 0 as usize
+    while i < len(id) { if !neonIdentifierChar(id[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function neonDelayMillis(attempt: int): int {
+    if attempt <= 0 { return 200 }
+    if attempt == 1 { return 400 }
+    if attempt == 2 { return 800 }
+    if attempt == 3 { return 1600 }
+    return 3200
+}
+export function neonRequest(method: string, token: string, url: string, body: string): string {
+    if !neonMethodAllowed(method) || !neonCredentialValid(token) || textLength(url) < 10 || textLength(body) > 1048576 { return "" }
+    return providerHttpJson(method,url,"bearer",token,"Accept","application/json",body)
+}
+export function neonProjectsUrl(): string { return neonRoot() + "/projects" }
+export function neonProjectUrl(project: string): string { return neonRoot() + "/projects/" + project }
+export function neonBranchesUrl(project: string): string { return neonRoot() + "/projects/" + project + "/branches" }
+export function neonBranchUrl(project: string, branch: string): string { return neonRoot() + "/projects/" + project + "/branches/" + branch }
+export function neonEndpointsUrl(project: string, branch: string): string { return neonRoot() + "/projects/" + project + "/branches/" + branch + "/endpoints" }
+export function neonOperationsUrl(project: string): string { return neonRoot() + "/projects/" + project + "/operations" }
+export function neonRolesUrl(project: string, branch: string): string { return neonRoot() + "/projects/" + project + "/branches/" + branch + "/roles" }
+export function neonDatabasesUrl(project: string, branch: string): string { return neonRoot() + "/projects/" + project + "/branches/" + branch + "/databases" }
+export function neonApiKeysUrl(): string { return neonRoot() + "/api_keys" }
+export function neonOrganizationsUrl(): string { return neonRoot() + "/organizations" }
+export function neonGet(token: string, url: string): string { return neonRequest("GET",token,url,"") }
+export function neonPost(token: string, url: string, body: string): string { return neonRequest("POST",token,url,body) }
+export function neonPatch(token: string, url: string, body: string): string { return neonRequest("PATCH",token,url,body) }
+export function neonDelete(token: string, url: string): string { return neonRequest("DELETE",token,url,"") }
+export function neonProjectIdValid(bytes: []u8): bool { return neonIdentifierValid(bytes) }
+export function neonLimitValid(limit: int): bool { return limit >= 1 && limit <= 400 }

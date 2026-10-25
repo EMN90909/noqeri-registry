@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+import "../src/router.noqeri"
+function main(): int {
+let pattern: [u8; 6] = [47 as u8,117 as u8,47 as u8,58 as u8,105 as u8,100 as u8]
+    let matched: [u8; 4] = [47 as u8,117 as u8,47 as u8,49 as u8]
+    let no: [u8; 2] = [47 as u8,117 as u8]
+    if !routerMatch(slice(pattern),slice(matched)) || routerMatch(slice(pattern),slice(no)) { return 1 }
+    if routerSegments(slice(matched)) != 2 as isize { return 2 }
+    let bad: [u8; 3] = [47 as u8,47 as u8,98 as u8]
+    if routerPatternValid(slice(bad)) { return 3 }
+    return 0
+}
+print(main())

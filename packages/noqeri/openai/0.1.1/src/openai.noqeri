@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: MIT
+// Explicit host boundary: this module is an API adapter, not a bundled HTTP stack.
+module noqeri.openai
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+export function openaiRoot(): string { return "https://api.openai.com/v1" }
+export function openaiStatus(): int { return providerHttpStatus() }
+export function openaiSuccess(code: int): bool { return code >= 200 && code < 300 }
+export function openaiRateLimited(code: int): bool { return code == 429 }
+export function openaiRetryable(code: int): bool { return code == 408 || code == 423 || code == 429 || code == 500 || code == 502 || code == 503 || code == 504 }
+export function openaiMethodAllowed(method: string): bool { return method == "GET" || method == "POST" || method == "PATCH" || method == "PUT" || method == "DELETE" }
+export function openaiCredentialValid(token: string): bool { return textLength(token) >= 8 && textLength(token) <= 8192 }
+export function openaiBodyValid(size: usize): bool { return size <= 1048576 as usize }
+export function openaiPageSizeValid(size: int): bool { return size > 0 && size <= 100 }
+export function openaiIdentifierChar(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 45 as u8 || c == 95 as u8 || c == 46 as u8
+}
+export function openaiIdentifierValid(id: []u8): bool {
+    if len(id) == 0 as usize || len(id) > 128 as usize { return false }
+    if len(id) == 1 as usize && id[0] == 46 as u8 { return false }
+    if len(id) == 2 as usize && id[0] == 46 as u8 && id[1] == 46 as u8 { return false }
+    let i: usize = 0 as usize
+    while i < len(id) { if !openaiIdentifierChar(id[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function openaiDelayMillis(attempt: int): int {
+    if attempt <= 0 { return 200 }
+    if attempt == 1 { return 400 }
+    if attempt == 2 { return 800 }
+    if attempt == 3 { return 1600 }
+    return 3200
+}
+export function openaiRequest(method: string, token: string, url: string, body: string): string {
+    if !openaiMethodAllowed(method) || !openaiCredentialValid(token) || textLength(url) < 10 || textLength(body) > 1048576 { return "" }
+    return providerHttpJson(method,url,"bearer",token,"Accept","application/json",body)
+}
+export function openaiResponsesUrl(): string { return openaiRoot() + "/responses" }
+export function openaiModelsUrl(): string { return openaiRoot() + "/models" }
+export function openaiEmbeddingsUrl(): string { return openaiRoot() + "/embeddings" }
+export function openaiImagesUrl(): string { return openaiRoot() + "/images/generations" }
+export function openaiAudioTranscriptionsUrl(): string { return openaiRoot() + "/audio/transcriptions" }
+export function openaiAudioSpeechUrl(): string { return openaiRoot() + "/audio/speech" }
+export function openaiFilesUrl(): string { return openaiRoot() + "/files" }
+export function openaiBatchesUrl(): string { return openaiRoot() + "/batches" }
+export function openaiFineTuningJobsUrl(): string { return openaiRoot() + "/fine_tuning/jobs" }
+export function openaiModerationsUrl(): string { return openaiRoot() + "/moderations" }
+export function openaiVectorStoresUrl(): string { return openaiRoot() + "/vector_stores" }
+export function openaiGet(token: string, url: string): string { return openaiRequest("GET",token,url,"") }
+export function openaiPost(token: string, url: string, body: string): string { return openaiRequest("POST",token,url,body) }
+export function openaiPatch(token: string, url: string, body: string): string { return openaiRequest("PATCH",token,url,body) }
+export function openaiDelete(token: string, url: string): string { return openaiRequest("DELETE",token,url,"") }
+export function openaiTokenLimitValid(tokens: int): bool { return tokens >= 1 && tokens <= 200000 }
+export function openaiInputBytesValid(bytes: usize): bool { return bytes <= 1048576 as usize }

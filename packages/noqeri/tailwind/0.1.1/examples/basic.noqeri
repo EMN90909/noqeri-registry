@@ -1,0 +1,4 @@
+// SPDX-License-Identifier: MIT
+import "../src/tailwind.noqeri"
+let cls: [u8; 4] = [102 as u8,108 as u8,101 as u8,120 as u8]
+print(tailwindClassValid(slice(cls)))

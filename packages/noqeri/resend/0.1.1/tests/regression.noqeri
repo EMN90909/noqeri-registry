@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: MIT
+import "../src/resend.noqeri"
+function main(): int {
+if !(resendEmailsUrl() == "https://api.resend.com/emails") { return 1 }
+    if !(resendDomainsUrl() == "https://api.resend.com/domains") { return 2 }
+    if !resendRetryable(503) || resendRetryable(404) { return 3 }
+    let safe: [u8; 3] = [97 as u8,45 as u8,49 as u8]
+    let unsafeId: [u8; 2] = [46 as u8,46 as u8]
+    if !resendIdentifierValid(slice(safe)) || resendIdentifierValid(slice(unsafeId)) { return 4 }
+    if !(resendGet("bad",resendRoot()) == "") { return 5 }
+    let mail: [u8; 9] = [97 as u8,64 as u8,98 as u8,46 as u8,99 as u8,111 as u8,109 as u8,46 as u8,120 as u8]
+    if !resendEmailShape(slice(mail)) { return 6 }
+    return 0
+}
+print(main())

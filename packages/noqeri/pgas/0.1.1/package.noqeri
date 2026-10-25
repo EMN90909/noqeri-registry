@@ -1,0 +1,9 @@
+package {
+    name: "noqeri/pgas"
+    version: "0.1.1"
+    edition: "2026"
+    entry: "src/pgas.noqeri"
+    profile: "library"
+    target: "portable"
+    license: "MIT"
+}

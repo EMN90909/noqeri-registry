@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: MIT
+import "../src/sqlite.noqeri"
+function main(): int {
+if !sqliteBusy(5) || sqliteBusy(19) || !sqliteConstraint(19) { return 1 }
+    let name: [u8; 3] = [97 as u8,34 as u8,98 as u8]
+    let out: [u8; 6] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    if sqliteQuote(slice(name),slice(out)) != 6 as isize || out[2] != 34 as u8 { return 2 }
+    if sqliteRunChecked(0 as usize,"SELECT 1") >= 0 { return 3 }
+    if sqliteBusyDelay(0) != 25 || sqliteBusyDelay(8) != 400 { return 4 }
+    return 0
+}
+print(main())

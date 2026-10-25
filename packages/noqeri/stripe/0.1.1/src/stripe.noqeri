@@ -1,0 +1,55 @@
+// SPDX-License-Identifier: MIT
+// Explicit host boundary: this module is an API adapter, not a bundled HTTP stack.
+module noqeri.stripe
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+export function stripeRoot(): string { return "https://api.stripe.com/v1" }
+export function stripeStatus(): int { return providerHttpStatus() }
+export function stripeSuccess(code: int): bool { return code >= 200 && code < 300 }
+export function stripeRateLimited(code: int): bool { return code == 429 }
+export function stripeRetryable(code: int): bool { return code == 408 || code == 423 || code == 429 || code == 500 || code == 502 || code == 503 || code == 504 }
+export function stripeMethodAllowed(method: string): bool { return method == "GET" || method == "POST" || method == "PATCH" || method == "PUT" || method == "DELETE" }
+export function stripeCredentialValid(token: string): bool { return textLength(token) >= 8 && textLength(token) <= 8192 }
+export function stripeBodyValid(size: usize): bool { return size <= 1048576 as usize }
+export function stripePageSizeValid(size: int): bool { return size > 0 && size <= 100 }
+export function stripeIdentifierChar(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 45 as u8 || c == 95 as u8 || c == 46 as u8
+}
+export function stripeIdentifierValid(id: []u8): bool {
+    if len(id) == 0 as usize || len(id) > 128 as usize { return false }
+    if len(id) == 1 as usize && id[0] == 46 as u8 { return false }
+    if len(id) == 2 as usize && id[0] == 46 as u8 && id[1] == 46 as u8 { return false }
+    let i: usize = 0 as usize
+    while i < len(id) { if !stripeIdentifierChar(id[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function stripeDelayMillis(attempt: int): int {
+    if attempt <= 0 { return 200 }
+    if attempt == 1 { return 400 }
+    if attempt == 2 { return 800 }
+    if attempt == 3 { return 1600 }
+    return 3200
+}
+export function stripeRequest(method: string, token: string, url: string, body: string): string {
+    if !stripeMethodAllowed(method) || !stripeCredentialValid(token) || textLength(url) < 10 || textLength(body) > 1048576 { return "" }
+    return providerHttpJson(method,url,"bearer",token,"Accept","application/json",body)
+}
+export function stripePaymentIntentsUrl(): string { return stripeRoot() + "/payment_intents" }
+export function stripePaymentIntentUrl(id: string): string { return stripeRoot() + "/payment_intents/" + id }
+export function stripeCheckoutSessionsUrl(): string { return stripeRoot() + "/checkout/sessions" }
+export function stripeCustomersUrl(): string { return stripeRoot() + "/customers" }
+export function stripeSubscriptionsUrl(): string { return stripeRoot() + "/subscriptions" }
+export function stripeProductsUrl(): string { return stripeRoot() + "/products" }
+export function stripePricesUrl(): string { return stripeRoot() + "/prices" }
+export function stripeRefundsUrl(): string { return stripeRoot() + "/refunds" }
+export function stripeInvoicesUrl(): string { return stripeRoot() + "/invoices" }
+export function stripePaymentMethodsUrl(): string { return stripeRoot() + "/payment_methods" }
+export function stripeSetupIntentsUrl(): string { return stripeRoot() + "/setup_intents" }
+export function stripeBalanceTransactionsUrl(): string { return stripeRoot() + "/balance_transactions" }
+export function stripeGet(token: string, url: string): string { return stripeRequest("GET",token,url,"") }
+export function stripePost(token: string, url: string, body: string): string { return stripeRequest("POST",token,url,body) }
+export function stripePatch(token: string, url: string, body: string): string { return stripeRequest("PATCH",token,url,body) }
+export function stripeDelete(token: string, url: string): string { return stripeRequest("DELETE",token,url,"") }
+export function stripeAmountValid(amount: i64): bool { return amount > 0 as i64 && amount <= 9999999999 as i64 }
+export function stripeIdempotencyKeySizeValid(bytes: usize): bool { return bytes >= 1 as usize && bytes <= 255 as usize }
+export function stripeFormEncodedByte(c: u8): bool { return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 45 as u8 || c == 95 as u8 || c == 46 as u8 || c == 126 as u8 }

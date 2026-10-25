@@ -1,0 +1,49 @@
+// SPDX-License-Identifier: MIT
+module noqeri.pgas
+export function pgasRankValid(rank: usize, ranks: usize): bool { return ranks > 0 as usize && rank < ranks }
+export function pgasBlockSize(total: usize, ranks: usize): usize {
+    if ranks == 0 as usize { return 0 as usize }
+    let base: usize = total / ranks
+    if total % ranks != 0 as usize { return base + 1 as usize }
+    return base
+}
+export function pgasBlockStart(total: usize, ranks: usize, rank: usize): usize {
+    if !pgasRankValid(rank,ranks) { return total }
+    let base: usize = total / ranks
+    let extra: usize = total % ranks
+    let take: usize = rank
+    if rank > extra { take = extra }
+    return base * rank + take
+}
+export function pgasBlockLength(total: usize, ranks: usize, rank: usize): usize {
+    if !pgasRankValid(rank,ranks) { return 0 as usize }
+    let base: usize = total / ranks
+    if rank < total % ranks { return base + 1 as usize }
+    return base
+}
+export function pgasBlockOwner(total: usize, ranks: usize, global: usize): isize {
+    if ranks == 0 as usize || global >= total { return -1 as isize }
+    let wide: usize = total % ranks
+    let base: usize = total / ranks
+    let boundary: usize = wide * (base + 1 as usize)
+    if global < boundary { return (global / (base + 1 as usize)) as isize }
+    if base == 0 as usize { return -1 as isize }
+    return (wide + (global - boundary) / base) as isize
+}
+export function pgasCyclicOwner(global: usize, ranks: usize): isize {
+    if ranks == 0 as usize { return -1 as isize }
+    return (global % ranks) as isize
+}
+export function pgasCyclicLocalIndex(global: usize, ranks: usize): usize {
+    if ranks == 0 as usize { return 0 as usize }
+    return global / ranks
+}
+export function pgasLocalOffset(total: usize, ranks: usize, rank: usize, global: usize): isize {
+    if pgasBlockOwner(total,ranks,global) != rank as isize { return -1 as isize }
+    return (global - pgasBlockStart(total,ranks,rank)) as isize
+}
+export function pgasHaloValid(owned: usize, halo: usize): bool { return halo <= owned && halo <= 4096 as usize }
+export function pgasArrayCapacityValid(items: usize, elementBytes: usize, maximum: usize): bool {
+    if elementBytes == 0 as usize { return items == 0 as usize }
+    return items <= maximum / elementBytes
+}

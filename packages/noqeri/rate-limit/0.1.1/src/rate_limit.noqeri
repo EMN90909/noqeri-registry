@@ -1,0 +1,44 @@
+// SPDX-License-Identifier: MIT
+module noqeri.rate_limit
+export function rateLimitConfigValid(limit: i64, window: i64): bool { return limit > 0 as i64 && window > 0 as i64 }
+export function rateLimitWindowStart(time: i64, window: i64): i64 {
+    if time < 0 as i64 || window <= 0 as i64 { return -1 as i64 }
+    return (time / window) * window
+}
+export function rateLimitAllow(current: i64, maximum: i64): bool { return maximum > 0 as i64 && current >= 0 as i64 && current < maximum }
+export function rateLimitRemaining(used: i64, maximum: i64): i64 {
+    if maximum <= 0 as i64 || used >= maximum { return 0 as i64 }
+    if used < 0 as i64 { return maximum }
+    return maximum - used
+}
+export function rateLimitRetryAfter(now: i64, start: i64, window: i64): i64 {
+    if window <= 0 as i64 || now < start { return 0 as i64 }
+    let elapsed: i64 = now - start
+    if elapsed >= window { return 0 as i64 }
+    return window - elapsed
+}
+export function rateLimitRefill(tokens: i64, capacity: i64, elapsed: i64, ratePerSecond: i64): i64 {
+    if capacity <= 0 as i64 || ratePerSecond < 0 as i64 || elapsed < 0 as i64 { return 0 as i64 }
+    let existing: i64 = tokens
+    if existing < 0 as i64 { existing = 0 as i64 }
+    if existing >= capacity { return capacity }
+    // Only add as many tokens as can fit, avoiding intermediate multiplication overflow.
+    let room: i64 = capacity - existing
+    if ratePerSecond == 0 as i64 { return existing }
+    if elapsed >= room / ratePerSecond + 1 as i64 { return capacity }
+    let refill: i64 = elapsed * ratePerSecond
+    if refill >= room { return capacity }
+    return existing + refill
+}
+export function rateLimitConsume(tokens: i64, cost: i64): i64 {
+    if cost < 0 as i64 || tokens < 0 as i64 || cost > tokens { return -1 as i64 }
+    return tokens - cost
+}
+export function rateLimitBurstValid(burst: i64, sustainable: i64): bool { return burst >= sustainable && sustainable > 0 as i64 }
+export function rateLimitConservativeDelay(missing: i64, perSecond: i64): i64 {
+    if missing <= 0 as i64 { return 0 as i64 }
+    if perSecond <= 0 as i64 { return -1 as i64 }
+    let result: i64 = missing / perSecond
+    if missing % perSecond != 0 as i64 { result = result + 1 as i64 }
+    return result
+}

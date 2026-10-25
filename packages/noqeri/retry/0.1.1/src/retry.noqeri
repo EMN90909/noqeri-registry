@@ -1,0 +1,37 @@
+// SPDX-License-Identifier: MIT
+module noqeri.retry
+export function retryConfigValid(attempts: int, base: int, cap: int): bool { return attempts > 0 && attempts <= 50 && base >= 1 && cap >= base }
+export function retryAllowed(attempt: int, attempts: int): bool { return attempts > 0 && attempt >= 0 && attempt < attempts }
+export function retryDelayMs(attempt: int, base: int, cap: int): int {
+    if base <= 0 || cap < base { return -1 }
+    let value: int = base
+    let i: int = 0
+    while i < attempt && i < 31 {
+        if value >= cap { return cap }
+        if value > cap / 2 { return cap }
+        value = value * 2
+        i = i + 1
+    }
+    return value
+}
+export function retryJitterLower(delay: int): int {
+    if delay <= 0 { return 0 }
+    return delay / 2
+}
+export function retryJitterUpper(delay: int): int {
+    if delay < 0 { return 0 }
+    return delay
+}
+export function retryHttpStatus(code: int): bool { return code == 408 || code == 425 || code == 429 || code == 500 || code == 502 || code == 503 || code == 504 }
+export function retryNetworkError(code: int): bool { return code == -1 || code == -2 || code == -3 }
+export function retryDeadlineAllows(now: i64, wait: i64, deadline: i64): bool {
+    if wait < 0 as i64 || deadline < now { return false }
+    return wait <= deadline - now
+}
+export function retryAfterSecondsValid(seconds: int): bool { return seconds >= 0 && seconds <= 86400 }
+export function retryBudgetRemaining(maximum: int, attempted: int): int {
+    if attempted >= maximum || maximum <= 0 { return 0 }
+    if attempted < 0 { return maximum }
+    return maximum - attempted
+}
+export function retryMethodSafe(method: string): bool { return method == "GET" || method == "HEAD" || method == "PUT" || method == "DELETE" || method == "OPTIONS" }

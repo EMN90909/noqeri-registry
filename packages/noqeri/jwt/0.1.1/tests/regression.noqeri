@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: MIT
+import "../src/jwt.noqeri"
+function main(): int {
+let good: [u8; 5] = [97 as u8,46 as u8,98 as u8,46 as u8,99 as u8]
+    let bad: [u8; 4] = [97 as u8,46 as u8,46 as u8,99 as u8]
+    if !jwtCompactValid(slice(good)) || jwtCompactValid(slice(bad)) { return 1 }
+    if jwtSegmentOffset(slice(good),2) != 4 as isize || jwtSegmentLength(slice(good),1) != 1 as isize { return 2 }
+    if !jwtExpired(90 as i64,100 as i64,0 as i64) || jwtExpired(101 as i64,100 as i64,0 as i64) { return 3 }
+    return 0
+}
+print(main())

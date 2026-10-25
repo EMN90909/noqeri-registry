@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: MIT
+import "../src/regex_lite.noqeri"
+function main(): int {
+let pattern: [u8; 3] = [97 as u8,42 as u8,99 as u8]
+    let text: [u8; 4] = [97 as u8,98 as u8,98 as u8,99 as u8]
+    let wrong: [u8; 2] = [97 as u8,98 as u8]
+    if !regexWildcardMatch(slice(pattern),slice(text)) || regexWildcardMatch(slice(pattern),slice(wrong)) { return 1 }
+    if regexFindLiteral(slice(text),slice(wrong)) != 0 as isize { return 2 }
+    if regexWildcardCount(slice(pattern)) != 1 as usize { return 3 }
+    return 0
+}
+print(main())
