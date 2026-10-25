@@ -1,5 +1,7 @@
-// Canonical Noqeri registry application entry; host transport remains temporary.
-// NoeSQL owns the registry.noedb format. Node must not invent another engine.
+// Canonical Noqeri registry application and HTTP protocol routing.
+// Native C++ is limited to operating-system I/O, wire serialization and archive plumbing.
+// The source-catalog native mode is an explicitly gated PREVIEW, not a replacement
+// for a qualified native NoeSQL session or durable publication service.
 module noqeri.registry
 
 extern function registryHostServe(databasePath: string, artifactsPath: string, port: int): isize
@@ -37,6 +39,69 @@ export function registryPaginationValid(offset: usize, limit: usize): bool {
 export function registrySearchBytesValid(length: usize): bool { return length <= 128 as usize }
 export function registryRequestPathBytesValid(length: usize): bool { return length <= 512 as usize }
 export function registryQueryStringBytesValid(length: usize): bool { return length <= 2048 as usize }
+
+// All route selection and byte-level URI policy are authored in Noqeri.
+// The native boundary passes a borrowed buffer: it must stay alive for this call.
+// Route IDs: 1=health, 2=status, 3=index, 4=package-list,
+//            5=search, 6=advisories, 7=package subresource, 0=unknown.
+export function registryPathMatch(path: *u8, length: usize, literal: string, expected: usize): bool {
+    if path == null || length != expected { return false }
+    let i: usize = 0 as usize
+    while i < length {
+        // literal is a native NUL-terminated UTF-8 constant on the Stage-0 backend.
+        if path[i] != (literal as *u8)[i] { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function registryPathPrefix(path: *u8, length: usize, literal: string, expected: usize): bool {
+    if path == null || length < expected { return false }
+    let i: usize = 0 as usize
+    while i < expected {
+        if path[i] != (literal as *u8)[i] { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function registryIdentityBytesValid(value: *u8, length: usize): bool {
+    if value == null || length == 0 as usize || length > 128 as usize { return false }
+    let i: usize = 0 as usize
+    while i < length {
+        if !registryNameByteValid(value[i]) { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function registryMethodValid(method: *u8, length: usize): bool {
+    return registryPathMatch(method, length, "GET", 3 as usize) ||
+        registryPathMatch(method, length, "HEAD", 4 as usize)
+}
+export function registryPathSafe(path: *u8, length: usize): bool {
+    if path == null || length == 0 as usize || !registryRequestPathBytesValid(length) { return false }
+    if path[0 as usize] != 47 as u8 { return false }
+    let i: usize = 0 as usize
+    while i < length {
+        let c: u8 = path[i]
+        // Reject controls, non-ASCII, percent escapes and backslashes rather
+        // than ever decoding ambiguous filesystem paths in a privileged host.
+        if c < 33 as u8 || c > 126 as u8 || c == 37 as u8 || c == 92 as u8 { return false }
+        if i > 0 as usize && c == 47 as u8 && path[i - 1 as usize] == 47 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function registryRouteCode(path: *u8, length: usize): int {
+    if !registryPathSafe(path, length) { return 0 }
+    if registryPathMatch(path, length, "/health", 7 as usize) { return 1 }
+    if registryPathMatch(path, length, "/v1/status", 10 as usize) { return 2 }
+    if registryPathMatch(path, length, "/v1/index", 9 as usize) { return 3 }
+    if registryPathMatch(path, length, "/v1/packages", 12 as usize) { return 4 }
+    if registryPathMatch(path, length, "/v1/search", 10 as usize) { return 5 }
+    if registryPathMatch(path, length, "/v1/advisories", 14 as usize) { return 6 }
+    if registryPathPrefix(path, length, "/v1/packages/", 13 as usize) { return 7 }
+    return 0
+}
+
 export function registryPortValid(port: int): bool { return port > 0 && port <= 65535 }
 export function registryReleaseVisible(yanked: bool): bool { return !yanked }
 export function registryServe(port: int): isize {
