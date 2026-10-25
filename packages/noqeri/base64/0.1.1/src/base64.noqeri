@@ -42,7 +42,10 @@ export function base64EncodedUrlLength(inputBytes: usize, padded: bool): usize {
     return result
 }
 export function base64DecodedMaxLength(chars: usize): usize {
-    return (chars / 4 as usize) * 3 as usize + (if chars % 4 as usize == 2 as usize { 1 as usize } else if chars % 4 as usize == 3 as usize { 2 as usize } else { 0 as usize })
+    let result: usize = (chars / 4 as usize) * 3 as usize
+    if chars % 4 as usize == 2 as usize { result = result + 1 as usize }
+    if chars % 4 as usize == 3 as usize { result = result + 2 as usize }
+    return result
 }
 function base64Value(c: u8, url: bool): int {
     if url { return base64UrlAlphabetValue(c) }
