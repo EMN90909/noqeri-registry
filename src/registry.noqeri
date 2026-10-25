@@ -4,7 +4,6 @@
 // for a qualified native NoeSQL session or durable publication service.
 module noqeri.registry
 
-extern function registryHostServe(databasePath: string, artifactsPath: string, port: int): isize
 
 export function registryNameByteValid(value: u8): bool {
     return (value >= 97 as u8 && value <= 122 as u8) || (value >= 48 as u8 && value <= 57 as u8) || value == 45 as u8
@@ -253,10 +252,7 @@ export function registryRouteCode(path: *u8, length: usize): int {
 
 export function registryPortValid(port: int): bool { return port > 0 && port <= 65535 }
 export function registryReleaseVisible(yanked: bool): bool { return !yanked }
-export function registryServe(port: int): isize {
-    if !registryPortValid(port) { return -1 }
-    return registryHostServe("registry.noedb", "artifacts", port)
-}
+export function registryRuntimePolicyReady(): bool { return registryPortValid(8080) }
 
 // Canonical package source policy. Reject obsolete source extensions outright.
 export function registryNoqeriSourceExtensionValid(name: []u8): bool {

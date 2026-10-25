@@ -1,11 +1,10 @@
-// Native Noqeri application entry. Stage-0 executes top-level statements;
-// merely declaring function main does NOT invoke it in generated AOT entry code.
+// Native Noqeri policy executable. The Go service owns sockets, archives,
+// HTTP serialization and process lifecycle. No native C++ bridge is required.
 import "../src/registry.noqeri"
 function main(): int {
-    let status: isize = registryServe(8080)
-    if status < 0 { return 1 }
+    if !registryRuntimePolicyReady() { return 1 }
+    if !registryPaginationValid(0 as usize, 100 as usize) { return 2 }
+    if !registryNoqeriSourceExtensionValid("registry.noqeri") { return 3 }
     return 0
 }
-
-// Execute the application from the AOT __entry function.
-let registryExitCode: int = main()
+let registryPolicyExitCode: int = main()

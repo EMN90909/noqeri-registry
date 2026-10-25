@@ -1,0 +1,43 @@
+name: Go + Noqeri Registry
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  go-registry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - name: Go tests
+        run: go test ./...
+      - name: Go vet
+        run: go vet ./...
+      - name: Build server and verify catalog
+        run: |
+          go build -o /tmp/noqeri-registry ./cmd/registry
+          go run ./cmd/registryctl -root . verify
+          go run ./cmd/registryctl -root . audit
+  noqeri-contracts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: EMN90909/Noqeri
+          path: .noqeri-toolchain
+      - name: Build official Noqeri compiler
+        run: |
+          cmake -S .noqeri-toolchain -B /tmp/noqeri-toolchain -DCMAKE_BUILD_TYPE=Release -DNOQERI_GRAPHICS_PORTABLE_BUILD=ON
+          cmake --build /tmp/noqeri-toolchain --target noqeri -j 2
+      - name: Typecheck actual Noqeri sources
+        run: |
+          /tmp/noqeri-toolchain/noqeri check Programs/registry.noqeri
+          /tmp/noqeri-toolchain/noqeri check tests/registry_contracts.noqeri
