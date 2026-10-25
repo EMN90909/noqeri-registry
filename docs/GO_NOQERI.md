@@ -37,4 +37,11 @@ without a separate database migration and rollback plan.
 Yanked releases remain listed but cannot be downloaded. The server rejects
 path traversal, encoded separators, symlinks, oversized archives, malformed
 version coordinates and unsupported HTTP methods. See Go tests for exercised
-contracts. No external Go modules are required.
+contracts. The **registry HTTP server** itself needs no third-party Go modules. The
+**separate** privileged `cmd/noqeri-host` uses pinned pgx and modernc SQLite
+drivers. See [host runtime](HOST_RUNTIME.md). The executable Go host now serves
+provider HTTPS requests, transactions, and authenticated webhook verification
+through a versioned local JSON-lines process protocol. Its ABI service mapping
+exists, but the Stage-0 Noqeri compiler does not automatically bind extern
+symbols to that process. Live provider access is opt-in with separately
+configured credentials; ordinary CI performs deterministic local tests.
