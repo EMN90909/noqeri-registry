@@ -33,6 +33,7 @@ jobs:
         with:
           repository: EMN90909/Noqeri
           path: .noqeri-toolchain
+          ref: 7337dce9ff0d475c2b9333c8d79ae2ee2c6521a9
       - name: Build official Noqeri compiler
         run: |
           cmake -S .noqeri-toolchain -B /tmp/noqeri-toolchain -DCMAKE_BUILD_TYPE=Release -DNOQERI_GRAPHICS_PORTABLE_BUILD=ON
