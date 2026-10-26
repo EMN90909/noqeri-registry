@@ -2039,6 +2039,21 @@
           "yanked": false
         }
       ]
+    },
+    {
+      "description": "Experimental optional AI framework: pure Noqeri gradient, byte-pair and agent helpers; native tensor SDK distributed with Noqeri.",
+      "name": "ai-framework",
+      "namespace": "noqeri",
+      "versions": [
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/ai-framework/0.1.4",
+          "quality": "experimental",
+          "version": "0.1.4",
+          "yanked": false
+        }
+      ]
     }
   ],
   "protocol": "v1"

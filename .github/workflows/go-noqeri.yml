@@ -41,3 +41,5 @@ jobs:
         run: |
           /tmp/noqeri-toolchain/noqeri check Programs/registry.noqeri
           /tmp/noqeri-toolchain/noqeri check tests/registry_contracts.noqeri
+          /tmp/noqeri-toolchain/noqeri check packages/noqeri/ai-framework/0.1.4/tests/regression.noqeri
+          /tmp/noqeri-toolchain/noqeri run packages/noqeri/ai-framework/0.1.4/tests/regression.noqeri
