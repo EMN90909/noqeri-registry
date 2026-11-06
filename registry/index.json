@@ -2054,6 +2054,21 @@
           "yanked": false
         }
       ]
+    },
+    {
+      "description": "Noqeri UI: 102 semantic web-view component APIs with responsive design tokens, forms, feedback, and native interactions (experimental).",
+      "name": "components",
+      "namespace": "noqeri",
+      "versions": [
+        {
+          "evidence": "test-contract",
+          "experimental": true,
+          "path": "packages/noqeri/components/0.1.0",
+          "quality": "experimental",
+          "version": "0.1.0",
+          "yanked": false
+        }
+      ]
     }
   ],
   "protocol": "v1"

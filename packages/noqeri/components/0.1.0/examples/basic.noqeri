@@ -1,0 +1,11 @@
+// Install src/components.noqeri as noqeri/components.noqeri in app root.
+import "noqeri/components" as ui
+view {
+    main class: "nui-root" {
+        div class: "nui-container nui-stack" {
+            ui.PageHeader("COMPONENTS", "Noqeri UI", "Registry package example")
+            ui.Card("Installed", "Web-view components are ready.")
+            ui.AccordionItem("Details", "Native details and summary.")
+        }
+    }
+}
