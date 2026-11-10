@@ -1,0 +1,88 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.sqlite
+
+extern function sqliteOpen(path: string): usize
+extern function sqliteExec(database: usize, sql: string): isize
+extern function sqliteClose(database: usize): bool
+
+export function sqliteHandleValid(database: usize): bool { return database != 0 as usize }
+export function sqliteResultOk(code: int): bool { return code == 0 || code == 100 || code == 101 }
+export function sqliteBusy(code: int): bool { return code == 5 || code == 6 }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function sqliteIdentifierValid(name: []u8): bool {
+    if len(name) == 0 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(name) {
+        let c: u8 = name[i]
+        if c == 95 as u8 { i = i + 1 as usize }
+        else if (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) { i = i + 1 as usize }
+        else if i > 0 as usize && c >= 48 as u8 && c <= 57 as u8 { i = i + 1 as usize }
+        else { return false }
+    }
+    return true
+}
+export function sqliteRetryable(code: int): bool { return sqliteBusy(code) || code == 10 }
+
+// Additional native Noqeri APIs from MIT preview (LICENSE-MIT).
+extern function sqliteExecute(handle: usize, sql: string): int
+export function sqliteSuccess(code: int): bool { return code == 0 || code == 100 || code == 101 }
+
+export function sqliteConstraint(code: int): bool { return code == 19 }
+
+export function sqliteCorrupt(code: int): bool { return code == 11 || code == 26 }
+
+export function sqliteIOError(code: int): bool { return code == 10 }
+
+export function sqliteStatementSizeValid(bytes: usize): bool { return bytes > 0 as usize && bytes <= 1048576 as usize }
+
+export function sqliteIdentifierSizeValid(bytes: usize): bool { return bytes > 0 as usize && bytes <= 128 as usize }
+
+export function sqliteQuoteSize(identifier: []u8): isize {
+    if !sqliteIdentifierSizeValid(len(identifier)) { return -1 as isize }
+    let n: usize = len(identifier) + 2 as usize
+    let i: usize = 0 as usize
+    while i < len(identifier) {
+        if identifier[i] == 0 as u8 { return -1 as isize }
+        if identifier[i] == 34 as u8 { n = n + 1 as usize }
+        i = i + 1 as usize
+    }
+    return n as isize
+}
+
+export function sqliteQuote(identifier: []u8, destination: []u8): isize {
+    let n: isize = sqliteQuoteSize(identifier)
+    if n < 0 as isize || len(destination) < n as usize { return -1 as isize }
+    destination[0] = 34 as u8
+    let i: usize = 0 as usize
+    let out: usize = 1 as usize
+    while i < len(identifier) {
+        destination[out] = identifier[i]
+        out = out + 1 as usize
+        if identifier[i] == 34 as u8 { destination[out] = 34 as u8 out = out + 1 as usize }
+        i = i + 1 as usize
+    }
+    destination[out] = 34 as u8
+    return (out + 1 as usize) as isize
+}
+
+export function sqliteBeginSql(): string { return "BEGIN IMMEDIATE" }
+
+export function sqliteCommitSql(): string { return "COMMIT" }
+
+export function sqliteRollbackSql(): string { return "ROLLBACK" }
+
+export function sqliteBusyDelay(attempt: int): int {
+    if attempt <= 0 { return 25 }
+    if attempt == 1 { return 50 }
+    if attempt == 2 { return 100 }
+    if attempt == 3 { return 200 }
+    return 400
+}
+
+export function sqliteRunChecked(handle: usize, sql: string): int {
+    if !sqliteHandleValid(handle) || textLength(sql) == 0 || textLength(sql) > 1048576 { return -1 }
+    return sqliteExecute(handle,sql)
+}
+
+export function sqliteCloseChecked(handle: usize): bool { if !sqliteHandleValid(handle) { return false } return sqliteClose(handle) }

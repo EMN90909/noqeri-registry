@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: Apache-2.0
+import "../src/framework.noqeri"
+let weight: float = 0.0
+let bias: float = 0.0
+let nextWeight: float = ai_framework_sgd_weight(weight,bias,2.0,4.0,0.1)
+let nextBias: float = ai_framework_sgd_bias(weight,bias,2.0,4.0,0.1)
+print(ai_framework_predict(nextWeight,nextBias,2.0))

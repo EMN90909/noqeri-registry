@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: MIT
+import "../src/http_client.noqeri"
+function main(): int {
+if !httpClientMethodAllowed("PATCH") || httpClientMethodAllowed("TRACE") { return 1 }
+    if !httpClientMethodIdempotent("PUT") || httpClientMethodIdempotent("POST") { return 2 }
+    let header: [u8; 4] = [72 as u8,111 as u8,115 as u8,116 as u8]
+    let inj: [u8; 2] = [13 as u8,10 as u8]
+    if !httpClientHeaderNameValid(slice(header)) || httpClientHeaderValueValid(slice(inj)) { return 3 }
+    let https: [u8; 9] = [104 as u8,116 as u8,116 as u8,112 as u8,115 as u8,58 as u8,47 as u8,47 as u8,97 as u8]
+    if !httpClientHttpsUrl(slice(https)) { return 4 }
+    if !httpClientStatusRetry(429) || httpClientStatusRetry(400) { return 5 }
+    if !(httpClientJson("TRACE","https://example.com","","") == "") { return 6 }
+    return 0
+}
+print(main())

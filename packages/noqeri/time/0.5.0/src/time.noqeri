@@ -1,0 +1,50 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.time
+
+extern function timeNowMillis(): u64
+
+export function secondsToMillis(seconds: u64): u64 { return seconds * 1000 as u64 }
+export function minutesToMillis(minutes: u64): u64 { return secondsToMillis(minutes * 60 as u64) }
+export function hoursToMillis(hours: u64): u64 { return minutesToMillis(hours * 60 as u64) }
+export function elapsedMillis(start: u64, finish: u64): u64 { if finish < start { return 0 as u64 } return finish - start }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function timeLeapYear(year: int): bool {
+    if year % 400 == 0 { return true }
+    if year % 100 == 0 { return false }
+    return year % 4 == 0
+}
+export function timeDaysInMonth(year: int, month: int): int {
+    if month < 1 || month > 12 { return 0 }
+    if month == 2 { if timeLeapYear(year) { return 29 } return 28 }
+    if month == 4 || month == 6 || month == 9 || month == 11 { return 30 }
+    return 31
+}
+export function timeDateValid(year: int, month: int, day: int): bool {
+    if year < 1 { return false }
+    return day >= 1 && day <= timeDaysInMonth(year,month)
+}
+
+export function timeIsoDigit(c: u8): int {
+ if c >= 48 as u8 && c <= 57 as u8 { return (c - 48 as u8) as int }
+ return -1
+}
+export function timeIsoDateValid(value: []u8): bool {
+ if len(value) != 10 as usize || value[4] != 45 as u8 || value[7] != 45 as u8 { return false }
+ let i: usize = 0 as usize
+ while i < 10 as usize {
+  if i != 4 as usize && i != 7 as usize && timeIsoDigit(value[i]) < 0 { return false }
+  i = i + 1 as usize
+ }
+ let year: int = timeIsoDigit(value[0]) * 1000 + timeIsoDigit(value[1]) * 100 + timeIsoDigit(value[2]) * 10 + timeIsoDigit(value[3])
+ let month: int = timeIsoDigit(value[5]) * 10 + timeIsoDigit(value[6])
+ let day: int = timeIsoDigit(value[8]) * 10 + timeIsoDigit(value[9])
+ return timeDateValid(year,month,day)
+}
+export function timeDayOfYear(year: int, month: int, day: int): int {
+ if !timeDateValid(year,month,day) { return -1 }
+ let total: int = 0
+ let m: int = 1
+ while m < month { total = total + timeDaysInMonth(year,m) m = m + 1 }
+ return total + day
+}

@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+import "../src/semver.noqeri"
+function main(): int {
+let version: [u8; 5] = [49 as u8,46 as u8,50 as u8,46 as u8,51 as u8]
+    let broken: [u8; 6] = [48 as u8,49 as u8,46 as u8,50 as u8,46 as u8,51 as u8]
+    let parsed: [u64; 3] = [0 as u64,0 as u64,0 as u64]
+    if !semverParseCore(slice(version),slice(parsed)) || parsed[1] != 2 as u64 { return 1 }
+    if semverParseCore(slice(broken),slice(parsed)) { return 2 }
+    let other: [u64; 3] = [2 as u64,0 as u64,0 as u64]
+    if semverCompareCore(slice(parsed),slice(other)) >= 0 { return 3 }
+    return 0
+}
+print(main())

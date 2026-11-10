@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+import "../src/neon.noqeri"
+function main(): int {
+if !(neonProjectsUrl() == "https://console.neon.tech/api/v2/projects") { return 1 }
+    if !(neonBranchesUrl("project1") == "https://console.neon.tech/api/v2/projects/project1/branches") { return 2 }
+    if !neonRetryable(503) || neonRetryable(404) { return 3 }
+    let safe: [u8; 3] = [97 as u8,45 as u8,49 as u8]
+    let unsafeId: [u8; 2] = [46 as u8,46 as u8]
+    if !neonIdentifierValid(slice(safe)) || neonIdentifierValid(slice(unsafeId)) { return 4 }
+    if !(neonGet("bad",neonRoot()) == "") { return 5 }
+    return 0
+}
+print(main())

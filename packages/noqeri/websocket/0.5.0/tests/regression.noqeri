@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/websocket.noqeri"
+function main(): int {
+let f: [u8; 2] = [129 as u8,1 as u8]
+if !websocketFrameHeaderValid(slice(f),false) { return 1 }
+if websocketFrameHeaderValid(slice(f),true) { return 2 }
+let c: [u8; 6] = [137 as u8,128 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+if !websocketFrameHeaderValid(slice(c),true) { return 3 }
+f[0] = 9 as u8
+if websocketFrameHeaderValid(slice(f),false) { return 4 }
+ return 0
+}
+print(main())

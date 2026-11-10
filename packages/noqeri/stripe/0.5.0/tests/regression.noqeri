@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: MIT
+import "../src/stripe.noqeri"
+function main(): int {
+if !(stripePaymentIntentsUrl() == "https://api.stripe.com/v1/payment_intents") { return 1 }
+    if !(stripeCheckoutSessionsUrl() == "https://api.stripe.com/v1/checkout/sessions") { return 2 }
+    if !stripeRetryable(503) || stripeRetryable(404) { return 3 }
+    let safe: [u8; 3] = [97 as u8,45 as u8,49 as u8]
+    let unsafeId: [u8; 2] = [46 as u8,46 as u8]
+    if !stripeIdentifierValid(slice(safe)) || stripeIdentifierValid(slice(unsafeId)) { return 4 }
+    if !(stripeGet("bad",stripeRoot()) == "") { return 5 }
+    if !stripeAmountValid(2000 as i64) || stripeAmountValid(-1 as i64) { return 6 }
+    return 0
+}
+print(main())

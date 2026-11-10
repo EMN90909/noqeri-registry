@@ -61,6 +61,10 @@ the presence of test files.** These new fixtures require actual execution
 against Noqeri native compiler/SDK targets. No Node.js runtime is required to
 use the packages with the native SDK package manager.
 
+## Expanded Noqeri packages — November 2026
+
+All 57 registered packages have new experimental releases: 54 baseline libraries use `0.5.0`; PGAS uses `0.1.5`, AI Framework uses `0.1.5` and Components uses `0.2.2`. The implementation preserves the 13 baseline releases already added to `main` and contributes 41 remaining baseline releases plus the three specialist packages. See [package depth, limits and test status](docs/PACKAGE_DEPTH_2026.md); run `python3 tools/verify_package_depth.py` for a **static source audit**. These are not runtime-certified production releases; platform host and native-provider integration still require testing.
+
 ## Catalog
 
 The committed `registry/index.json` is the current source of truth.

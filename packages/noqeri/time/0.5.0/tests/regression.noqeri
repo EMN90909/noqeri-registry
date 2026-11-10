@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/time.noqeri"
+function main(): int {
+let leap: [u8; 10] = [50 as u8,48 as u8,50 as u8,52 as u8,45 as u8,48 as u8,50 as u8,45 as u8,50 as u8,57 as u8]
+let nonleap: [u8; 10] = [50 as u8,48 as u8,50 as u8,51 as u8,45 as u8,48 as u8,50 as u8,45 as u8,50 as u8,57 as u8]
+if !timeIsoDateValid(slice(leap)) { return 1 }
+if timeIsoDateValid(slice(nonleap)) { return 2 }
+if timeDayOfYear(2024,3,1) != 61 { return 3 }
+ return 0
+}
+print(main())

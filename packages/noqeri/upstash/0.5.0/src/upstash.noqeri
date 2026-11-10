@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.upstash
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function upstashRestNote(): string { return "https://*.upstash.io" }
+export function upstashCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function upstashLastStatus(): int { return providerHttpStatus() }
+export function upstashCommandUrl(restUrl: string, commandPath: string): string { return restUrl + "/" + commandPath }
+export function upstashCommand(restUrl: string, token: string, commandPath: string): string { if !upstashCredentialPresent(token) { return "" } return providerHttpJson("GET", upstashCommandUrl(restUrl, commandPath), "bearer", token, "", "", "") }
+export function upstashJsonCommand(restUrl: string, token: string, body: string): string { return providerHttpJson("POST", restUrl, "bearer", token, "", "", body) }
+
+// Expanded Noqeri-native 0.5.0 policy and request functionality.
+export function upstashStatusOk(status: int): bool { return status >= 200 && status < 300 }
+export function upstashRetryable(status: int): bool { return status == 408 || status == 425 || status == 429 || status == 500 || status == 502 || status == 503 || status == 504 }
+export function upstashBodyValid(bytes: usize): bool { return bytes <= 1048576 as usize }
+export function upstashUrlValid(url: []u8): bool {
+ if len(url) < 20 as usize || len(url) > 4096 as usize { return false }
+ let scheme: [u8; 8] = [104 as u8,116 as u8,116 as u8,112 as u8,115 as u8,58 as u8,47 as u8,47 as u8]
+ let i: usize = 0 as usize
+ while i < 8 as usize { if url[i] != scheme[i] { return false } i = i + 1 as usize }
+ let hostStart: usize = i
+ while i < len(url) && url[i] != 47 as u8 && url[i] != 63 as u8 {
+  if url[i] < 33 as u8 || url[i] == 64 as u8 || url[i] == 92 as u8 || url[i] == 35 as u8 { return false }
+  i = i + 1 as usize
+ }
+ let suffix: [u8; 11] = [46 as u8,117 as u8,112 as u8,115 as u8,116 as u8,97 as u8,115 as u8,104 as u8,46 as u8,105 as u8,111 as u8]
+ if i <= hostStart + 11 as usize { return false }
+ let j: usize = 0 as usize
+ while j < 11 as usize { if url[i - 11 as usize + j] != suffix[j] { return false } j = j + 1 as usize }
+ while i < len(url) { if url[i] < 32 as u8 || url[i] == 92 as u8 || url[i] == 35 as u8 { return false } i = i + 1 as usize }
+ return true
+}
+export function upstashBatch(restUrl: string, token: string, body: string): string {
+ if !upstashCredentialPresent(token) || !upstashBodyValid(textLength(body)) { return "" }
+ return providerHttpJson("POST",restUrl + "/batch","bearer",token,"Content-Type","application/json",body)
+}
+export function upstashPipeline(restUrl: string, token: string, body: string): string {
+ if !upstashCredentialPresent(token) || !upstashBodyValid(textLength(body)) { return "" }
+ return providerHttpJson("POST",restUrl + "/pipeline","bearer",token,"Content-Type","application/json",body)
+}

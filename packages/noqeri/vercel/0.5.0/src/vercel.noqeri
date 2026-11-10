@@ -1,0 +1,38 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.vercel
+
+extern function providerHttpJson(method: string, url: string, authKind: string, authValue: string, headerName: string, headerValue: string, body: string): string
+extern function providerHttpStatus(): int
+
+export function vercelApiRoot(): string { return "https://api.vercel.com" }
+export function vercelCredentialPresent(value: string): bool { return textLength(value) >= 8 }
+export function vercelLastStatus(): int { return providerHttpStatus() }
+export function vercelProjectsUrl(): string { return vercelApiRoot() + "/v9/projects" }
+export function vercelDeploymentsUrl(): string { return vercelApiRoot() + "/v6/deployments" }
+export function vercelListProjects(token: string): string { if !vercelCredentialPresent(token) { return "" } return providerHttpJson("GET", vercelProjectsUrl(), "bearer", token, "", "", "") }
+
+// Expanded Noqeri-native 0.5.0 policy and request functionality.
+export function vercelHttpSuccess(status: int): bool { return status >= 200 && status < 300 }
+export function vercelRetryable(status: int): bool { return status == 408 || status == 425 || status == 429 || status == 500 || status == 502 || status == 503 || status == 504 }
+export function vercelRequestBodyValid(bytes: usize): bool { return bytes <= 1048576 as usize }
+export function vercelIdValid(value: string): bool { return textLength(value) > 0 as usize && textLength(value) <= 128 as usize }
+export function vercelProjectUrl(id: string): string {
+ if !vercelIdValid(id) { return "" }
+ return vercelProjectsUrl() + "/" + id
+}
+export function vercelDeploymentUrl(id: string): string {
+ if !vercelIdValid(id) { return "" }
+ return vercelApiRoot() + "/v13/deployments/" + id
+}
+export function vercelListDeployments(token: string): string {
+ if !vercelCredentialPresent(token) { return "" }
+ return providerHttpJson("GET",vercelDeploymentsUrl(),"bearer",token,"Accept","application/json","")
+}
+export function vercelGetProject(token: string, id: string): string {
+ if !vercelCredentialPresent(token) || !vercelIdValid(id) { return "" }
+ return providerHttpJson("GET",vercelProjectUrl(id),"bearer",token,"Accept","application/json","")
+}
+export function vercelCreateProject(token: string, body: string): string {
+ if !vercelCredentialPresent(token) || !vercelRequestBodyValid(textLength(body)) { return "" }
+ return providerHttpJson("POST",vercelProjectsUrl(),"bearer",token,"Content-Type","application/json",body)
+}

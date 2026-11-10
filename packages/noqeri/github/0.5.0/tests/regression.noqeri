@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: MIT
+import "../src/github.noqeri"
+function main(): int {
+let good: [u8; 4] = [114 as u8,101 as u8,112 as u8,111 as u8]
+    let bad: [u8; 3] = [97 as u8,47 as u8,98 as u8]
+    if !githubRepoNameValid(slice(good)) || githubRepoNameValid(slice(bad)) { return 1 }
+    if !(githubRepoUrl("user","repo") == "https://api.github.com/repos/user/repo") { return 2 }
+    if !(githubIssuesUrl("user","repo") == "https://api.github.com/repos/user/repo/issues") { return 3 }
+    if !(githubActionsRunsUrl("user","repo") == "https://api.github.com/repos/user/repo/actions/runs") { return 4 }
+    if !githubStatusRateLimited(429) || githubStatusRateLimited(200) { return 5 }
+    if !(githubGetRepo("bad","user","repo") == "") { return 6 }
+    return 0
+}
+print(main())

@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/web.noqeri"
+function main(): int {
+let https: [u8; 9] = [104 as u8,116 as u8,116 as u8,112 as u8,115 as u8,58 as u8,47 as u8,47 as u8,97 as u8]
+let http: [u8; 8] = [104 as u8,116 as u8,116 as u8,112 as u8,58 as u8,47 as u8,47 as u8,97 as u8]
+if !webHttpsUrlValid(slice(https)) { return 1 }
+if webHttpsUrlValid(slice(http)) { return 2 }
+if !webRequestBodyValid(1024 as usize) { return 3 }
+ return 0
+}
+print(main())

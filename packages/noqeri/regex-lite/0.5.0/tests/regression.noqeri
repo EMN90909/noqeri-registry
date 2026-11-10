@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/regex-lite.noqeri"
+function main(): int {
+let pat: [u8; 3] = [97 as u8,42 as u8,98 as u8]
+let txt: [u8; 5] = [97 as u8,97 as u8,97 as u8,97 as u8,98 as u8]
+let prev: [u8; 6] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+let next: [u8; 6] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+if regexTinyFullMatch(slice(pat),slice(txt),slice(prev),slice(next)) != 1 { return 1 }
+let invalid: [u8; 1] = [42 as u8]
+if regexTinyFullMatch(slice(invalid),slice(txt),slice(prev),slice(next)) != -1 { return 2 }
+let single: [u8; 1] = [98 as u8]
+if regexTinyFullMatch(slice(pat),slice(single),slice(prev),slice(next)) != 1 { return 3 }
+ return 0
+}
+print(main())

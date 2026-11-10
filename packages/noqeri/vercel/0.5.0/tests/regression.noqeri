@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/vercel.noqeri"
+function main(): int {
+if !vercelRetryable(503) || vercelRetryable(404) { return 1 }
+if vercelProjectUrl("abc") != "https://api.vercel.com/v9/projects/abc" { return 2 }
+if vercelGetProject("short","abc") != "" { return 3 }
+ return 0
+}
+print(main())

@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+import "../src/fetch.noqeri"
+function main(): int {
+let https: [u8; 16] = [104 as u8,116 as u8,116 as u8,112 as u8,115 as u8,58 as u8,47 as u8,47 as u8,101 as u8,120 as u8,97 as u8,109 as u8,112 as u8,108 as u8,101 as u8,46 as u8]
+    let bad: [u8; 4] = [104 as u8,116 as u8,116 as u8,112 as u8]
+    if !fetchUrlHttps(slice(https)) || fetchUrlHttps(slice(bad)) { return 1 }
+    if !fetchStatusDone(200) || fetchStatusDone(102) { return 2 }
+    if !fetchStatusRetryable(503) || fetchStatusRetryable(404) { return 3 }
+    if fetchStartChecked("") != 0 as usize { return 4 }
+    if fetchRetryDelay(0) != 150 || fetchRetryDelay(100) != 2500 { return 5 }
+    return 0
+}
+print(main())

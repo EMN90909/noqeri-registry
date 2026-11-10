@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: MIT
+// All tests are network-independent; external transports require host integration.
+import "../src/convex.noqeri"
+function main(): int {
+    if !(convexQueryUrl("https://my.convex.cloud") == "https://my.convex.cloud/api/query") { return 1 }
+    if !(convexMutationUrl("https://my.convex.cloud") == "https://my.convex.cloud/api/mutation") { return 2 }
+    if !(convexActionUrl("https://my.convex.cloud") == "https://my.convex.cloud/api/action") { return 3 }
+    let path: [u8; 10] = [99 as u8,104 as u8,97 as u8,116 as u8,58 as u8,108 as u8,105 as u8,115 as u8,116 as u8,49 as u8]
+    let invalid: [u8; 4] = [97 as u8,47 as u8,47 as u8,98 as u8]
+    if !convexFunctionPathValid(slice(path)) || convexFunctionPathValid(slice(invalid)) { return 4 }
+    if !(convexRequestBody("chat:list", "{}") == "{\"path\":\"chat:list\",\"args\":{},\"format\":\"json\"}") { return 5 }
+    if !convexRetryableStatus(503) || convexRetryableStatus(400) { return 6 }
+    return 0
+}
+print(main())

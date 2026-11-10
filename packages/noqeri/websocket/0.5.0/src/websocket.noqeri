@@ -1,0 +1,64 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.websocket
+
+extern function websocketOpen(url: string): usize
+extern function websocketSend(socket: usize, text: string): bool
+extern function websocketMessage(socket: usize): string
+extern function websocketClose(socket: usize): bool
+
+export function websocketHandleValid(socket: usize): bool { return socket != 0 as usize }
+export function websocketOpcodeValid(opcode: u8): bool { return opcode == 0 as u8 || opcode == 1 as u8 || opcode == 2 as u8 || opcode == 8 as u8 || opcode == 9 as u8 || opcode == 10 as u8 }
+export function websocketControlOpcode(opcode: u8): bool { return opcode >= 8 as u8 && opcode <= 10 as u8 }
+export function websocketPayloadLengthValid(opcode: u8, length: usize): bool { if websocketControlOpcode(opcode) { return length <= 125 as usize } return true }
+export function websocketCloseCodeValid(code: int): bool { if code < 1000 || code >= 5000 { return false } if code == 1004 || code == 1005 || code == 1006 || code == 1015 { return false } return true }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function websocketControlFrameValid(opcode: u8, finalFrame: bool, masked: bool, length: usize): bool {
+    if !websocketControlOpcode(opcode) { return false }
+    return finalFrame && websocketPayloadLengthValid(opcode,length)
+}
+export function websocketClientFrameValid(opcode: u8, masked: bool, length: usize): bool {
+    if !websocketOpcodeValid(opcode) { return false }
+    if !masked { return false }
+    return websocketPayloadLengthValid(opcode,length)
+}
+
+// Expanded Noqeri-native 0.5.0 policy and request functionality.
+export function websocketHeaderPayloadLength(header: []u8): isize {
+ if len(header) < 2 as usize { return -1 as isize }
+ let shortLen: usize = (header[1] % 128 as u8) as usize
+ if shortLen < 126 as usize { return shortLen as isize }
+ if shortLen == 126 as usize {
+  if len(header) < 4 as usize { return -1 as isize }
+  return (header[2] as usize * 256 as usize + header[3] as usize) as isize
+ }
+ if len(header) < 10 as usize || header[2] >= 128 as u8 { return -1 as isize }
+ let value: u64 = 0 as u64
+ let i: usize = 2 as usize
+ while i < 10 as usize {
+  value = value * 256 as u64 + header[i] as u64
+  if value > 16777216 as u64 { return -1 as isize }
+  i = i + 1 as usize
+ }
+ return value as isize
+}
+export function websocketFrameHeaderValid(header: []u8, clientToServer: bool): bool {
+ if len(header) < 2 as usize { return false }
+ let first: u8 = header[0]
+ let opcode: u8 = first % 16 as u8
+ let reserved: u8 = (first / 16 as u8) % 8 as u8
+ if reserved != 0 as u8 || !websocketOpcodeValid(opcode) { return false }
+ let fin: bool = first >= 128 as u8
+ let masked: bool = header[1] >= 128 as u8
+ if masked != clientToServer { return false }
+ let payload: isize = websocketHeaderPayloadLength(header)
+ if payload < 0 as isize || payload > 16777216 as isize { return false }
+ if !websocketPayloadLengthValid(opcode,payload as usize) { return false }
+ if websocketControlOpcode(opcode) && !fin { return false }
+ let code: usize = (header[1] % 128 as u8) as usize
+ let prefix: usize = 2 as usize
+ if code == 126 as usize { prefix = 4 as usize }
+ if code == 127 as usize { prefix = 10 as usize }
+ if masked { prefix = prefix + 4 as usize }
+ return len(header) >= prefix
+}
