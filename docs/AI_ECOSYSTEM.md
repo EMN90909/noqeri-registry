@@ -53,3 +53,14 @@ Run every remaining `ai-*/0.1.0/tests/regression.noqeri` against the same SDK to
 - The existing separately linked native `libnoqeri_ai` is not automatically imported or initialized by the new packages. Full framework/compiler self-hosting and LLM training remain separate work.
 
 **Quality state:** all nine new packages and the umbrella release are marked `experimental`, `test-contract`. Source-level fixture checks do not imply successful runtime execution, hardware support, or security certification.
+
+## Cross-package walkthroughs
+
+Two source-only examples connect multiple new packages without host bindings:
+
+```sh
+noqeri run Programs/ai_training_walkthrough.noqeri
+noqeri run Programs/ai_agent_retrieval_walkthrough.noqeri
+```
+
+The training example computes dense-layer gradients, makes an SGD update, and checks the loss decreased. The agent example enforces a tool budget and ranks local embeddings. The examples are **not verified as compiled** in this environment; interpreter and native backend parity remain separate requirements.

@@ -1,0 +1,30 @@
+// SPDX-License-Identifier: MIT
+// Pure Noqeri example: train one dense neuron by explicit backprop and SGD.
+// No runtime services, network calls, Node.js or hidden model weights.
+import "../packages/noqeri/ai-nn/0.1.0/src/nn.noqeri"
+import "../packages/noqeri/ai-optim/0.1.0/src/optim.noqeri"
+import "../packages/noqeri/ai-eval/0.1.0/src/eval.noqeri"
+function main(): int {
+    let feature: [float; 1] = [2.0]
+    let weight: [float; 1] = [0.0]
+    let bias: [float; 1] = [0.0]
+    let prediction: [float; 1] = [0.0]
+    let expected: [float; 1] = [4.0]
+    let gradPrediction: [float; 1] = [0.0]
+    let gradInput: [float; 1] = [0.0]
+    let gradWeight: [float; 1] = [0.0]
+    let gradBias: [float; 1] = [0.0]
+    let before: [float; 1] = [0.0]
+    let after: [float; 1] = [0.0]
+    if !nnDenseForward(slice(feature),slice(weight),slice(bias),1 as usize,slice(prediction)) { return 1 }
+    if !evalMeanSquaredError(slice(prediction),slice(expected),slice(before)) { return 2 }
+    if !nnMseGradient(slice(prediction),slice(expected),slice(gradPrediction)) { return 3 }
+    if !nnDenseBackward(slice(feature),slice(weight),slice(gradPrediction),slice(gradInput),slice(gradWeight),slice(gradBias)) { return 4 }
+    if !optimSgdStep(slice(weight),slice(gradWeight),0.1,0.0) { return 5 }
+    if !optimSgdStep(slice(bias),slice(gradBias),0.1,0.0) { return 6 }
+    if !nnDenseForward(slice(feature),slice(weight),slice(bias),1 as usize,slice(prediction)) { return 7 }
+    if !evalMeanSquaredError(slice(prediction),slice(expected),slice(after)) { return 8 }
+    if after[0 as usize] >= before[0 as usize] { return 9 }
+    return 0
+}
+print(main())

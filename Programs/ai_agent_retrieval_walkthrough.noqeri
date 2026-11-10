@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: MIT
+// Deterministic agent-policy + retrieval demonstration; no tool execution.
+import "../packages/noqeri/ai-agent/0.1.0/src/agent.noqeri"
+import "../packages/noqeri/ai-vector/0.1.0/src/vector.noqeri"
+function main(): int {
+    let policy: [usize; 7] = [0 as usize,0 as usize,0 as usize,0 as usize,0 as usize,0 as usize,0 as usize]
+    let embeddings: [float; 6] = [1.0,0.0,0.0,1.0,1.0,1.0]
+    let query: [float; 2] = [1.0,1.0]
+    let ids: [usize; 2] = [0 as usize,0 as usize]
+    let scores: [float; 2] = [0.0,0.0]
+    if !agentInitialize(slice(policy),2 as usize,100 as usize,1 as usize) { return 1 }
+    // A read-only local action (kind 0) can be preauthorized.
+    if !agentActionAuthorized(0,false) { return 2 }
+    if !agentCommitStep(slice(policy),20 as usize,true,true) { return 3 }
+    if vectorTopKDot(slice(embeddings),3 as usize,2 as usize,slice(query),
+                     2 as usize,slice(ids),slice(scores)) != 2 as isize { return 4 }
+    if ids[0 as usize] != 2 as usize { return 5 }
+    // A write-capable tool requires explicit host approval.
+    if agentActionAuthorized(2,false) { return 6 }
+    if !agentComplete(slice(policy)) || agentCommitStep(slice(policy),10 as usize,false,false) { return 7 }
+    return 0
+}
+print(main())
