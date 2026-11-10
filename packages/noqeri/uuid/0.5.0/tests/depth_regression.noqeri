@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/uuid.noqeri"
+function main(): int {
+    let uuid: [u8; 36] = [53 as u8,53 as u8,48 as u8,101 as u8,56 as u8,52 as u8,48 as u8,48 as u8,45 as u8,101 as u8,50 as u8,57 as u8,98 as u8,45 as u8,52 as u8,49 as u8,100 as u8,52 as u8,45 as u8,97 as u8,55 as u8,49 as u8,54 as u8,45 as u8,52 as u8,52 as u8,54 as u8,54 as u8,53 as u8,53 as u8,52 as u8,52 as u8,48 as u8,48 as u8,48 as u8,48 as u8]
+    let bytes: [u8; 16] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    if !uuidParseBytes(slice(uuid),slice(bytes)) { return 1 }
+    if !uuidV4Rfc4122Valid(slice(bytes)) { return 2 }
+    return 0
+}
+print(main())

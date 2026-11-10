@@ -1,0 +1,70 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.uuid
+
+export function uuidHexByte(value: u8): bool {
+    return (value >= 48 as u8 && value <= 57 as u8) ||
+           (value >= 65 as u8 && value <= 70 as u8) ||
+           (value >= 97 as u8 && value <= 102 as u8)
+}
+
+export function uuidTextValid(value: []u8): bool {
+    if len(value) != 36 as usize { return false }
+    let index: usize = 0 as usize
+    while index < len(value) {
+        let hyphen: bool = index == 8 as usize || index == 13 as usize || index == 18 as usize || index == 23 as usize
+        if hyphen {
+            if value[index] != 45 as u8 { return false }
+        } else if !uuidHexByte(value[index]) { return false }
+        index = index + 1 as usize
+    }
+    return true
+}
+
+export function uuidVersionNibble(value: []u8): int {
+    if !uuidTextValid(value) { return -1 }
+    let byte: u8 = value[14]
+    if byte >= 48 as u8 && byte <= 57 as u8 { return (byte - 48 as u8) as int }
+    if byte >= 65 as u8 && byte <= 70 as u8 { return (byte - 65 as u8 + 10 as u8) as int }
+    return (byte - 97 as u8 + 10 as u8) as int
+}
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function uuidVariantRfc4122(value: []u8): bool {
+    if !uuidTextValid(value) { return false }
+    let c: u8 = value[19]
+    return c == 56 as u8 || c == 57 as u8 || c == 97 as u8 || c == 98 as u8 || c == 65 as u8 || c == 66 as u8
+}
+export function uuidVersionSupported(value: []u8): bool {
+    let v: int = uuidVersionNibble(value)
+    return v >= 1 && v <= 8 && uuidVariantRfc4122(value)
+}
+
+
+export function uuidHexNibble(value: u8): int {
+    if value >= 48 as u8 && value <= 57 as u8 { return (value - 48 as u8) as int }
+    if value >= 65 as u8 && value <= 70 as u8 { return (value - 65 as u8) as int + 10 }
+    if value >= 97 as u8 && value <= 102 as u8 { return (value - 97 as u8) as int + 10 }
+    return -1
+}
+// Convert canonical textual UUID into sixteen bytes; reject invalid shape
+// and insufficient destination before altering caller output.
+export function uuidParseBytes(source: []u8, destination: []u8): bool {
+    if !uuidTextValid(source) || len(destination) < 16 as usize { return false }
+    let i: usize = 0 as usize
+    let out: usize = 0 as usize
+    while i < len(source) {
+        if source[i] == 45 as u8 { i = i + 1 as usize }
+        else {
+            let high: int = uuidHexNibble(source[i])
+            let low: int = uuidHexNibble(source[i + 1 as usize])
+            destination[out] = (high * 16 + low) as u8
+            out = out + 1 as usize
+            i = i + 2 as usize
+        }
+    }
+    return out == 16 as usize
+}
+export function uuidV4Rfc4122Valid(bytes: []u8): bool {
+    return len(bytes) == 16 as usize && bytes[6 as usize] / 16 as u8 == 4 as u8 &&
+           bytes[8 as usize] / 64 as u8 == 2 as u8
+}

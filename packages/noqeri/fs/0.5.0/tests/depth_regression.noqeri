@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+import "../src/fs.noqeri"
+function main(): int {
+    let zipGood: [u8; 5] = [97 as u8,47 as u8,98 as u8,47 as u8,99 as u8]
+    let zipBad: [u8; 6] = [97 as u8,47 as u8,46 as u8,46 as u8,47 as u8,98 as u8]
+    let root: [u8; 1] = [97 as u8]
+    let out: [u8; 5] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    if !fsArchiveEntrySafe(slice(zipGood)) || fsArchiveEntrySafe(slice(zipBad)) { return 1 }
+    if !fsLexicalChildPath(slice(root),slice(zipGood)) { return 2 }
+    if fsNormalizeSlashes(slice(zipGood),slice(out)) != 5 as isize { return 3 }
+    return 0
+}
+print(main())

@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/url.noqeri"
+function main(): int {
+    let form: [u8; 5] = [97 as u8,43 as u8,37 as u8,50 as u8,48 as u8]
+    let invalid: [u8; 2] = [37 as u8,90 as u8]
+    let output: [u8; 5] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    if !urlPercentTripletsValid(slice(form)) || urlPercentTripletsValid(slice(invalid)) { return 1 }
+    if urlFormDecode(slice(form),slice(output)) != 3 as isize { return 2 }
+    if output[1 as usize] != 32 as u8 || output[2 as usize] != 32 as u8 { return 3 }
+    return 0
+}
+print(main())

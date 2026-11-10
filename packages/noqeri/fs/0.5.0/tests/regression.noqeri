@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: MIT
+import "../src/fs.noqeri"
+function main(): int {
+let left: [u8; 3] = [115 as u8,114 as u8,99 as u8]
+    let right: [u8; 5] = [97 as u8,46 as u8,116 as u8,120 as u8,116 as u8]
+    let dst: [u8; 9] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    if fsJoinRelative(slice(left),slice(right),slice(dst)) != 9 as isize { return 1 }
+    if dst[3] != 47 as u8 || dst[8] != 116 as u8 { return 2 }
+    if fsExtensionStart(slice(right)) != 1 as isize { return 3 }
+    let bad: [u8; 4] = [46 as u8,46 as u8,47 as u8,97 as u8]
+    if fsRelativeSafe(slice(bad)) { return 4 }
+    if !fsRelativeSafe(slice(right)) || fsWriteNonEmpty("","x") { return 5 }
+    return 0
+}
+print(main())

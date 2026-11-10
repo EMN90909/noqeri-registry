@@ -569,6 +569,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/uuid/0.5.0",
+          "quality": "experimental",
+          "evidence": "test-contract",
+          "experimental": true,
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/uuid/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -768,6 +776,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/url/0.5.0",
+          "quality": "experimental",
+          "evidence": "test-contract",
+          "experimental": true,
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/url/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -797,6 +813,14 @@
       "name": "html",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/html/0.5.0",
+          "quality": "experimental",
+          "evidence": "test-contract",
+          "experimental": true,
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/html/1.0.0",
           "replacedBy": "0.4.0",
@@ -987,6 +1011,14 @@
       "name": "fs",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/fs/0.5.0",
+          "quality": "experimental",
+          "evidence": "test-contract",
+          "experimental": true,
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/fs/1.0.0",
           "replacedBy": "0.4.0",
