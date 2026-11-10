@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: MIT
+import "../src/retry.noqeri"
+function main(): int {
+if retryDelayMs(0,100,1000) != 100 || retryDelayMs(4,100,1000) != 1000 { return 1 }
+    if !retryAllowed(2,3) || retryAllowed(3,3) { return 2 }
+    if !retryHttpStatus(503) || retryHttpStatus(400) { return 3 }
+    if !retryDeadlineAllows(100 as i64,5 as i64,110 as i64) || retryDeadlineAllows(100 as i64,11 as i64,110 as i64) { return 4 }
+    return 0
+}
+print(main())

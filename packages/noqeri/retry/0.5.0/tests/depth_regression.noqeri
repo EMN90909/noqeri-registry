@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: MIT
+import "../src/retry.noqeri"
+function main(): int {
+    if retryJitteredDelayMs(2,100,1000,7) < 200 || retryJitteredDelayMs(2,100,1000,7) > 400 { return 1 }
+    if retryShouldAttempt("POST",false,0,3,503) { return 2 }
+    if !retryShouldAttempt("POST",true,0,3,503) { return 3 }
+    if retryShouldAttempt("GET",false,3,3,503) { return 4 }
+    return 0
+}
+print(main())

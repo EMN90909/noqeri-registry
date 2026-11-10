@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+import "../src/json.noqeri"
+let raw: [u8; 1] = [34 as u8]
+let dst: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+print(jsonQuoteAscii(slice(raw),slice(dst)))

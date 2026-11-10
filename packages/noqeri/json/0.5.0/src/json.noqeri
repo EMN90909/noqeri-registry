@@ -1,0 +1,218 @@
+// SPDX-License-Identifier: MIT
+module noqeri.json
+export function jsonWhitespace(c: u8): bool { return c == 32 as u8 || c == 9 as u8 || c == 10 as u8 || c == 13 as u8 }
+export function jsonDigit(c: u8): bool { return c >= 48 as u8 && c <= 57 as u8 }
+export function jsonHex(c: u8): bool { return jsonDigit(c) || (c >= 65 as u8 && c <= 70 as u8) || (c >= 97 as u8 && c <= 102 as u8) }
+export function jsonSkipSpace(src: []u8, offset: usize): usize {
+    let i: usize = offset
+    if i > len(src) { return len(src) }
+    while i < len(src) && jsonWhitespace(src[i]) { i = i + 1 as usize }
+    return i
+}
+export function jsonStringTokenValid(src: []u8): bool {
+    if len(src) < 2 as usize || src[0] != 34 as u8 || src[len(src) - 1 as usize] != 34 as u8 { return false }
+    let i: usize = 1 as usize
+    while i + 1 as usize < len(src) {
+        let c: u8 = src[i]
+        if c < 32 as u8 || c == 34 as u8 { return false }
+        if c == 92 as u8 {
+            i = i + 1 as usize
+            if i + 1 as usize >= len(src) { return false }
+            let e: u8 = src[i]
+            if e == 117 as u8 {
+                if i + 4 as usize >= len(src) - 1 as usize { return false }
+                let k: usize = 1 as usize
+                while k <= 4 as usize { if !jsonHex(src[i + k]) { return false } k = k + 1 as usize }
+                i = i + 4 as usize
+            } else if e != 34 as u8 && e != 92 as u8 && e != 47 as u8 && e != 98 as u8 && e != 102 as u8 && e != 110 as u8 && e != 114 as u8 && e != 116 as u8 { return false }
+        }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function jsonNumberValid(data: []u8): bool {
+    if len(data) == 0 as usize { return false }
+    let i: usize = 0 as usize
+    if data[i] == 45 as u8 { i = i + 1 as usize }
+    if i >= len(data) { return false }
+    if data[i] == 48 as u8 {
+        i = i + 1 as usize
+        if i < len(data) && jsonDigit(data[i]) { return false }
+    } else {
+        if data[i] < 49 as u8 || data[i] > 57 as u8 { return false }
+        while i < len(data) && jsonDigit(data[i]) { i = i + 1 as usize }
+    }
+    if i < len(data) && data[i] == 46 as u8 {
+        i = i + 1 as usize
+        if i >= len(data) || !jsonDigit(data[i]) { return false }
+        while i < len(data) && jsonDigit(data[i]) { i = i + 1 as usize }
+    }
+    if i < len(data) && (data[i] == 101 as u8 || data[i] == 69 as u8) {
+        i = i + 1 as usize
+        if i < len(data) && (data[i] == 45 as u8 || data[i] == 43 as u8) { i = i + 1 as usize }
+        if i >= len(data) || !jsonDigit(data[i]) { return false }
+        while i < len(data) && jsonDigit(data[i]) { i = i + 1 as usize }
+    }
+    return i == len(data)
+}
+export function jsonStringEscapedSize(data: []u8): usize {
+    let n: usize = 2 as usize
+    let i: usize = 0 as usize
+    while i < len(data) {
+        if data[i] == 34 as u8 || data[i] == 92 as u8 { n = n + 2 as usize }
+        else if data[i] < 32 as u8 { n = n + 6 as usize }
+        else { n = n + 1 as usize }
+        i = i + 1 as usize
+    }
+    return n
+}
+export function jsonQuoteAscii(data: []u8, dst: []u8): isize {
+    if jsonStringEscapedSize(data) > len(dst) { return -1 as isize }
+    let out: usize = 0 as usize
+    dst[out] = 34 as u8
+    out = out + 1 as usize
+    let i: usize = 0 as usize
+    while i < len(data) {
+        let c: u8 = data[i]
+        if c == 34 as u8 || c == 92 as u8 {
+            dst[out] = 92 as u8
+            dst[out + 1 as usize] = c
+            out = out + 2 as usize
+        } else if c < 32 as u8 {
+            dst[out] = 92 as u8
+            dst[out + 1 as usize] = 117 as u8
+            dst[out + 2 as usize] = 48 as u8
+            dst[out + 3 as usize] = 48 as u8
+            dst[out + 4 as usize] = 48 as u8 + c / 16 as u8
+            if c % 16 as u8 < 10 as u8 { dst[out + 5 as usize] = 48 as u8 + c % 16 as u8 }
+            else { dst[out + 5 as usize] = 87 as u8 + c % 16 as u8 }
+            out = out + 6 as usize
+        } else { dst[out] = c out = out + 1 as usize }
+        i = i + 1 as usize
+    }
+    dst[out] = 34 as u8
+    return (out + 1 as usize) as isize
+}
+
+
+// Full structural JSON scanner. Validates nested arrays/objects, escapes,
+// numbers, delimiters and end-of-document; caps nesting to 64. UTF-8 byte
+// well-formedness is a separate responsibility of the caller.
+function jsonScanString(source: []u8, cursor: *usize): bool {
+    let i: usize = *cursor
+    if i >= len(source) || source[i] != 34 as u8 { return false }
+    i = i + 1 as usize
+    while i < len(source) {
+        let c: u8 = source[i]
+        i = i + 1 as usize
+        if c == 34 as u8 { *cursor = i return true }
+        if c < 32 as u8 { return false }
+        if c == 92 as u8 {
+            if i >= len(source) { return false }
+            let escaped: u8 = source[i]
+            i = i + 1 as usize
+            if escaped == 117 as u8 {
+                let j: usize = 0 as usize
+                while j < 4 as usize {
+                    if i >= len(source) || !jsonHex(source[i]) { return false }
+                    i = i + 1 as usize
+                    j = j + 1 as usize
+                }
+            } else if escaped != 34 as u8 && escaped != 92 as u8 && escaped != 47 as u8 &&
+                      escaped != 98 as u8 && escaped != 102 as u8 && escaped != 110 as u8 &&
+                      escaped != 114 as u8 && escaped != 116 as u8 { return false }
+        }
+    }
+    return false
+}
+function jsonScanNumber(source: []u8, cursor: *usize): bool {
+    let i: usize = *cursor
+    if i < len(source) && source[i] == 45 as u8 { i = i + 1 as usize }
+    if i >= len(source) { return false }
+    if source[i] == 48 as u8 { i = i + 1 as usize }
+    else {
+        if source[i] < 49 as u8 || source[i] > 57 as u8 { return false }
+        while i < len(source) && jsonDigit(source[i]) { i = i + 1 as usize }
+    }
+    if i < len(source) && source[i] == 46 as u8 {
+        i = i + 1 as usize
+        if i >= len(source) || !jsonDigit(source[i]) { return false }
+        while i < len(source) && jsonDigit(source[i]) { i = i + 1 as usize }
+    }
+    if i < len(source) && (source[i] == 101 as u8 || source[i] == 69 as u8) {
+        i = i + 1 as usize
+        if i < len(source) && (source[i] == 45 as u8 || source[i] == 43 as u8) { i = i + 1 as usize }
+        if i >= len(source) || !jsonDigit(source[i]) { return false }
+        while i < len(source) && jsonDigit(source[i]) { i = i + 1 as usize }
+    }
+    *cursor = i
+    return true
+}
+function jsonScanLiteral(source: []u8, cursor: *usize, value: []u8): bool {
+    let i: usize = *cursor
+    if i > len(source) || len(value) > len(source) - i { return false }
+    let j: usize = 0 as usize
+    while j < len(value) {
+        if source[i + j] != value[j] { return false }
+        j = j + 1 as usize
+    }
+    *cursor = i + len(value)
+    return true
+}
+function jsonScanValue(source: []u8, cursor: *usize, depth: usize): bool {
+    if depth > 64 as usize { return false }
+    let i: usize = jsonSkipSpace(source, *cursor)
+    if i >= len(source) { return false }
+    let c: u8 = source[i]
+    if c == 34 as u8 { if !jsonScanString(source, &i) { return false } *cursor = i return true }
+    if c == 45 as u8 || jsonDigit(c) {
+        if !jsonScanNumber(source, &i) { return false }
+        *cursor = i
+        return true
+    }
+    if c == 116 as u8 {
+        let token: [u8; 4] = [116 as u8,114 as u8,117 as u8,101 as u8]
+        if !jsonScanLiteral(source, &i, slice(token)) { return false }
+        *cursor = i
+        return true
+    }
+    if c == 102 as u8 {
+        let token: [u8; 5] = [102 as u8,97 as u8,108 as u8,115 as u8,101 as u8]
+        if !jsonScanLiteral(source, &i, slice(token)) { return false }
+        *cursor = i
+        return true
+    }
+    if c == 110 as u8 {
+        let token: [u8; 4] = [110 as u8,117 as u8,108 as u8,108 as u8]
+        if !jsonScanLiteral(source, &i, slice(token)) { return false }
+        *cursor = i
+        return true
+    }
+    if c != 91 as u8 && c != 123 as u8 { return false }
+    let objectMode: bool = c == 123 as u8
+    i = jsonSkipSpace(source, i + 1 as usize)
+    if i >= len(source) { return false }
+    let closing: u8 = 93 as u8
+    if objectMode { closing = 125 as u8 }
+    if source[i] == closing { *cursor = i + 1 as usize return true }
+    while i < len(source) {
+        if objectMode {
+            if !jsonScanString(source, &i) { return false }
+            i = jsonSkipSpace(source, i)
+            if i >= len(source) || source[i] != 58 as u8 { return false }
+            i = i + 1 as usize
+        }
+        if !jsonScanValue(source, &i, depth + 1 as usize) { return false }
+        i = jsonSkipSpace(source, i)
+        if i >= len(source) { return false }
+        if source[i] == closing { *cursor = i + 1 as usize return true }
+        if source[i] != 44 as u8 { return false }
+        i = jsonSkipSpace(source, i + 1 as usize)
+    }
+    return false
+}
+export function jsonDocumentValid(source: []u8): bool {
+    let cursor: usize = 0 as usize
+    if !jsonScanValue(source, &cursor, 0 as usize) { return false }
+    return jsonSkipSpace(source, cursor) == len(source)
+}

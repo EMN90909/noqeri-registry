@@ -1,0 +1,109 @@
+// SPDX-License-Identifier: MIT
+module noqeri.http
+export function httpStatusValid(s: int): bool { return s >= 100 && s <= 599 }
+export function httpSuccess(s: int): bool { return s >= 200 && s < 300 }
+export function httpRedirect(s: int): bool { return s >= 300 && s < 400 }
+export function httpClientError(s: int): bool { return s >= 400 && s < 500 }
+export function httpServerError(s: int): bool { return s >= 500 && s < 600 }
+export function httpRetryable(s: int): bool { return s == 408 || s == 425 || s == 429 || s == 500 || s == 502 || s == 503 || s == 504 }
+export function httpBodyAllowed(s: int): bool { return s != 204 && s != 304 && (s < 100 || s >= 200) }
+export function httpSafeMethod(method: string): bool { return method == "GET" || method == "HEAD" || method == "OPTIONS" }
+export function httpAllowedMethod(method: string): bool { return httpSafeMethod(method) || method == "POST" || method == "PUT" || method == "PATCH" || method == "DELETE" }
+export function httpHeaderToken(c: u8): bool {
+    let letter: bool = (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8)
+    let number: bool = c >= 48 as u8 && c <= 57 as u8
+    return letter || number || c == 45 as u8 || c == 95 as u8 || c == 33 as u8 || c == 35 as u8 || c == 36 as u8 || c == 37 as u8 || c == 38 as u8 || c == 42 as u8 || c == 43 as u8 || c == 46 as u8
+}
+export function httpHeaderNameValid(data: []u8): bool {
+    if len(data) == 0 as usize || len(data) > 256 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(data) { if !httpHeaderToken(data[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function httpHeaderValueValid(data: []u8): bool {
+    if len(data) > 8192 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(data) {
+        if data[i] == 0 as u8 || data[i] == 10 as u8 || data[i] == 13 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function httpUnreserved(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) || (c >= 97 as u8 && c <= 122 as u8) || (c >= 48 as u8 && c <= 57 as u8) || c == 45 as u8 || c == 95 as u8 || c == 46 as u8 || c == 126 as u8
+}
+export function httpHexDigit(n: u8): u8 { if n < 10 as u8 { return n + 48 as u8 } return n + 55 as u8 }
+export function httpEncodedSize(data: []u8): usize {
+    let total: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i < len(data) {
+        if httpUnreserved(data[i]) { total = total + 1 as usize } else { total = total + 3 as usize }
+        i = i + 1 as usize
+    }
+    return total
+}
+export function httpEncodeQuery(data: []u8, output: []u8): isize {
+    if httpEncodedSize(data) > len(output) { return -1 as isize }
+    let i: usize = 0 as usize
+    let j: usize = 0 as usize
+    while i < len(data) {
+        let b: u8 = data[i]
+        if httpUnreserved(b) {
+            output[j] = b
+            j = j + 1 as usize
+        } else {
+            output[j] = 37 as u8
+            output[j + 1 as usize] = httpHexDigit(b / 16 as u8)
+            output[j + 2 as usize] = httpHexDigit(b % 16 as u8)
+            j = j + 3 as usize
+        }
+        i = i + 1 as usize
+    }
+    return j as isize
+}
+export function httpRequestSizeValid(headers: usize, body: usize): bool { return headers <= 65536 as usize && body <= 8388608 as usize }
+
+
+// Request framing validation helpers. The caller remains responsible for
+// TLS, decoding, I/O deadlines and connection lifecycle.
+export function httpRequestTargetValid(target: []u8): bool {
+    if len(target) == 0 as usize || len(target) > 8192 as usize || target[0] != 47 as u8 { return false }
+    let i: usize = 0 as usize
+    while i < len(target) {
+        let c: u8 = target[i]
+        if c <= 32 as u8 || c >= 127 as u8 || c == 35 as u8 || c == 92 as u8 { return false }
+        if c == 37 as u8 {
+            if i + 2 as usize >= len(target) { return false }
+            let a: u8 = target[i + 1 as usize]
+            let b: u8 = target[i + 2 as usize]
+            let aHex: bool = (a >= 48 as u8 && a <= 57 as u8) || (a >= 65 as u8 && a <= 70 as u8) || (a >= 97 as u8 && a <= 102 as u8)
+            let bHex: bool = (b >= 48 as u8 && b <= 57 as u8) || (b >= 65 as u8 && b <= 70 as u8) || (b >= 97 as u8 && b <= 102 as u8)
+            if !aHex || !bHex { return false }
+            i = i + 2 as usize
+        }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function httpContentLengthParse(source: []u8, out: []u64): bool {
+    if len(out) == 0 as usize || len(source) == 0 as usize || len(source) > 20 as usize { return false }
+    let number: u64 = 0 as u64
+    let i: usize = 0 as usize
+    while i < len(source) {
+        let c: u8 = source[i]
+        if c < 48 as u8 || c > 57 as u8 { return false }
+        let digit: u64 = (c - 48 as u8) as u64
+        if number > (18446744073709551615 as u64 - digit) / 10 as u64 { return false }
+        number = number * 10 as u64 + digit
+        i = i + 1 as usize
+    }
+    out[0 as usize] = number
+    return true
+}
+export function httpFramingConflict(hasContentLength: bool, hasTransferEncoding: bool): bool {
+    // RFC 9112: ambiguous HTTP/1.1 framing must be rejected.
+    return hasContentLength && hasTransferEncoding
+}
+export function httpHeaderPairValid(name: []u8, value: []u8): bool {
+    return httpHeaderNameValid(name) && httpHeaderValueValid(value)
+}

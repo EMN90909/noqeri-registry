@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+import "../src/json.noqeri"
+function main(): int {
+    let good: [u8; 14] = [123 as u8,34 as u8,97 as u8,34 as u8,58 as u8,91 as u8,49 as u8,44 as u8,116 as u8,114 as u8,117 as u8,101 as u8,93 as u8,125 as u8]
+    let trailing: [u8; 4] = [91 as u8,49 as u8,44 as u8,93 as u8]
+    let badNumber: [u8; 4] = [91 as u8,48 as u8,49 as u8,93 as u8]
+    let extra: [u8; 3] = [123 as u8,125 as u8,120 as u8]
+    if !jsonDocumentValid(slice(good)) { return 1 }
+    if jsonDocumentValid(slice(trailing)) || jsonDocumentValid(slice(badNumber)) { return 2 }
+    if jsonDocumentValid(slice(extra)) { return 3 }
+    return 0
+}
+print(main())
