@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+import "../src/supabase.noqeri"
+function main(): int {
+if !(supabaseProjectsUrl() == "https://api.supabase.com/v1/projects") { return 1 }
+    if !(supabaseFunctionsUrl("ref") == "https://api.supabase.com/v1/projects/ref/functions") { return 2 }
+    if !supabaseRetryable(503) || supabaseRetryable(404) { return 3 }
+    let safe: [u8; 3] = [97 as u8,45 as u8,49 as u8]
+    let unsafeId: [u8; 2] = [46 as u8,46 as u8]
+    if !supabaseIdentifierValid(slice(safe)) || supabaseIdentifierValid(slice(unsafeId)) { return 4 }
+    if !(supabaseGet("bad",supabaseRoot()) == "") { return 5 }
+    return 0
+}
+print(main())
