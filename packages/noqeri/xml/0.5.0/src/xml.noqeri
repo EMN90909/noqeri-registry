@@ -1,0 +1,72 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.xml
+export function xmlNameStart(value: u8): bool { return (value >= 65 as u8 && value <= 90 as u8) || (value >= 97 as u8 && value <= 122 as u8) || value == 95 as u8 || value == 58 as u8 }
+export function xmlNameContinue(value: u8): bool { return xmlNameStart(value) || (value >= 48 as u8 && value <= 57 as u8) || value == 45 as u8 || value == 46 as u8 }
+export function xmlDepthValid(depth: usize): bool { return depth <= 128 as usize }
+export function xmlEntityExpansionValid(expandedBytes: usize, sourceBytes: usize): bool { if sourceBytes == 0 as usize { return expandedBytes == 0 as usize } return expandedBytes <= sourceBytes * 8 as usize }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function xmlNameValid(value: []u8): bool {
+    if len(value) == 0 as usize || !xmlNameStart(value[0]) { return false }
+    let i: usize = 1 as usize
+    while i < len(value) { if !xmlNameContinue(value[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function xmlAttributeQuoteValid(value: []u8): bool {
+    if len(value) < 2 as usize { return false }
+    let mark: u8 = value[0]
+    if mark != 34 as u8 && mark != 39 as u8 { return false }
+    if value[len(value) - 1 as usize] != mark { return false }
+    let i: usize = 1 as usize
+    while i + 1 as usize < len(value) {
+        if value[i] == mark || value[i] == 60 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+
+// v0.5.0: substantive pure-Noqeri implementation.
+export function xmlTextEscapedLength(input: []u8, attribute: bool): usize {
+ let required: usize = 0 as usize
+ let i: usize = 0 as usize
+ while i < len(input) {
+  let c: u8 = input[i]
+  if c == 38 as u8 { required = required + 5 as usize }
+  else if c == 60 as u8 || c == 62 as u8 { required = required + 4 as usize }
+  else if attribute && c == 34 as u8 { required = required + 6 as usize }
+  else if attribute && c == 39 as u8 { required = required + 6 as usize }
+  else { required = required + 1 as usize }
+  i = i + 1 as usize
+ }
+ return required
+}
+export function xmlTextEscape(input: []u8, output: []u8, attribute: bool): isize {
+ if len(input) > 1048576 as usize { return -1 as isize }
+ let needed: usize = xmlTextEscapedLength(input,attribute)
+ if needed > len(output) { return -1 as isize }
+ let i: usize = 0 as usize
+ let j: usize = 0 as usize
+ while i < len(input) {
+  let c: u8 = input[i]
+  let entity: [u8; 6] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+  let n: usize = 0 as usize
+  if c == 38 as u8 {
+   entity[0] = 38 as u8 entity[1] = 97 as u8 entity[2] = 109 as u8 entity[3] = 112 as u8 entity[4] = 59 as u8 n = 5 as usize
+  } else if c == 60 as u8 {
+   entity[0] = 38 as u8 entity[1] = 108 as u8 entity[2] = 116 as u8 entity[3] = 59 as u8 n = 4 as usize
+  } else if c == 62 as u8 {
+   entity[0] = 38 as u8 entity[1] = 103 as u8 entity[2] = 116 as u8 entity[3] = 59 as u8 n = 4 as usize
+  } else if attribute && c == 34 as u8 {
+   entity[0] = 38 as u8 entity[1] = 113 as u8 entity[2] = 117 as u8 entity[3] = 111 as u8 entity[4] = 116 as u8 entity[5] = 59 as u8 n = 6 as usize
+  } else if attribute && c == 39 as u8 {
+   entity[0] = 38 as u8 entity[1] = 97 as u8 entity[2] = 112 as u8 entity[3] = 111 as u8 entity[4] = 115 as u8 entity[5] = 59 as u8 n = 6 as usize
+  }
+  if n == 0 as usize { output[j] = c j = j + 1 as usize }
+  else {
+   let k: usize = 0 as usize
+   while k < n { output[j] = entity[k] j = j + 1 as usize k = k + 1 as usize }
+  }
+  i = i + 1 as usize
+ }
+ return j as isize
+}
