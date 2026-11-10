@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/jwt.noqeri"
+function main(): int {
+let t: [u8; 5] = [97 as u8,46 as u8,98 as u8,46 as u8,99 as u8]
+if jwtSegmentStart(slice(t),2) != 4 as isize { return 1 }
+if jwtSegmentLength(slice(t),1) != 1 as isize { return 2 }
+if !jwtTimeWindowValid(150 as i64,100 as i64,200 as i64,0 as i64) { return 3 }
+if jwtTimeWindowValid(250 as i64,100 as i64,200 as i64,0 as i64) { return 4 }
+ return 0
+}
+print(main())
