@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/retry.noqeri"
+function main(): int {
+if retryFullJitterMillis(3 as usize,100 as i64,1000 as i64,500 as usize) != 400 as i64 { return 1 }
+if retryAfterSecondsMillis(3 as i64,5000 as i64) != 3000 as i64 { return 2 }
+if retryShouldBackoff(1 as usize,3 as usize,503,true) == false { return 3 }
+if retryShouldBackoff(1 as usize,3 as usize,503,false) { return 4 }
+if retryFullJitterMillis(0 as usize,100 as i64,1000 as i64,1001 as usize) != -1 as i64 { return 5 }
+ return 0
+}
+print(main())
