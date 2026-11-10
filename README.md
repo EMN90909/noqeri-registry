@@ -48,6 +48,19 @@ and checked in CI, not linked into the Go HTTP server yet.
 See [architecture and limitations](docs/GO_NOQERI.md) for details.
 Do not treat this as a feature-parity production replacement for NoeSQL.
 
+## Package depth and quality audit (November 2026)
+
+The catalog has 57 package names, but their implementation maturity differs.
+Thirteen foundational packages now have new `0.5.0` experimental releases
+with deeper Noqeri code and focused regression fixtures. The other 44 have
+not yet been meaningfully expanded. See the
+[all-package capability and acceptance-gate audit](docs/PACKAGE_DEPTH_AUDIT_2026-11.md).
+
+**Do not infer production readiness from version numbers, declared APIs or
+the presence of test files.** These new fixtures require actual execution
+against Noqeri native compiler/SDK targets. No Node.js runtime is required to
+use the packages with the native SDK package manager.
+
 ## Catalog
 
 The committed `registry/index.json` is the current source of truth.
