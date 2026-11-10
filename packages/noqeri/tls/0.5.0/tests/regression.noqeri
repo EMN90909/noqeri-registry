@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/tls.noqeri"
+function main(): int {
+let header: [u8; 5] = [23 as u8,3 as u8,3 as u8,0 as u8,10 as u8]
+if !tlsModernRecordHeaderValid(slice(header)) { return 1 }
+if tlsRecordPayloadBytes(slice(header)) != 10 as isize { return 2 }
+header[2] = 1 as u8
+if tlsModernRecordHeaderValid(slice(header)) { return 3 }
+ return 0
+}
+print(main())

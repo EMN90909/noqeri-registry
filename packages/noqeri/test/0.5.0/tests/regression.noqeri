@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/test.noqeri"
+function main(): int {
+let v: [u8; 3] = [65 as u8,66 as u8,67 as u8]
+let p: [u8; 2] = [65 as u8,66 as u8]
+if assert_bytes_prefix(slice(v),slice(p)) != 0 as isize { return 1 }
+if assert_string_equal("a","b") != -1 as isize { return 2 }
+if assert_i64_range(5 as i64,0 as i64,10 as i64) != 0 as isize { return 3 }
+ return 0
+}
+print(main())

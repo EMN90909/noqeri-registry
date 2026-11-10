@@ -1,0 +1,61 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.toml
+export function tomlBareKeyChar(value: u8): bool { return (value >= 65 as u8 && value <= 90 as u8) || (value >= 97 as u8 && value <= 122 as u8) || (value >= 48 as u8 && value <= 57 as u8) || value == 45 as u8 || value == 95 as u8 }
+export function tomlDepthValid(depth: usize): bool { return depth <= 64 as usize }
+export function tomlArrayLengthValid(count: usize): bool { return count <= 1000000 as usize }
+export function tomlDocumentBytesValid(bytes: usize): bool { return bytes <= 16 as usize * 1024 as usize * 1024 as usize }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function tomlBareKeyValid(value: []u8): bool {
+    if len(value) == 0 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(value) { if !tomlBareKeyChar(value[i]) { return false } i = i + 1 as usize }
+    return true
+}
+export function tomlIntegerTokenValid(value: []u8): bool {
+    if len(value) == 0 as usize { return false }
+    let i: usize = 0 as usize
+    if value[0] == 45 as u8 || value[0] == 43 as u8 { i = 1 as usize }
+    if i >= len(value) { return false }
+    if value[i] == 48 as u8 && i + 1 as usize < len(value) { return false }
+    while i < len(value) {
+        if value[i] < 48 as u8 || value[i] > 57 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+
+// Native Noqeri v0.5.0 additions.
+export function tomlBooleanTokenValid(token: []u8): bool {
+ if len(token) == 4 as usize { return token[0] == 116 as u8 && token[1] == 114 as u8 && token[2] == 117 as u8 && token[3] == 101 as u8 }
+ if len(token) == 5 as usize { return token[0] == 102 as u8 && token[1] == 97 as u8 && token[2] == 108 as u8 && token[3] == 115 as u8 && token[4] == 101 as u8 }
+ return false
+}
+export function tomlFindAssignment(line: []u8): isize {
+ if len(line) > 65536 as usize { return -1 as isize }
+ let quote: u8 = 0 as u8
+ let escaped: bool = false
+ let i: usize = 0 as usize
+ while i < len(line) {
+  let c: u8 = line[i]
+  if quote != 0 as u8 {
+   if escaped { escaped = false }
+   else if c == 92 as u8 && quote == 34 as u8 { escaped = true }
+   else if c == quote { quote = 0 as u8 }
+  } else {
+   if c == 34 as u8 || c == 39 as u8 { quote = c }
+   else if c == 35 as u8 { return -1 as isize }
+   else if c == 61 as u8 { return i as isize }
+  }
+  i = i + 1 as usize
+ }
+ return -1 as isize
+}
+export function tomlLineKind(line: []u8): int {
+ let i: usize = 0 as usize
+ while i < len(line) && (line[i] == 32 as u8 || line[i] == 9 as u8) { i = i + 1 as usize }
+ if i == len(line) || line[i] == 35 as u8 { return 0 }
+ if line[i] == 91 as u8 { return 2 }
+ if tomlFindAssignment(line) >= 0 as isize { return 1 }
+ return -1
+}

@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/toml.noqeri"
+function main(): int {
+let kv: [u8; 9] = [107 as u8,32 as u8,61 as u8,32 as u8,34 as u8,120 as u8,61 as u8,121 as u8,34 as u8]
+if tomlFindAssignment(slice(kv)) != 2 as isize { return 1 }
+if tomlLineKind(slice(kv)) != 1 { return 2 }
+let t: [u8; 4] = [116 as u8,114 as u8,117 as u8,101 as u8]
+if !tomlBooleanTokenValid(slice(t)) { return 3 }
+ return 0
+}
+print(main())
