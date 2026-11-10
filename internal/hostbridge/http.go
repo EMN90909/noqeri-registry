@@ -21,6 +21,12 @@ var providerHosts = map[string][]string{
 	"openai": {"api.openai.com"}, "planetscale": {"api.planetscale.com"},
 	"resend": {"api.resend.com"}, "sentry": {"sentry.io", ".sentry.io"},
 	"stripe": {"api.stripe.com"}, "supabase": {"api.supabase.com", ".supabase.co"},
+	// These providers were published as Noqeri 0.5.0 libraries but had no
+	// Go host transport binding. Tenant endpoints require an exact configured
+	// hostname, never suffix matching alone.
+	"vercel": {"api.vercel.com"},
+	"turso": {"api.turso.tech", ".turso.io"},
+	"upstash": {".upstash.io"},
 }
 
 // HTTPHost keeps the network enforcement separate from the Noqeri compiler.
@@ -67,6 +73,13 @@ func tenantHostAllowed(provider, hostname string, env EnvFunc) bool {
 			return true
 		}
 		name = "NOQERI_SENTRY_HOST"
+	case "turso":
+		if hostname == "api.turso.tech" {
+			return true
+		}
+		name = "NOQERI_TURSO_HOST"
+	case "upstash":
+		name = "NOQERI_UPSTASH_HOST"
 	default:
 		return true
 	}
@@ -154,6 +167,11 @@ func (h *HTTPHost) Execute(ctx context.Context, m Message, env EnvFunc) (int, st
 		return 0, "", errors.New("invalid_url")
 	}
 	envName := "NOQERI_" + strings.ToUpper(strings.ReplaceAll(m.Provider, "-", "_")) + "_TOKEN"
+	// Turso organization-management credentials and per-database JWTs are
+	// independent. Never forward a management token to a database endpoint.
+	if m.Provider == "turso" && strings.HasSuffix(u.Hostname(), ".turso.io") {
+		envName = "NOQERI_TURSO_DATABASE_TOKEN"
+	}
 	key := env(envName)
 	if len(key) < 8 || len(key) > 8192 || strings.ContainsAny(key, "\r\n") {
 		return 0, "", errors.New("provider_secret_unavailable")
