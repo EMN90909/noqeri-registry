@@ -2586,6 +2586,66 @@
           "yanked": false
         }
       ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "ai-tokenizer",
+      "description": "Strict UTF-8 validation, reversible 256-token byte vocabulary, ASCII word spans and deterministic pair merges.",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "path": "packages/noqeri/ai-tokenizer/0.1.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "test-contract",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "ai-eval",
+      "description": "Regression metrics, binary classification confusion/precision/recall/F1 and deterministic top-k ranking.",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "path": "packages/noqeri/ai-eval/0.1.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "test-contract",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "ai-agent",
+      "description": "Caller-owned bounded agent state machine with step/token/tool budgets and explicit authorization gates.",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "path": "packages/noqeri/ai-agent/0.1.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "test-contract",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "ai-autodiff",
+      "description": "Functional reverse-mode autodiff scalar tape with add, multiply, ReLU and full backpropagation.",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "path": "packages/noqeri/ai-autodiff/0.1.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "test-contract",
+          "yanked": false
+        }
+      ]
     }
   ],
   "protocol": "v1"

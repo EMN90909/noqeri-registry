@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: MIT
+import "../src/eval.noqeri"
+function main(): int {
+    let scores: [float; 4] = [0.9,0.8,0.4,0.1]
+    let truth: [u8; 4] = [1 as u8,0 as u8,1 as u8,0 as u8]
+    let confusion: [usize; 4] = [99 as usize,99 as usize,99 as usize,99 as usize]
+    if !evalBinaryConfusion(slice(scores),slice(truth),0.5,slice(confusion)) { return 1 }
+    if confusion[0 as usize] != 1 as usize || confusion[1 as usize] != 1 as usize ||
+       confusion[2 as usize] != 1 as usize || confusion[3 as usize] != 1 as usize { return 2 }
+    if evalPrecision(slice(confusion)) != 0.5 || evalRecall(slice(confusion)) != 0.5 { return 3 }
+    if evalF1(slice(confusion)) != 0.5 || evalAccuracy(slice(confusion)) != 0.5 { return 4 }
+    if evalArgmax(slice(scores)) != 0 as isize || !evalTopKContains(slice(scores),1 as usize,2 as usize) { return 5 }
+    let pred: [float; 2] = [1.0,3.0]
+    let actual: [float; 2] = [2.0,1.0]
+    let output: [float; 1] = [0.0]
+    if !evalMeanSquaredError(slice(pred),slice(actual),slice(output)) || output[0 as usize] != 2.5 { return 6 }
+    if !evalMeanAbsoluteError(slice(pred),slice(actual),slice(output)) || output[0 as usize] != 1.5 { return 7 }
+    let bad: [u8; 4] = [1 as u8,2 as u8,1 as u8,0 as u8]
+    if evalBinaryConfusion(slice(scores),slice(bad),0.5,slice(confusion)) { return 8 }
+    if confusion[0 as usize] != 1 as usize { return 9 }
+    return 0
+}
+print(main())

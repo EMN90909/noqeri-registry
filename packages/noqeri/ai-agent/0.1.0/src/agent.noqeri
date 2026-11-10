@@ -1,0 +1,83 @@
+// SPDX-License-Identifier: MIT
+module noqeri.ai.agent
+
+// Deterministic, caller-owned state machine for capability-gated agents.
+// State layout: [stepsUsed, tokensUsed, toolsUsed, maxSteps, maxTokens,
+//                maxTools, status]. status: 0 running, 1 completed, 2 aborted.
+// The trusted host must enforce sandboxing, capabilities and actual tool I/O.
+export function agentInitialize(state: []usize, maxSteps: usize, maxTokens: usize,
+                                maxTools: usize): bool {
+    if len(state) < 7 as usize || maxSteps == 0 as usize ||
+       maxSteps > 10000 as usize || maxTokens == 0 as usize ||
+       maxTokens > 10000000 as usize || maxTools > 10000 as usize { return false }
+    state[0 as usize] = 0 as usize
+    state[1 as usize] = 0 as usize
+    state[2 as usize] = 0 as usize
+    state[3 as usize] = maxSteps
+    state[4 as usize] = maxTokens
+    state[5 as usize] = maxTools
+    state[6 as usize] = 0 as usize
+    return true
+}
+export function agentStateValid(state: []usize): bool {
+    if len(state) < 7 as usize || state[3 as usize] == 0 as usize ||
+       state[3 as usize] > 10000 as usize || state[4 as usize] == 0 as usize ||
+       state[4 as usize] > 10000000 as usize || state[5 as usize] > 10000 as usize ||
+       state[6 as usize] > 2 as usize { return false }
+    return state[0 as usize] <= state[3 as usize] &&
+           state[1 as usize] <= state[4 as usize] &&
+           state[2 as usize] <= state[5 as usize]
+}
+export function agentCanStep(state: []usize, tokens: usize, needsTool: bool,
+                             approved: bool): bool {
+    if !agentStateValid(state) || state[6 as usize] != 0 as usize { return false }
+    if state[0 as usize] >= state[3 as usize] { return false }
+    if tokens > state[4 as usize] - state[1 as usize] { return false }
+    if needsTool && (!approved || state[2 as usize] >= state[5 as usize]) { return false }
+    return true
+}
+export function agentCommitStep(state: []usize, tokens: usize,
+                                needsTool: bool, approved: bool): bool {
+    if !agentCanStep(state,tokens,needsTool,approved) { return false }
+    state[0 as usize] = state[0 as usize] + 1 as usize
+    state[1 as usize] = state[1 as usize] + tokens
+    if needsTool { state[2 as usize] = state[2 as usize] + 1 as usize }
+    return true
+}
+export function agentComplete(state: []usize): bool {
+    if !agentStateValid(state) || state[6 as usize] != 0 as usize { return false }
+    state[6 as usize] = 1 as usize
+    return true
+}
+export function agentAbort(state: []usize): bool {
+    if !agentStateValid(state) || state[6 as usize] != 0 as usize { return false }
+    state[6 as usize] = 2 as usize
+    return true
+}
+export function agentRemaining(state: []usize, remaining: []usize): bool {
+    if !agentStateValid(state) || len(remaining) < 3 as usize { return false }
+    remaining[0 as usize] = state[3 as usize] - state[0 as usize]
+    remaining[1 as usize] = state[4 as usize] - state[1 as usize]
+    remaining[2 as usize] = state[5 as usize] - state[2 as usize]
+    return true
+}
+export function agentToolNameValid(bytes: []u8): bool {
+    if len(bytes) == 0 as usize || len(bytes) > 64 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(bytes) {
+        let c: u8 = bytes[i]
+        let letter: bool = (c >= 65 as u8 && c <= 90 as u8) ||
+                           (c >= 97 as u8 && c <= 122 as u8)
+        let digit: bool = c >= 48 as u8 && c <= 57 as u8
+        if !letter && !digit && c != 95 as u8 && c != 45 as u8 && c != 46 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+// A read-only local tool (0) can be pre-authorized. External I/O, writes and
+// purchases (1,2,3) need explicit approval from the supervising host.
+export function agentActionAuthorized(actionKind: int, approved: bool): bool {
+    if actionKind == 0 { return true }
+    if actionKind >= 1 && actionKind <= 3 { return approved }
+    return false
+}

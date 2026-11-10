@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: MIT
+import "../src/autodiff.noqeri"
+function main(): int {
+    let values: [float; 4] = [0.0,0.0,0.0,0.0]
+    let gradient: [float; 4] = [0.0,0.0,0.0,0.0]
+    let left: [usize; 4] = [0 as usize,0 as usize,0 as usize,0 as usize]
+    let right: [usize; 4] = [0 as usize,0 as usize,0 as usize,0 as usize]
+    let ops: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    let used: [usize; 1] = [0 as usize]
+    if autodiffPushLeaf(slice(values),slice(gradient),slice(left),slice(right),slice(ops),slice(used),2.0) != 0 as isize { return 1 }
+    if autodiffPushLeaf(slice(values),slice(gradient),slice(left),slice(right),slice(ops),slice(used),3.0) != 1 as isize { return 2 }
+    if autodiffPushBinary(slice(values),slice(gradient),slice(left),slice(right),slice(ops),slice(used),2 as u8,0 as usize,1 as usize) != 2 as isize { return 3 }
+    if autodiffPushBinary(slice(values),slice(gradient),slice(left),slice(right),slice(ops),slice(used),1 as u8,2 as usize,0 as usize) != 3 as isize { return 4 }
+    if values[3 as usize] != 8.0 { return 5 }
+    if !autodiffBackward(slice(values),slice(gradient),slice(left),slice(right),slice(ops),4 as usize,3 as usize) { return 6 }
+    if gradient[0 as usize] != 4.0 || gradient[1 as usize] != 2.0 { return 7 }
+    ops[2 as usize] = 200 as u8
+    if autodiffTapeValid(slice(values),slice(gradient),slice(left),slice(right),slice(ops),4 as usize) { return 8 }
+    return 0
+}
+print(main())

@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: MIT
+package {
+ name: "noqeri/ai-autodiff"
+ version: "0.1.0"
+ edition: "2026"
+ entry: "src/autodiff.noqeri"
+ profile: "library"
+ target: "portable"
+ license: "MIT"
+}

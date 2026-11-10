@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: MIT
+import "../src/agent.noqeri"
+function main(): int {
+    let state: [usize; 7] = [0 as usize,0 as usize,0 as usize,0 as usize,0 as usize,0 as usize,0 as usize]
+    if !agentInitialize(slice(state),2 as usize,10 as usize,1 as usize) { return 1 }
+    if agentCanStep(slice(state),3 as usize,true,false) { return 2 }
+    if !agentCommitStep(slice(state),3 as usize,true,true) { return 3 }
+    if agentCommitStep(slice(state),1 as usize,true,true) { return 4 }
+    if !agentCommitStep(slice(state),7 as usize,false,false) { return 5 }
+    if agentCanStep(slice(state),0 as usize,false,false) { return 6 }
+    let remain: [usize; 3] = [9 as usize,9 as usize,9 as usize]
+    if !agentRemaining(slice(state),slice(remain)) || remain[0 as usize] != 0 as usize ||
+       remain[1 as usize] != 0 as usize || remain[2 as usize] != 0 as usize { return 7 }
+    if !agentComplete(slice(state)) || agentAbort(slice(state)) { return 8 }
+    let name: [u8; 4] = [114 as u8,101 as u8,97 as u8,100 as u8]
+    if !agentToolNameValid(slice(name)) { return 9 }
+    if agentActionAuthorized(2,false) || !agentActionAuthorized(2,true) { return 10 }
+    return 0
+}
+print(main())

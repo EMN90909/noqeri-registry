@@ -1,0 +1,123 @@
+// SPDX-License-Identifier: MIT
+module noqeri.ai.tokenizer
+
+// UTF-8 validation with overlong, surrogate and out-of-range rejection.
+// Token encoding itself is byte-level (vocabulary size 256), not BPE/WordPiece.
+export function tokenizerUtf8Valid(bytes: []u8): bool {
+    let i: usize = 0 as usize
+    while i < len(bytes) {
+        let head: u8 = bytes[i]
+        if head < 128 as u8 { i = i + 1 as usize }
+        else {
+            let following: usize = 0 as usize
+            if head >= 194 as u8 && head <= 223 as u8 { following = 1 as usize }
+            else if head >= 224 as u8 && head <= 239 as u8 { following = 2 as usize }
+            else if head >= 240 as u8 && head <= 244 as u8 { following = 3 as usize }
+            else { return false }
+            if following >= len(bytes) - i { return false }
+            let j: usize = 1 as usize
+            while j <= following {
+                let continuation: u8 = bytes[i + j]
+                if continuation < 128 as u8 || continuation > 191 as u8 { return false }
+                j = j + 1 as usize
+            }
+            let second: u8 = bytes[i + 1 as usize]
+            if head == 224 as u8 && second < 160 as u8 { return false }
+            if head == 237 as u8 && second > 159 as u8 { return false }
+            if head == 240 as u8 && second < 144 as u8 { return false }
+            if head == 244 as u8 && second > 143 as u8 { return false }
+            i = i + following + 1 as usize
+        }
+    }
+    return true
+}
+export function tokenizerByteEncode(bytes: []u8, ids: []u32): isize {
+    if len(ids) < len(bytes) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(bytes) { ids[i] = bytes[i] as u32 i = i + 1 as usize }
+    return len(bytes) as isize
+}
+export function tokenizerByteDecode(ids: []u32, bytes: []u8): isize {
+    if len(bytes) < len(ids) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(ids) {
+        if ids[i] > 255 as u32 { return -1 as isize }
+        i = i + 1 as usize
+    }
+    i = 0 as usize
+    while i < len(ids) { bytes[i] = ids[i] as u8 i = i + 1 as usize }
+    return len(ids) as isize
+}
+export function tokenizerAsciiWordChar(c: u8): bool {
+    return (c >= 65 as u8 && c <= 90 as u8) ||
+           (c >= 97 as u8 && c <= 122 as u8) ||
+           (c >= 48 as u8 && c <= 57 as u8) || c == 95 as u8
+}
+export function tokenizerAsciiWordCount(bytes: []u8): usize {
+    let count: usize = 0 as usize
+    let inside: bool = false
+    let i: usize = 0 as usize
+    while i < len(bytes) {
+        let current: bool = tokenizerAsciiWordChar(bytes[i])
+        if current && !inside { count = count + 1 as usize }
+        inside = current
+        i = i + 1 as usize
+    }
+    return count
+}
+export function tokenizerNextAsciiWord(bytes: []u8, offset: usize, span: []usize): bool {
+    if len(span) < 2 as usize || offset > len(bytes) { return false }
+    let start: usize = offset
+    while start < len(bytes) && !tokenizerAsciiWordChar(bytes[start]) { start = start + 1 as usize }
+    if start == len(bytes) { return false }
+    let end: usize = start
+    while end < len(bytes) && tokenizerAsciiWordChar(bytes[end]) { end = end + 1 as usize }
+    span[0 as usize] = start
+    span[1 as usize] = end
+    return true
+}
+export function tokenizerMergePair(ids: []u32, first: u32, second: u32,
+                                   merged: u32, out: []u32): isize {
+    if len(out) < len(ids) { return -1 as isize }
+    let i: usize = 0 as usize
+    let count: usize = 0 as usize
+    while i < len(ids) {
+        if i + 1 as usize < len(ids) && ids[i] == first && ids[i + 1 as usize] == second {
+            out[count] = merged
+            i = i + 2 as usize
+        } else {
+            out[count] = ids[i]
+            i = i + 1 as usize
+        }
+        count = count + 1 as usize
+    }
+    return count as isize
+}
+export function tokenizerByteFrequencies(bytes: []u8, frequencies: []usize): bool {
+    if len(frequencies) < 256 as usize { return false }
+    let i: usize = 0 as usize
+    while i < 256 as usize { frequencies[i] = 0 as usize i = i + 1 as usize }
+    i = 0 as usize
+    while i < len(bytes) {
+        let index: usize = bytes[i] as usize
+        frequencies[index] = frequencies[index] + 1 as usize
+        i = i + 1 as usize
+    }
+    return true
+}
+export function tokenizerNgramCount(bytes: []u8, ngram: []u8): usize {
+    if len(ngram) == 0 as usize || len(ngram) > len(bytes) { return 0 as usize }
+    let count: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i <= len(bytes) - len(ngram) {
+        let equal: bool = true
+        let j: usize = 0 as usize
+        while j < len(ngram) {
+            if bytes[i + j] != ngram[j] { equal = false }
+            j = j + 1 as usize
+        }
+        if equal { count = count + 1 as usize }
+        i = i + 1 as usize
+    }
+    return count
+}

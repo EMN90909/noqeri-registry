@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: MIT
+import "../src/tokenizer.noqeri"
+function main(): int {
+    let text: [u8; 5] = [65 as u8,66 as u8,65 as u8,66 as u8,67 as u8]
+    let ids: [u32; 5] = [0 as u32,0 as u32,0 as u32,0 as u32,0 as u32]
+    if !tokenizerUtf8Valid(slice(text)) || tokenizerByteEncode(slice(text),slice(ids)) != 5 as isize { return 1 }
+    let invalid: [u8; 3] = [224 as u8,128 as u8,128 as u8]
+    if tokenizerUtf8Valid(slice(invalid)) { return 2 }
+    let merged: [u32; 5] = [0 as u32,0 as u32,0 as u32,0 as u32,0 as u32]
+    if tokenizerMergePair(slice(ids),65 as u32,66 as u32,256 as u32,slice(merged)) != 3 as isize { return 3 }
+    if merged[0 as usize] != 256 as u32 || merged[2 as usize] != 67 as u32 { return 4 }
+    let decoded: [u8; 5] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    if tokenizerByteDecode(slice(ids),slice(decoded)) != 5 as isize { return 5 }
+    if tokenizerByteDecode(slice(merged),slice(decoded)) != -1 as isize { return 6 }
+    let words: [u8; 8] = [72 as u8,105 as u8,32 as u8,84 as u8,104 as u8,101 as u8,114 as u8,101 as u8]
+    if tokenizerAsciiWordCount(slice(words)) != 2 as usize { return 7 }
+    let span: [usize; 2] = [0 as usize,0 as usize]
+    if !tokenizerNextAsciiWord(slice(words),2 as usize,slice(span)) || span[0 as usize] != 3 as usize { return 8 }
+    return 0
+}
+print(main())

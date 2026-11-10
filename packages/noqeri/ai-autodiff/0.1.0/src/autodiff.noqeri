@@ -1,0 +1,99 @@
+// SPDX-License-Identifier: MIT
+module noqeri.ai.autodiff
+
+// Reverse-mode scalar tape: 0 leaf, 1 add, 2 multiply, 3 ReLU.
+// Nodes refer only to earlier nodes. All arrays are caller-allocated.
+export function autodiffCapacity(values: []float, gradients: []float,
+                                 left: []usize, right: []usize, ops: []u8): usize {
+    let cap: usize = len(values)
+    if len(gradients) < cap { cap = len(gradients) }
+    if len(left) < cap { cap = len(left) }
+    if len(right) < cap { cap = len(right) }
+    if len(ops) < cap { cap = len(ops) }
+    if cap > 4096 as usize { cap = 4096 as usize }
+    return cap
+}
+export function autodiffPushLeaf(values: []float, gradients: []float,
+                                 left: []usize, right: []usize, ops: []u8,
+                                 used: []usize, value: float): isize {
+    if len(used) < 1 as usize { return -1 as isize }
+    let count: usize = used[0 as usize]
+    if count >= autodiffCapacity(values,gradients,left,right,ops) { return -1 as isize }
+    values[count] = value
+    gradients[count] = 0.0
+    left[count] = 0 as usize
+    right[count] = 0 as usize
+    ops[count] = 0 as u8
+    used[0 as usize] = count + 1 as usize
+    return count as isize
+}
+export function autodiffPushBinary(values: []float, gradients: []float,
+                                   left: []usize, right: []usize, ops: []u8,
+                                   used: []usize, opcode: u8, first: usize,
+                                   second: usize): isize {
+    if len(used) < 1 as usize { return -1 as isize }
+    let count: usize = used[0 as usize]
+    if count >= autodiffCapacity(values,gradients,left,right,ops) ||
+       first >= count || second >= count || (opcode != 1 as u8 && opcode != 2 as u8) { return -1 as isize }
+    let value: float = values[first] + values[second]
+    if opcode == 2 as u8 { value = values[first] * values[second] }
+    values[count] = value
+    gradients[count] = 0.0
+    left[count] = first
+    right[count] = second
+    ops[count] = opcode
+    used[0 as usize] = count + 1 as usize
+    return count as isize
+}
+export function autodiffPushRelu(values: []float, gradients: []float,
+                                 left: []usize, right: []usize, ops: []u8,
+                                 used: []usize, input: usize): isize {
+    if len(used) < 1 as usize { return -1 as isize }
+    let count: usize = used[0 as usize]
+    if count >= autodiffCapacity(values,gradients,left,right,ops) || input >= count { return -1 as isize }
+    let output: float = 0.0
+    if values[input] > 0.0 { output = values[input] }
+    values[count] = output
+    gradients[count] = 0.0
+    left[count] = input
+    right[count] = 0 as usize
+    ops[count] = 3 as u8
+    used[0 as usize] = count + 1 as usize
+    return count as isize
+}
+export function autodiffTapeValid(values: []float, gradients: []float,
+                                  left: []usize, right: []usize, ops: []u8,
+                                  count: usize): bool {
+    if count == 0 as usize || count > autodiffCapacity(values,gradients,left,right,ops) { return false }
+    let i: usize = 0 as usize
+    while i < count {
+        if ops[i] > 3 as u8 { return false }
+        if ops[i] > 0 as u8 && left[i] >= i { return false }
+        if (ops[i] == 1 as u8 || ops[i] == 2 as u8) && right[i] >= i { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function autodiffBackward(values: []float, gradients: []float,
+                                 left: []usize, right: []usize, ops: []u8,
+                                 count: usize, output: usize): bool {
+    if !autodiffTapeValid(values,gradients,left,right,ops,count) || output >= count { return false }
+    let i: usize = 0 as usize
+    while i < count { gradients[i] = 0.0 i = i + 1 as usize }
+    gradients[output] = 1.0
+    i = count
+    while i > 0 as usize {
+        i = i - 1 as usize
+        let g: float = gradients[i]
+        if ops[i] == 1 as u8 {
+            gradients[left[i]] = gradients[left[i]] + g
+            gradients[right[i]] = gradients[right[i]] + g
+        } else if ops[i] == 2 as u8 {
+            gradients[left[i]] = gradients[left[i]] + g * values[right[i]]
+            gradients[right[i]] = gradients[right[i]] + g * values[left[i]]
+        } else if ops[i] == 3 as u8 && values[left[i]] > 0.0 {
+            gradients[left[i]] = gradients[left[i]] + g
+        }
+    }
+    return true
+}
