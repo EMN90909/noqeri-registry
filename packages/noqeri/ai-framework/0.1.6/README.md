@@ -19,4 +19,4 @@ noqeri pkg install
 
 **Limits:** the framework does not provide integrated GPU execution, LLM weights, a tokenizer vocabulary/training pipeline, host tool sandbox, or automatic compiler bindings to native `libnoqeri_ai`. These modules use caller-managed buffers and are deliberately experimental pending compiler/runtime tests. Existing earlier versions remain unchanged.
 
-See [ecosystem overview](../../../docs/AI_ECOSYSTEM.md) in the registry repository.
+See [ecosystem overview](../../../../docs/AI_ECOSYSTEM.md) in the registry repository.
