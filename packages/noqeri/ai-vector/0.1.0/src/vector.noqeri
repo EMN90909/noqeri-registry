@@ -65,6 +65,13 @@ export function vectorTopKDot(matrix: []float, rows: usize, dims: usize,
         if !(query[i] == query[i]) { return -1 as isize }
         i = i + 1 as usize
     }
+    // Preflight every row so malformed data cannot leave a partially
+    // updated ranking in the caller's buffers.
+    i = 0 as usize
+    while i < rows * dims {
+        if !(matrix[i] == matrix[i]) { return -1 as isize }
+        i = i + 1 as usize
+    }
     let row: usize = 0 as usize
     let count: usize = 0 as usize
     while row < rows {
