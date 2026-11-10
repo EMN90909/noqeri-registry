@@ -68,7 +68,15 @@ export function urlPercentTripletsValid(input: []u8): bool {
     return true
 }
 export function urlFormDecode(input: []u8, output: []u8): isize {
-    if !urlPercentTripletsValid(input) || len(output) < len(input) { return -1 as isize }
+    if !urlPercentTripletsValid(input) { return -1 as isize }
+    let required: usize = 0 as usize
+    let scan: usize = 0 as usize
+    while scan < len(input) {
+        if input[scan] == 37 as u8 { scan = scan + 3 as usize }
+        else { scan = scan + 1 as usize }
+        required = required + 1 as usize
+    }
+    if len(output) < required { return -1 as isize }
     let i: usize = 0 as usize
     let n: usize = 0 as usize
     while i < len(input) {
