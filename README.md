@@ -50,7 +50,7 @@ Do not treat this as a feature-parity production replacement for NoeSQL.
 
 ## Expanded package catalog (0.5.0 developer previews)
 
-The 54 packages previously on the `0.4.0` baseline now have immutable `0.5.0` versions, with deeper Noqeri source, API compatibility, examples or regression fixtures and documented native host boundaries. The other three packages — PGAS, AI Framework, and Components — continue their own version tracks.
+The 54 packages previously on the `0.4.0` baseline now have immutable `0.5.0` versions, with deeper Noqeri source, API compatibility, examples or regression fixtures and documented native host boundaries. The three separately versioned packages are also upgraded: `pgas@0.1.5`, `ai-framework@0.1.5` and `components@0.2.2`. All **57 packages** now have a new version.
 
 These versions are marked **experimental**, not certified production ready. Full compiler execution, database/provider integration, security hardening and cross-platform runtime verification remain outstanding. Run the dependency-free, Node-free static source audit locally with `python3 tools/verify_package_depth.py`. See [package depth and limitations](docs/PACKAGE_DEPTH_2026.md).
 

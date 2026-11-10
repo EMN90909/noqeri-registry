@@ -2439,6 +2439,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.1.5",
+          "path": "packages/noqeri/pgas/0.1.5",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "Noqeri source+regression fixtures; native runtime qualification pending",
+          "yanked": false
+        },
+        {
           "evidence": "native-cpp-loopback-tests",
           "experimental": true,
           "path": "packages/noqeri/pgas/0.1.0",
@@ -2478,6 +2486,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.1.5",
+          "path": "packages/noqeri/ai-framework/0.1.5",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "Noqeri source+regression fixtures; native runtime qualification pending",
+          "yanked": false
+        },
+        {
           "evidence": "test-contract",
           "experimental": true,
           "path": "packages/noqeri/ai-framework/0.1.4",
@@ -2492,6 +2508,14 @@
       "name": "components",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.2.2",
+          "path": "packages/noqeri/components/0.2.2",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "Noqeri source+regression fixtures; native runtime qualification pending",
+          "yanked": false
+        },
         {
           "evidence": "test-contract",
           "experimental": true,

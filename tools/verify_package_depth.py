@@ -68,10 +68,43 @@ def main():
             if path.is_symlink():
                 problems.append(f"{ns}/{name}: symlink forbidden: {path.relative_to(directory)}")
         checked += 1
+    # Separately versioned packages get a new release too; preserve their tracks.
+    special = {"pgas": "0.1.5", "ai-framework": "0.1.5", "components": "0.2.2"}
+    for name, version in special.items():
+        pkg = next((p for p in index["packages"] if p["namespace"] == "noqeri" and p["name"] == name), None)
+        if pkg is None:
+            problems.append(f"noqeri/{name}: missing special package")
+            continue
+        releases = {v["version"]: v for v in pkg["versions"]}
+        if version not in releases:
+            problems.append(f"noqeri/{name}: missing {version} index entry")
+            continue
+        release = releases[version]
+        expected = f"packages/noqeri/{name}/{version}"
+        if release.get("path") != expected or release.get("quality") != "experimental":
+            problems.append(f"noqeri/{name}: bad special-track release metadata")
+        release_root = root / expected
+        manifest_path = release_root / "package.noqeri"
+        if not manifest_path.is_file() or manifest_path.is_symlink():
+            problems.append(f"noqeri/{name}: missing manifest")
+            continue
+        manifest = manifest_path.read_text(encoding="utf-8")
+        if f'version: "{version}"' not in manifest:
+            problems.append(f"noqeri/{name}: manifest version mismatch")
+        entry_match = re.search(r'\bentry\s*:\s*"([^"]+)"', manifest)
+        if not entry_match:
+            problems.append(f"noqeri/{name}: missing entry")
+            continue
+        entry = pathlib.PurePosixPath(entry_match.group(1))
+        if entry.is_absolute() or ".." in entry.parts or not (release_root / entry).is_file():
+            problems.append(f"noqeri/{name}: missing/unsafe entry source")
+        if not any((release_root / "tests").glob("*.noqeri")):
+            problems.append(f"noqeri/{name}: missing regression fixtures")
+        checked += 1
     print(json.dumps({"kind": "static-source-inventory-only", "packages_checked": checked,
                       "exports_in_entries": exports_total, "host_extern_declarations": hosts,
                       "problems": problems}, indent=2))
-    return 1 if problems or checked != 54 else 0
+    return 1 if problems or checked != 57 else 0
 
 if __name__ == "__main__":
     sys.exit(main())

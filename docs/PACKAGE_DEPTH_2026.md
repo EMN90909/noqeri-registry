@@ -2,7 +2,7 @@
 
 ## Coverage and evidence
 
-The catalog contains **57 packages**. This change publishes **54 new 0.5.0 package versions** with preserved 0.4.0 public APIs, expanded native Noqeri functionality, README documentation and source-level regression fixtures. The other three — `noqeri/pgas`, `noqeri/ai-framework`, and `noqeri/components` — retain separate existing development/release lines and are **not** represented as 0.5.0.
+The catalog contains **57 packages**. This change publishes **54 new 0.5.0 package versions** with preserved 0.4.0 public APIs, expanded native Noqeri functionality, README documentation and source-level regression fixtures. The three special-track packages also receive new versions: `noqeri/pgas@0.1.5` (balanced block/cyclic capacity calculations), `noqeri/ai-framework@0.1.5` (bounded scalar mini-batch regression gradients), and `noqeri/components@0.2.2` (accessible skip navigation, live status and screen-reader text). These retain their independent release numbering and are **not** represented as 0.5.0. All **57 packages** therefore have a new version in this update.
 
 The expanded versions cover: parsing/serialization fundamentals (JSON, XML, YAML/TOML subsets, CSV, Base64, URL, hex, regex-lite), security and encoding, HTTP/WebSocket policy, core and standard utility functions, OS/network/database capability contracts, SDK tooling and provider integrations.
 
