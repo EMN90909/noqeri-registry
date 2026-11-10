@@ -2486,6 +2486,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.1.6",
+          "path": "packages/noqeri/ai-framework/0.1.6",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "test-contract",
+          "yanked": false
+        },
+        {
           "version": "0.1.5",
           "path": "packages/noqeri/ai-framework/0.1.5",
           "quality": "experimental",

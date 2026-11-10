@@ -1,5 +1,10 @@
 # Noqeri Registry
 
+## Native AI frameworks — November 2026
+
+Nine new pure-Noqeri AI packages are in the registry: `ai-tensor`, `ai-nn`, `ai-optim`, `ai-autodiff`, `ai-tokenizer`, `ai-eval`, `ai-agent`, `ai-vector`, `ai-data`. The `noqeri/ai-framework@0.1.6` umbrella bundles them as pinned dependencies alongside the existing scalar AI API. These are experimental CPU/agent-policy building blocks, not a finished LLM/GPU runtime. [API map, examples and limitations](docs/AI_ECOSYSTEM.md).
+
+
 A **Go + Noqeri** package registry for the Noqeri language.
 
 - **Go**: HTTP server, package discovery, deterministic `.nqpkg` tar.gz
