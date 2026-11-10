@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: MIT
+import "../src/postgres.noqeri"
+function main(): int {
+let state: [u8; 5] = [52 as u8,48 as u8,48 as u8,48 as u8,49 as u8]
+    if !postgresRetryable(slice(state)) { return 1 }
+    let name: [u8; 2] = [97 as u8,34 as u8]
+    let quote: [u8; 5] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    if postgresQuoteIdentifier(slice(name),slice(quote)) != 5 as isize || quote[2] != 34 as u8 { return 2 }
+    let bytes: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    if !postgresWriteU32BE(256 as usize,slice(bytes)) || postgresReadU32BE(slice(bytes)) != 256 as isize { return 3 }
+    if postgresTransactionTransition(1,0) { return 4 }
+    return 0
+}
+print(main())

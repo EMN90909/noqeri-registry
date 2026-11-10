@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+import "../src/net.noqeri"
+function main(): int {
+let ip: [u8; 8] = [49 as u8,48 as u8,46 as u8,48 as u8,46 as u8,48 as u8,46 as u8,49 as u8]
+    let oct: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    if !netIpv4Valid(slice(ip)) || !netIpv4ToOctets(slice(ip),slice(oct)) { return 1 }
+    if oct[0] != 10 as u8 || oct[3] != 1 as u8 || !netPrivateIpv4(slice(oct)) { return 2 }
+    let bad: [u8; 7] = [49 as u8,46 as u8,50 as u8,46 as u8,51 as u8,46 as u8,48 as u8]
+    if !netIpv4Valid(slice(bad)) || netPortValid(65536) { return 3 }
+    if netCidrPrefixValid(33) { return 4 }
+    return 0
+}
+print(main())
