@@ -1,0 +1,97 @@
+// SPDX-License-Identifier: MIT
+module noqeri.ai.vector
+
+// CPU brute-force dense-vector retrieval; no heap, index or network service.
+// Embedding rows are row-major and must not overlap output buffers.
+export function vectorDot(a: []float, b: []float, result: []float): bool {
+    if len(a) == 0 as usize || len(a) != len(b) || len(result) < 1 as usize { return false }
+    let total: float = 0.0
+    let i: usize = 0 as usize
+    while i < len(a) {
+        if !(a[i] == a[i] && b[i] == b[i]) { return false }
+        total = total + a[i] * b[i]
+        i = i + 1 as usize
+    }
+    result[0 as usize] = total
+    return true
+}
+export function vectorDistanceSquared(a: []float, b: []float, result: []float): bool {
+    if len(a) == 0 as usize || len(a) != len(b) || len(result) < 1 as usize { return false }
+    let total: float = 0.0
+    let i: usize = 0 as usize
+    while i < len(a) {
+        let difference: float = a[i] - b[i]
+        if !(difference == difference) { return false }
+        total = total + difference * difference
+        i = i + 1 as usize
+    }
+    result[0 as usize] = total
+    return true
+}
+export function vectorL1Normalize(input: []float, output: []float): bool {
+    if len(input) == 0 as usize || len(output) < len(input) { return false }
+    let total: float = 0.0
+    let i: usize = 0 as usize
+    while i < len(input) {
+        let amount: float = input[i]
+        if !(amount == amount) { return false }
+        if amount < 0.0 { total = total - amount }
+        else { total = total + amount }
+        i = i + 1 as usize
+    }
+    if !(total > 0.0) { return false }
+    i = 0 as usize
+    while i < len(input) {
+        output[i] = input[i] / total
+        i = i + 1 as usize
+    }
+    return true
+}
+export function vectorMatrixValid(matrix: []float, rows: usize, dims: usize): bool {
+    return rows > 0 as usize && rows <= 100000 as usize &&
+           dims > 0 as usize && dims <= 4096 as usize &&
+           rows <= len(matrix) / dims
+}
+// Streaming top-k dot product, O(rows*dims + rows*k), memory O(k).
+// Ties are ordered by smallest original row ID, allowing reproducible ranks.
+export function vectorTopKDot(matrix: []float, rows: usize, dims: usize,
+                              query: []float, k: usize, outIds: []usize,
+                              outScores: []float): isize {
+    if !vectorMatrixValid(matrix,rows,dims) || len(query) != dims ||
+       k == 0 as usize || k > 64 as usize || k > rows ||
+       len(outIds) < k || len(outScores) < k { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(query) {
+        if !(query[i] == query[i]) { return -1 as isize }
+        i = i + 1 as usize
+    }
+    let row: usize = 0 as usize
+    let count: usize = 0 as usize
+    while row < rows {
+        let value: float = 0.0
+        let d: usize = 0 as usize
+        while d < dims {
+            let element: float = matrix[row * dims + d]
+            if !(element == element) { return -1 as isize }
+            value = value + element * query[d]
+            d = d + 1 as usize
+        }
+        let position: usize = 0 as usize
+        while position < count && outScores[position] >= value {
+            position = position + 1 as usize
+        }
+        if position < k {
+            if count < k { count = count + 1 as usize }
+            let slot: usize = count - 1 as usize
+            while slot > position {
+                outScores[slot] = outScores[slot - 1 as usize]
+                outIds[slot] = outIds[slot - 1 as usize]
+                slot = slot - 1 as usize
+            }
+            outScores[position] = value
+            outIds[position] = row
+        }
+        row = row + 1 as usize
+    }
+    return count as isize
+}

@@ -2646,6 +2646,36 @@
           "yanked": false
         }
       ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "ai-vector",
+      "description": "CPU brute-force embedding retrieval with row-major dot products, L2 distance and deterministic streaming top-k.",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "path": "packages/noqeri/ai-vector/0.1.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "test-contract",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "ai-data",
+      "description": "Deterministic batch slicing, train splits, gathered data rows, Welford statistics and centering utilities.",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "path": "packages/noqeri/ai-data/0.1.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "test-contract",
+          "yanked": false
+        }
+      ]
     }
   ],
   "protocol": "v1"

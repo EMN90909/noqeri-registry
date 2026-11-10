@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: MIT
+import "../src/vector.noqeri"
+function main(): int {
+    let matrix: [float; 6] = [1.0,0.0,0.0,1.0,1.0,1.0]
+    let query: [float; 2] = [1.0,1.0]
+    let ids: [usize; 2] = [99 as usize,99 as usize]
+    let scores: [float; 2] = [0.0,0.0]
+    if vectorTopKDot(slice(matrix),3 as usize,2 as usize,slice(query),2 as usize,slice(ids),slice(scores)) != 2 as isize { return 1 }
+    if ids[0 as usize] != 2 as usize || scores[0 as usize] != 2.0 { return 2 }
+    if ids[1 as usize] != 0 as usize || scores[1 as usize] != 1.0 { return 3 }
+    if vectorTopKDot(slice(matrix),3 as usize,2 as usize,slice(query),4 as usize,slice(ids),slice(scores)) != -1 as isize { return 4 }
+    let two: [float; 2] = [1.0,3.0]
+    let other: [float; 2] = [2.0,1.0]
+    let result: [float; 1] = [0.0]
+    if !vectorDistanceSquared(slice(two),slice(other),slice(result)) || result[0 as usize] != 5.0 { return 5 }
+    if !vectorDot(slice(two),slice(other),slice(result)) || result[0 as usize] != 5.0 { return 6 }
+    return 0
+}
+print(main())

@@ -1,0 +1,86 @@
+// SPDX-License-Identifier: MIT
+module noqeri.ai.data
+
+// Deterministic mini-batch and feature-preprocessing utilities.
+// Data is dense row-major, no allocations and no implicit filesystem reads.
+export function dataBatchBounds(rows: usize, batchSize: usize,
+                                batchIndex: usize, bounds: []usize): bool {
+    if rows == 0 as usize || batchSize == 0 as usize || len(bounds) < 2 as usize ||
+       batchIndex > (rows - 1 as usize) / batchSize { return false }
+    let begin: usize = batchIndex * batchSize
+    let available: usize = rows - begin
+    let take: usize = batchSize
+    if take > available { take = available }
+    bounds[0 as usize] = begin
+    bounds[1 as usize] = begin + take
+    return true
+}
+export function dataTrainCount(rows: usize, percent: usize): usize {
+    if rows == 0 as usize || percent == 0 as usize || percent >= 100 as usize { return 0 as usize }
+    // Split the product to avoid overflowing at large row counts.
+    return (rows / 100 as usize) * percent +
+           ((rows % 100 as usize) * percent) / 100 as usize
+}
+export function dataGatherRows(matrix: []float, rows: usize, columns: usize,
+                               indices: []usize, output: []float): isize {
+    if rows == 0 as usize || columns == 0 as usize ||
+       columns > 4096 as usize || rows > len(matrix) / columns ||
+       len(indices) > len(output) / columns { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(indices) {
+        if indices[i] >= rows { return -1 as isize }
+        i = i + 1 as usize
+    }
+    i = 0 as usize
+    while i < len(indices) {
+        let col: usize = 0 as usize
+        while col < columns {
+            output[i * columns + col] = matrix[indices[i] * columns + col]
+            col = col + 1 as usize
+        }
+        i = i + 1 as usize
+    }
+    return (len(indices) * columns) as isize
+}
+// Welford's stable one-pass population variance. Out = [mean, variance].
+export function dataMeanVariance(values: []float, out: []float): bool {
+    if len(values) == 0 as usize || len(out) < 2 as usize { return false }
+    let mean: float = 0.0
+    let m2: float = 0.0
+    let n: usize = 0 as usize
+    while n < len(values) {
+        let value: float = values[n]
+        if !(value == value) { return false }
+        let nextN: usize = n + 1 as usize
+        let delta: float = value - mean
+        mean = mean + delta / nextN as float
+        let secondDelta: float = value - mean
+        m2 = m2 + delta * secondDelta
+        n = nextN
+    }
+    out[0 as usize] = mean
+    out[1 as usize] = m2 / n as float
+    return true
+}
+export function dataCenterScale(input: []float, mean: float, scale: float,
+                                output: []float): bool {
+    if len(output) < len(input) || !(scale > 0.0) { return false }
+    let i: usize = 0 as usize
+    while i < len(input) {
+        output[i] = (input[i] - mean) / scale
+        i = i + 1 as usize
+    }
+    return true
+}
+export function dataLabelFrequency(labels: []u8, buckets: []usize): bool {
+    if len(buckets) < 256 as usize { return false }
+    let i: usize = 0 as usize
+    while i < 256 as usize { buckets[i] = 0 as usize i = i + 1 as usize }
+    i = 0 as usize
+    while i < len(labels) {
+        let slot: usize = labels[i] as usize
+        buckets[slot] = buckets[slot] + 1 as usize
+        i = i + 1 as usize
+    }
+    return true
+}
