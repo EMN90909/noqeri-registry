@@ -2,8 +2,8 @@
 import "../src/url.noqeri"
 function main(): int {
 let payload: [u8; 3] = [97 as u8,32 as u8,38 as u8]
-let encoded: [u8; 7] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
-if urlFormEncode(slice(payload),slice(encoded)) != 6 as isize { return 1 }
+let encoded: [u8; 5] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+if urlFormEncode(slice(payload),slice(encoded)) != 5 as isize { return 1 }
 let decoded: [u8; 3] = [0 as u8,0 as u8,0 as u8]
 if urlFormDecode(slice(encoded),slice(decoded)) != 3 as isize { return 2 }
 if decoded[1] != 32 as u8 || decoded[2] != 38 as u8 { return 3 }
