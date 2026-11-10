@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/http.noqeri"
+function main(): int {
+if !httpMethodAllowedName("OPTIONS") { return 1 }
+if httpMethodIdempotentName("PATCH") { return 2 }
+if !httpStatusRetryable(503) || httpStatusRetryable(400) { return 3 }
+let name: [u8; 4] = [72 as u8,111 as u8,115 as u8,116 as u8]
+let bad: [u8; 1] = [10 as u8]
+if httpHeaderLineSizeValid(slice(name),slice(bad)) { return 4 }
+ return 0
+}
+print(main())
