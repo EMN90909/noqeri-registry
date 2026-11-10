@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/turso.noqeri"
+function main(): int {
+if !tursoRetryable(503) || tursoRetryable(404) { return 1 }
+if tursoExecuteBatch("https://test.turso.io","short","[]") != "" { return 2 }
+if !tursoRequestBodyValid(1024 as usize) { return 3 }
+ return 0
+}
+print(main())

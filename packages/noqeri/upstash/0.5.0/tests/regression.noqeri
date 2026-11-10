@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/upstash.noqeri"
+function main(): int {
+if !upstashRetryable(429) || upstashRetryable(400) { return 1 }
+if upstashBatch("https://example.upstash.io","short","[]") != "" { return 2 }
+if !upstashBodyValid(512 as usize) { return 3 }
+ return 0
+}
+print(main())
