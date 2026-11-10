@@ -122,9 +122,9 @@ def main():
         manifest = manifest_path.read_text(encoding="utf-8")
         if not re.search(r'\bname\s*:\s*"' + re.escape(f"noqeri/{name}") + r'"', manifest):
             problems.append(f"noqeri/{name}: invalid manifest identity")
-        if not re.search(r'\\bversion\\s*:\\s*"0\\.1\\.0"', manifest):
+        if not re.search(r'\bversion\s*:\s*"0\.1\.0"', manifest):
             problems.append(f"noqeri/{name}: invalid manifest version")
-        entry = re.search(r'\\bentry\\s*:\\s*"([^"]+)"', manifest)
+        entry = re.search(r'\bentry\s*:\s*"([^"]+)"', manifest)
         source = path / entry.group(1) if entry else None
         if not entry or entry.group(1).startswith("/") or ".." in pathlib.PurePosixPath(entry.group(1)).parts or not source.is_file() or source.is_symlink():
             problems.append(f"noqeri/{name}: invalid source entry")
