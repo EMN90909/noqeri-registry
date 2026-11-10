@@ -2541,6 +2541,51 @@
           "yanked": false
         }
       ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "ai-tensor",
+      "description": "Portable bounded CPU tensor/vector operations: row-major matmul, transpose, elementwise operations, dot and MSE.",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "path": "packages/noqeri/ai-tensor/0.1.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "test-contract",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "ai-nn",
+      "description": "Dense neural-layer forward/backprop and ReLU/MSE gradients using caller-owned float buffers.",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "path": "packages/noqeri/ai-nn/0.1.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "test-contract",
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "ai-optim",
+      "description": "Deterministic SGD, momentum, gradient accumulation and clipping, warmup and step decay.",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "path": "packages/noqeri/ai-optim/0.1.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "test-contract",
+          "yanked": false
+        }
+      ]
     }
   ],
   "protocol": "v1"

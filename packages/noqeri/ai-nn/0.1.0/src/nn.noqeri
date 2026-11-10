@@ -1,0 +1,95 @@
+// SPDX-License-Identifier: MIT
+module noqeri.ai.nn
+
+// One dense (fully connected) layer. W is [neuron][feature], row-major.
+// No allocations; callers own the feature, gradient and parameter arrays.
+export function nnDenseShapes(input: []float, weights: []float, bias: []float,
+                              neurons: usize, outputs: []float): bool {
+    if len(input) == 0 as usize || len(input) > 4096 as usize ||
+       neurons == 0 as usize || neurons > 4096 as usize { return false }
+    return neurons <= len(weights) / len(input) &&
+           len(bias) >= neurons && len(outputs) >= neurons
+}
+export function nnDenseForward(input: []float, weights: []float, bias: []float,
+                               neurons: usize, outputs: []float): bool {
+    if !nnDenseShapes(input,weights,bias,neurons,outputs) { return false }
+    let n: usize = 0 as usize
+    while n < neurons {
+        let value: float = bias[n]
+        let k: usize = 0 as usize
+        while k < len(input) {
+            value = value + weights[n * len(input) + k] * input[k]
+            k = k + 1 as usize
+        }
+        outputs[n] = value
+        n = n + 1 as usize
+    }
+    return true
+}
+export function nnRelu(input: []float, output: []float): bool {
+    if len(output) < len(input) { return false }
+    let i: usize = 0 as usize
+    while i < len(input) {
+        if input[i] > 0.0 { output[i] = input[i] }
+        else { output[i] = 0.0 }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function nnReluBackward(preActivation: []float, incoming: []float,
+                               gradient: []float): bool {
+    if len(preActivation) != len(incoming) || len(gradient) < len(preActivation) { return false }
+    let i: usize = 0 as usize
+    while i < len(preActivation) {
+        if preActivation[i] > 0.0 { gradient[i] = incoming[i] }
+        else { gradient[i] = 0.0 }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function nnDenseBackward(input: []float, weights: []float, upstream: []float,
+                                gradientInput: []float, gradientWeights: []float,
+                                gradientBias: []float): bool {
+    let neurons: usize = len(upstream)
+    if neurons == 0 as usize || len(input) == 0 as usize ||
+       !nnDenseShapes(input,weights,upstream,neurons,gradientBias) ||
+       len(gradientInput) < len(input) || neurons > len(gradientWeights) / len(input) {
+        return false
+    }
+    let k: usize = 0 as usize
+    while k < len(input) { gradientInput[k] = 0.0 k = k + 1 as usize }
+    let n: usize = 0 as usize
+    while n < neurons {
+        let delta: float = upstream[n]
+        gradientBias[n] = delta
+        k = 0 as usize
+        while k < len(input) {
+            let offset: usize = n * len(input) + k
+            gradientWeights[offset] = delta * input[k]
+            gradientInput[k] = gradientInput[k] + delta * weights[offset]
+            k = k + 1 as usize
+        }
+        n = n + 1 as usize
+    }
+    return true
+}
+export function nnMseGradient(prediction: []float, target: []float, gradient: []float): bool {
+    if len(prediction) == 0 as usize || len(prediction) != len(target) ||
+       len(gradient) < len(prediction) { return false }
+    let i: usize = 0 as usize
+    while i < len(prediction) {
+        gradient[i] = 2.0 * (prediction[i] - target[i]) / len(prediction) as float
+        i = i + 1 as usize
+    }
+    return true
+}
+export function nnWeightsFiniteBounded(weights: []float, limit: float): bool {
+    if limit <= 0.0 { return false }
+    let i: usize = 0 as usize
+    while i < len(weights) {
+        // NaN is never <= a finite positive limit.
+        if !(weights[i] >= -limit && weights[i] <= limit) { return false }
+        i = i + 1 as usize
+    }
+    return true
+}

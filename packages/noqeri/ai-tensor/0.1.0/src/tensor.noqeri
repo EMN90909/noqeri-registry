@@ -1,0 +1,106 @@
+// SPDX-License-Identifier: MIT
+module noqeri.ai.tensor
+
+// Dense, row-major, CPU-only f64-style scalar operations. Caller owns all
+// buffers. Outputs must not alias inputs for matrix operations.
+export function tensorShapeFits(rows: usize, cols: usize, capacity: usize): bool {
+    return rows > 0 as usize && cols > 0 as usize &&
+           rows <= 4096 as usize && cols <= 4096 as usize &&
+           rows <= capacity / cols
+}
+export function tensorAdd(a: []float, b: []float, out: []float): isize {
+    if len(a) != len(b) || len(out) < len(a) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(a) {
+        out[i] = a[i] + b[i]
+        i = i + 1 as usize
+    }
+    return len(a) as isize
+}
+export function tensorMultiply(a: []float, b: []float, out: []float): isize {
+    if len(a) != len(b) || len(out) < len(a) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(a) { out[i] = a[i] * b[i] i = i + 1 as usize }
+    return len(a) as isize
+}
+export function tensorScale(input: []float, scalar: float, out: []float): isize {
+    if len(out) < len(input) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(input) { out[i] = input[i] * scalar i = i + 1 as usize }
+    return len(input) as isize
+}
+export function tensorDot(a: []float, b: []float, result: []float): bool {
+    if len(a) != len(b) || len(result) < 1 as usize { return false }
+    let total: float = 0.0
+    let i: usize = 0 as usize
+    while i < len(a) { total = total + a[i] * b[i] i = i + 1 as usize }
+    result[0 as usize] = total
+    return true
+}
+export function tensorRelu(input: []float, out: []float): isize {
+    if len(out) < len(input) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(input) {
+        if input[i] > 0.0 { out[i] = input[i] }
+        else { out[i] = 0.0 }
+        i = i + 1 as usize
+    }
+    return len(input) as isize
+}
+export function tensorMatmul(a: []float, b: []float, rows: usize, shared: usize,
+                             cols: usize, out: []float): isize {
+    if !tensorShapeFits(rows,shared,len(a)) ||
+       !tensorShapeFits(shared,cols,len(b)) ||
+       !tensorShapeFits(rows,cols,len(out)) { return -1 as isize }
+    let r: usize = 0 as usize
+    while r < rows {
+        let c: usize = 0 as usize
+        while c < cols {
+            let sum: float = 0.0
+            let k: usize = 0 as usize
+            while k < shared {
+                sum = sum + a[r * shared + k] * b[k * cols + c]
+                k = k + 1 as usize
+            }
+            out[r * cols + c] = sum
+            c = c + 1 as usize
+        }
+        r = r + 1 as usize
+    }
+    return (rows * cols) as isize
+}
+export function tensorTranspose(a: []float, rows: usize, cols: usize, out: []float): bool {
+    if !tensorShapeFits(rows,cols,len(a)) || !tensorShapeFits(rows,cols,len(out)) { return false }
+    let r: usize = 0 as usize
+    while r < rows {
+        let c: usize = 0 as usize
+        while c < cols {
+            out[c * rows + r] = a[r * cols + c]
+            c = c + 1 as usize
+        }
+        r = r + 1 as usize
+    }
+    return true
+}
+export function tensorMse(prediction: []float, target: []float, result: []float): bool {
+    if len(prediction) == 0 as usize || len(prediction) != len(target) || len(result) == 0 as usize { return false }
+    let sum: float = 0.0
+    let i: usize = 0 as usize
+    while i < len(prediction) {
+        let diff: float = prediction[i] - target[i]
+        sum = sum + diff * diff
+        i = i + 1 as usize
+    }
+    result[0 as usize] = sum / len(prediction) as float
+    return true
+}
+export function tensorArgmax(values: []float): isize {
+    if len(values) == 0 as usize { return -1 as isize }
+    let selected: usize = 0 as usize
+    let i: usize = 1 as usize
+    while i < len(values) {
+        if values[i] > values[selected] { selected = i }
+        i = i + 1 as usize
+    }
+    return selected as isize
+}

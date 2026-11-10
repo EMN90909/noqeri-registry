@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MIT
+import "../src/tensor.noqeri"
+function main(): int {
+    let a: [float; 4] = [1.0,2.0,3.0,4.0]
+    let b: [float; 4] = [5.0,6.0,7.0,8.0]
+    let out: [float; 4] = [0.0,0.0,0.0,0.0]
+    if tensorMatmul(slice(a),slice(b),2 as usize,2 as usize,2 as usize,slice(out)) != 4 as isize { return 1 }
+    if out[0 as usize] != 19.0 || out[1 as usize] != 22.0 || out[3 as usize] != 50.0 { return 2 }
+    if !tensorTranspose(slice(a),2 as usize,2 as usize,slice(out)) || out[1 as usize] != 3.0 { return 3 }
+    if tensorAdd(slice(a),slice(b),slice(out)) != 4 as isize || out[0 as usize] != 6.0 { return 4 }
+    let short: [float; 1] = [99.0]
+    if tensorMatmul(slice(a),slice(b),2 as usize,2 as usize,2 as usize,slice(short)) != -1 as isize { return 5 }
+    if short[0 as usize] != 99.0 || tensorArgmax(slice(b)) != 3 as isize { return 6 }
+    let loss: [float; 1] = [0.0]
+    if !tensorMse(slice(a),slice(b),slice(loss)) || loss[0 as usize] != 16.0 { return 7 }
+    return 0
+}
+print(main())

@@ -1,0 +1,88 @@
+// SPDX-License-Identifier: MIT
+module noqeri.ai.optim
+
+// Optimizers update caller-owned parameter/velocity buffers in place.
+// Deliberately deterministic and independent of any random runtime.
+export function optimRateValid(rate: float): bool {
+    return rate > 0.0 && rate <= 1.0
+}
+export function optimSgdStep(parameters: []float, gradient: []float,
+                            rate: float, l2: float): bool {
+    if len(parameters) == 0 as usize || len(parameters) != len(gradient) ||
+       !optimRateValid(rate) || !(l2 >= 0.0 && l2 <= 1.0) { return false }
+    let i: usize = 0 as usize
+    while i < len(parameters) {
+        parameters[i] = parameters[i] - rate * (gradient[i] + l2 * parameters[i])
+        i = i + 1 as usize
+    }
+    return true
+}
+export function optimMomentumStep(parameters: []float, gradient: []float, velocity: []float,
+                                 rate: float, momentum: float): bool {
+    if len(parameters) == 0 as usize || len(parameters) != len(gradient) ||
+       len(parameters) != len(velocity) || !optimRateValid(rate) ||
+       !(momentum >= 0.0 && momentum < 1.0) { return false }
+    let i: usize = 0 as usize
+    while i < len(parameters) {
+        let next: float = momentum * velocity[i] + gradient[i]
+        velocity[i] = next
+        parameters[i] = parameters[i] - rate * next
+        i = i + 1 as usize
+    }
+    return true
+}
+export function optimClipValue(gradient: []float, limit: float): bool {
+    if !(limit > 0.0) { return false }
+    let i: usize = 0 as usize
+    while i < len(gradient) {
+        if gradient[i] > limit { gradient[i] = limit }
+        else if gradient[i] < -limit { gradient[i] = -limit }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function optimAccumulate(accumulator: []float, gradient: []float): bool {
+    if len(accumulator) != len(gradient) { return false }
+    let i: usize = 0 as usize
+    while i < len(accumulator) {
+        accumulator[i] = accumulator[i] + gradient[i]
+        i = i + 1 as usize
+    }
+    return true
+}
+export function optimAverage(accumulator: []float, batches: usize): bool {
+    if batches == 0 as usize { return false }
+    let i: usize = 0 as usize
+    while i < len(accumulator) {
+        accumulator[i] = accumulator[i] / batches as float
+        i = i + 1 as usize
+    }
+    return true
+}
+export function optimWarmupRate(target: float, step: usize, warmupSteps: usize): float {
+    if !optimRateValid(target) || warmupSteps == 0 as usize { return 0.0 }
+    if step >= warmupSteps { return target }
+    return target * (step as float / warmupSteps as float)
+}
+export function optimStepDecayRate(initial: float, step: usize, interval: usize,
+                                  decay: float): float {
+    if !optimRateValid(initial) || interval == 0 as usize ||
+       !(decay > 0.0 && decay <= 1.0) { return 0.0 }
+    let rounds: usize = step / interval
+    if rounds > 1000 as usize { rounds = 1000 as usize }
+    let result: float = initial
+    let i: usize = 0 as usize
+    while i < rounds { result = result * decay i = i + 1 as usize }
+    return result
+}
+export function optimGradientNormSquared(gradient: []float, result: []float): bool {
+    if len(result) < 1 as usize { return false }
+    let total: float = 0.0
+    let i: usize = 0 as usize
+    while i < len(gradient) {
+        total = total + gradient[i] * gradient[i]
+        i = i + 1 as usize
+    }
+    result[0 as usize] = total
+    return true
+}

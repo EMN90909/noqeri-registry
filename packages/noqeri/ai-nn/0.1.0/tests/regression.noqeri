@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: MIT
+import "../src/nn.noqeri"
+function main(): int {
+    let x: [float; 2] = [2.0,3.0]
+    let w: [float; 4] = [1.0,2.0,3.0,4.0]
+    let bias: [float; 2] = [1.0,-1.0]
+    let out: [float; 2] = [0.0,0.0]
+    if !nnDenseForward(slice(x),slice(w),slice(bias),2 as usize,slice(out)) { return 1 }
+    if out[0 as usize] != 9.0 || out[1 as usize] != 17.0 { return 2 }
+    let incoming: [float; 2] = [2.0,3.0]
+    let dx: [float; 2] = [0.0,0.0]
+    let dw: [float; 4] = [0.0,0.0,0.0,0.0]
+    let db: [float; 2] = [0.0,0.0]
+    if !nnDenseBackward(slice(x),slice(w),slice(incoming),slice(dx),slice(dw),slice(db)) { return 3 }
+    if dx[0 as usize] != 11.0 || dx[1 as usize] != 16.0 || dw[2 as usize] != 6.0 { return 4 }
+    if !nnRelu(slice(bias),slice(out)) || out[1 as usize] != 0.0 { return 5 }
+    if !nnReluBackward(slice(bias),slice(incoming),slice(out)) || out[1 as usize] != 0.0 { return 6 }
+    let target: [float; 2] = [0.0,0.0]
+    if !nnMseGradient(slice(incoming),slice(target),slice(out)) || out[0 as usize] != 2.0 { return 7 }
+    let tooSmall: [float; 1] = [99.0]
+    if nnDenseForward(slice(x),slice(w),slice(bias),2 as usize,slice(tooSmall)) { return 8 }
+    if tooSmall[0 as usize] != 99.0 { return 9 }
+    return 0
+}
+print(main())

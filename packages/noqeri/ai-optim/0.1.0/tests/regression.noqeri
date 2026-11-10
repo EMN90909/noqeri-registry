@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MIT
+import "../src/optim.noqeri"
+function main(): int {
+    let params: [float; 2] = [1.0,2.0]
+    let grad: [float; 2] = [2.0,-2.0]
+    let velocity: [float; 2] = [0.0,0.0]
+    if !optimClipValue(slice(grad),1.0) || grad[0 as usize] != 1.0 || grad[1 as usize] != -1.0 { return 1 }
+    if !optimMomentumStep(slice(params),slice(grad),slice(velocity),0.5,0.9) { return 2 }
+    if params[0 as usize] != 0.5 || params[1 as usize] != 2.5 { return 3 }
+    if optimSgdStep(slice(params),slice(grad),0.0,0.0) { return 4 }
+    if !optimSgdStep(slice(params),slice(grad),0.1,0.0) { return 5 }
+    if optimWarmupRate(0.5,1 as usize,2 as usize) != 0.25 { return 6 }
+    if optimStepDecayRate(0.5,2 as usize,1 as usize,0.5) != 0.125 { return 7 }
+    let norm: [float; 1] = [0.0]
+    if !optimGradientNormSquared(slice(grad),slice(norm)) || norm[0 as usize] != 2.0 { return 8 }
+    return 0
+}
+print(main())
