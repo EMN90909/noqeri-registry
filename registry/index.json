@@ -7,6 +7,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/core/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/core/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -50,6 +58,14 @@
       "name": "std",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/std/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/std/1.0.0",
           "replacedBy": "0.4.0",
@@ -101,6 +117,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/security/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/security/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -145,6 +169,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/test/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/test/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -180,6 +212,14 @@
       "name": "base64",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/base64/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/base64/1.0.0",
           "replacedBy": "0.4.0",
@@ -219,6 +259,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/csv/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/csv/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -256,6 +304,14 @@
       "name": "hex",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/hex/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/hex/1.0.0",
           "replacedBy": "0.4.0",
@@ -295,6 +351,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/json/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/json/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -333,6 +397,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/toml/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/toml/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -362,6 +434,14 @@
       "name": "xml",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/xml/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/xml/1.0.0",
           "replacedBy": "0.4.0",
@@ -393,6 +473,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/yaml/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/yaml/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -422,6 +510,14 @@
       "name": "regex-lite",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/regex-lite/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/regex-lite/1.0.0",
           "replacedBy": "0.4.0",
@@ -461,6 +557,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/semver/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/semver/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -498,6 +602,14 @@
       "name": "glob",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/glob/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/glob/1.0.0",
           "replacedBy": "0.4.0",
@@ -537,6 +649,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/uuid/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/uuid/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -566,6 +686,14 @@
       "name": "jwt",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/jwt/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/jwt/1.0.0",
           "replacedBy": "0.4.0",
@@ -605,6 +733,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/http/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/http/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -643,6 +779,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/http-server/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/http-server/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -680,6 +824,14 @@
       "name": "http-client",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/http-client/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "experimental": true,
           "path": "packages/noqeri/http-client/1.0.0",
@@ -720,6 +872,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/url/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/url/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -749,6 +909,14 @@
       "name": "html",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/html/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/html/1.0.0",
           "replacedBy": "0.4.0",
@@ -788,6 +956,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/web/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/web/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -817,6 +993,14 @@
       "name": "dom",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/dom/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/dom/1.0.0",
           "replacedBy": "0.4.0",
@@ -856,6 +1040,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/fetch/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/fetch/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -893,6 +1085,14 @@
       "name": "router",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/router/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/router/1.0.0",
           "replacedBy": "0.4.0",
@@ -932,6 +1132,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/fs/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/fs/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -969,6 +1177,14 @@
       "name": "env",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/env/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/env/1.0.0",
           "replacedBy": "0.4.0",
@@ -1008,6 +1224,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/crypto/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/crypto/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -1045,6 +1269,14 @@
       "name": "postgres",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/postgres/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "experimental": true,
           "path": "packages/noqeri/postgres/1.0.0",
@@ -1085,6 +1317,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/sqlite/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "experimental": true,
           "path": "packages/noqeri/sqlite/1.0.0",
           "replacedBy": "0.4.0",
@@ -1124,6 +1364,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/db/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/db/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -1162,6 +1410,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/time/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/time/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -1191,6 +1447,14 @@
       "name": "net",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/net/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "experimental": true,
           "path": "packages/noqeri/net/1.0.0",
@@ -1231,6 +1495,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/tls/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "experimental": true,
           "path": "packages/noqeri/tls/1.0.0",
           "replacedBy": "0.4.0",
@@ -1262,6 +1534,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/websocket/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/websocket/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -1291,6 +1571,14 @@
       "name": "supabase",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/supabase/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "experimental": true,
           "path": "packages/noqeri/supabase/1.0.0",
@@ -1331,6 +1619,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/firebase/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "experimental": true,
           "path": "packages/noqeri/firebase/1.0.0",
           "replacedBy": "0.4.0",
@@ -1369,6 +1665,14 @@
       "name": "convex",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/convex/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "experimental": true,
           "path": "packages/noqeri/convex/1.0.0",
@@ -1409,6 +1713,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/clerk/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "experimental": true,
           "path": "packages/noqeri/clerk/1.0.0",
           "replacedBy": "0.4.0",
@@ -1447,6 +1759,14 @@
       "name": "stripe",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/stripe/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "experimental": true,
           "path": "packages/noqeri/stripe/1.0.0",
@@ -1487,6 +1807,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/resend/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "experimental": true,
           "path": "packages/noqeri/resend/1.0.0",
           "replacedBy": "0.4.0",
@@ -1525,6 +1853,14 @@
       "name": "cloudflare",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/cloudflare/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "experimental": true,
           "path": "packages/noqeri/cloudflare/1.0.0",
@@ -1565,6 +1901,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/vercel/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "experimental": true,
           "path": "packages/noqeri/vercel/1.0.0",
           "replacedBy": "0.4.0",
@@ -1595,6 +1939,14 @@
       "name": "neon",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/neon/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "experimental": true,
           "path": "packages/noqeri/neon/1.0.0",
@@ -1635,6 +1987,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/upstash/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "experimental": true,
           "path": "packages/noqeri/upstash/1.0.0",
           "replacedBy": "0.4.0",
@@ -1665,6 +2025,14 @@
       "name": "sentry",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/sentry/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "experimental": true,
           "path": "packages/noqeri/sentry/1.0.0",
@@ -1705,6 +2073,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/openai/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "experimental": true,
           "path": "packages/noqeri/openai/1.0.0",
           "replacedBy": "0.4.0",
@@ -1743,6 +2119,14 @@
       "name": "auth0",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/auth0/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "experimental": true,
           "path": "packages/noqeri/auth0/1.0.0",
@@ -1783,6 +2167,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/planetscale/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "experimental": true,
           "path": "packages/noqeri/planetscale/1.0.0",
           "replacedBy": "0.4.0",
@@ -1822,6 +2214,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/turso/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "experimental": true,
           "path": "packages/noqeri/turso/1.0.0",
           "replacedBy": "0.4.0",
@@ -1852,6 +2252,14 @@
       "name": "github",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/github/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "experimental": true,
           "path": "packages/noqeri/github/1.0.0",
@@ -1892,6 +2300,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/tailwind/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "experimental": true,
           "path": "packages/noqeri/tailwind/1.0.0",
           "replacedBy": "0.4.0",
@@ -1931,6 +2347,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/retry/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/retry/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -1968,6 +2392,14 @@
       "name": "rate-limit",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/noqeri/rate-limit/0.5.0",
+          "quality": "experimental",
+          "experimental": true,
+          "evidence": "source-and-regression-fixtures; runtime qualification pending",
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/rate-limit/1.0.0",
           "replacedBy": "0.4.0",
