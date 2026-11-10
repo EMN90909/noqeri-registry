@@ -1,0 +1,144 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.url
+
+export function urlIsUnreserved(value: u8): bool { return (value >= 65 as u8 && value <= 90 as u8) || (value >= 97 as u8 && value <= 122 as u8) || (value >= 48 as u8 && value <= 57 as u8) || value == 45 as u8 || value == 46 as u8 || value == 95 as u8 || value == 126 as u8 }
+export function urlHexValue(value: u8): int { if value >= 48 as u8 && value <= 57 as u8 { return (value - 48 as u8) as int } if value >= 65 as u8 && value <= 70 as u8 { return (value - 55 as u8) as int } if value >= 97 as u8 && value <= 102 as u8 { return (value - 87 as u8) as int } return -1 }
+export function urlNeedsEscape(value: u8): bool { return !urlIsUnreserved(value) }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function urlHexDigit(value: u8): u8 {
+    if value < 10 as u8 { return 48 as u8 + value }
+    return 65 as u8 + (value - 10 as u8)
+}
+export function urlEncodeBytes(source: []u8, destination: []u8): isize {
+    let required: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i < len(source) {
+        if urlNeedsEscape(source[i]) { required = required + 3 as usize } else { required = required + 1 as usize }
+        if required > len(destination) { return -1 as isize }
+        i = i + 1 as usize
+    }
+    i = 0 as usize
+    let out: usize = 0 as usize
+    while i < len(source) {
+        let c: u8 = source[i]
+        if urlNeedsEscape(c) {
+            destination[out] = 37 as u8
+            destination[out + 1 as usize] = urlHexDigit(c / 16 as u8)
+            destination[out + 2 as usize] = urlHexDigit(c % 16 as u8)
+            out = out + 3 as usize
+        } else { destination[out] = c out = out + 1 as usize }
+        i = i + 1 as usize
+    }
+    return out as isize
+}
+export function urlDecodeBytes(source: []u8, destination: []u8): isize {
+    let input: usize = 0 as usize
+    let output: usize = 0 as usize
+    while input < len(source) {
+        let c: u8 = source[input]
+        if output >= len(destination) { return -1 as isize }
+        if c == 37 as u8 {
+            if input + 2 as usize >= len(source) { return -1 as isize }
+            let a: int = urlHexValue(source[input + 1 as usize])
+            let b: int = urlHexValue(source[input + 2 as usize])
+            if a < 0 || b < 0 { return -1 as isize }
+            destination[output] = (a * 16 + b) as u8
+            input = input + 3 as usize
+        } else { destination[output] = c input = input + 1 as usize }
+        output = output + 1 as usize
+    }
+    return output as isize
+}
+
+// v0.5.0: substantive pure-Noqeri implementation.
+export function urlPercentEncodingValid(source: []u8): bool {
+ let i: usize = 0 as usize
+ while i < len(source) {
+  if source[i] == 37 as u8 {
+   if i + 2 as usize >= len(source) { return false }
+   if urlHexValue(source[i + 1 as usize]) < 0 || urlHexValue(source[i + 2 as usize]) < 0 { return false }
+   i = i + 2 as usize
+  }
+  i = i + 1 as usize
+ }
+ return true
+}
+// No partial output on malformed escapes or insufficient buffer.
+export function urlFormDecode(source: []u8, destination: []u8): isize {
+ if !urlPercentEncodingValid(source) || len(destination) < len(source) / 3 as usize { return -1 as isize }
+ let required: usize = 0 as usize
+ let i: usize = 0 as usize
+ while i < len(source) {
+  if source[i] == 37 as u8 { i = i + 3 as usize } else { i = i + 1 as usize }
+  required = required + 1 as usize
+ }
+ if len(destination) < required { return -1 as isize }
+ i = 0 as usize
+ let out: usize = 0 as usize
+ while i < len(source) {
+  let c: u8 = source[i]
+  if c == 37 as u8 {
+   let hi: int = urlHexValue(source[i + 1 as usize])
+   let lo: int = urlHexValue(source[i + 2 as usize])
+   destination[out] = (hi * 16 + lo) as u8
+   i = i + 3 as usize
+  } else {
+   if c == 43 as u8 { destination[out] = 32 as u8 }
+   else { destination[out] = c }
+   i = i + 1 as usize
+  }
+  out = out + 1 as usize
+ }
+ return out as isize
+}
+export function urlFormEncode(source: []u8, destination: []u8): isize {
+ let required: usize = 0 as usize
+ let i: usize = 0 as usize
+ while i < len(source) {
+  if urlIsUnreserved(source[i]) || source[i] == 32 as u8 { required = required + 1 as usize }
+  else { required = required + 3 as usize }
+  if required > len(destination) { return -1 as isize }
+  i = i + 1 as usize
+ }
+ i = 0 as usize
+ let out: usize = 0 as usize
+ while i < len(source) {
+  let c: u8 = source[i]
+  if c == 32 as u8 {
+   destination[out] = 43 as u8
+   out = out + 1 as usize
+  } else if urlIsUnreserved(c) {
+   destination[out] = c
+   out = out + 1 as usize
+  } else {
+   destination[out] = 37 as u8
+   destination[out + 1 as usize] = urlHexDigit(c / 16 as u8)
+   destination[out + 2 as usize] = urlHexDigit(c % 16 as u8)
+   out = out + 3 as usize
+  }
+  i = i + 1 as usize
+ }
+ return out as isize
+}
+// Raw query parameter lookup: returns value offset or -1; decoding is separate.
+export function urlQueryValueStart(query: []u8, key: []u8): isize {
+ let i: usize = 0 as usize
+ while i < len(query) {
+  let field: usize = i
+  while i < len(query) && query[i] != 61 as u8 && query[i] != 38 as u8 { i = i + 1 as usize }
+  let keyEnd: usize = i
+  if i < len(query) && query[i] == 61 as u8 {
+   i = i + 1 as usize
+   let valueStart: usize = i
+   while i < len(query) && query[i] != 38 as u8 { i = i + 1 as usize }
+   if keyEnd - field == len(key) {
+    let j: usize = 0 as usize
+    while j < len(key) && query[field + j] == key[j] { j = j + 1 as usize }
+    if j == len(key) { return valueStart as isize }
+   }
+  }
+  if i < len(query) { i = i + 1 as usize }
+ }
+ return -1 as isize
+}
