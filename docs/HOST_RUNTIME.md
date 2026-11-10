@@ -5,7 +5,7 @@ This is the **first executable host service** replacing `providerHttpJson`, `pro
 ## Architecture
 
 - `cmd/noqeri-host`: a local-only stdin/stdout JSON-lines process. It does **not** open a listening TCP socket or expose a web service.
-- `internal/hostbridge/http.go`: allowlisted HTTPS API calls for Auth0, Clerk, Cloudflare, Convex, Firebase, GitHub, Neon, OpenAI, PlanetScale, Resend, Sentry, Stripe and Supabase.
+- `internal/hostbridge/http.go`: allowlisted HTTPS API calls for Auth0, Clerk, Cloudflare, Convex, Firebase, GitHub, Neon, OpenAI, PlanetScale, Resend, Sentry, Stripe, Supabase, Vercel, Turso and Upstash.
 - `internal/hostbridge/db.go`: safe `database/sql` handles and parameterized transactions for SQLite and PostgreSQL.
 - `internal/hostbridge/host.go`: the bounded v1 request/response protocol.
 - `cmd/noqeri-host/drivers.go`: real PostgreSQL `pgx/stdlib` and CGo-free `modernc.org/sqlite` drivers behind `-tags dbdrivers`.
@@ -60,13 +60,16 @@ Signatures are checked using a trusted host clock, a maximum 5-minute time diffe
 
 The host reads `NOQERI_{PROVIDER}_TOKEN` from its own environment for each API provider, for example `NOQERI_GITHUB_TOKEN`, `NOQERI_AUTH0_TOKEN`, `NOQERI_OPENAI_TOKEN`, and `NOQERI_STRIPE_TOKEN`. **Do not store credentials in source files, shell history or CI logs.** Use your secret manager or a protected runtime environment. The stdin protocol cannot choose arbitrary secret-variable names.
 
-Provider tenant isolation: **configure exact hostnames** in `NOQERI_AUTH0_HOST`, `NOQERI_CONVEX_HOST`, `NOQERI_SUPABASE_HOST`, and `NOQERI_SENTRY_HOST` when using tenant-specific endpoints. For example, `NOQERI_SUPABASE_HOST=myproject.supabase.co`. Secrets are NEVER forwarded to arbitrary tenant subdomains. Management hosts such as `api.supabase.com` remain separately allowlisted.
+Provider tenant isolation: **configure exact hostnames** in `NOQERI_AUTH0_HOST`, `NOQERI_CONVEX_HOST`, `NOQERI_SUPABASE_HOST`, `NOQERI_SENTRY_HOST`, `NOQERI_TURSO_HOST`, and `NOQERI_UPSTASH_HOST` when using tenant-specific endpoints. For example, `NOQERI_SUPABASE_HOST=myproject.supabase.co`. Secrets are NEVER forwarded to arbitrary tenant subdomains. Management hosts such as `api.supabase.com` remain separately allowlisted.
 
 Provider-specific details:
 
 - **Supabase:** project Data API uses `NOQERI_SUPABASE_TOKEN` as an `apikey` (new `sb_secret_*` / publishable keys are not JWTs), plus optional `NOQERI_SUPABASE_JWT` for an end-user identity and RLS. Management API uses bearer credentials. Secret keys bypass RLS and must only be used in trusted backend contexts.
 - **Stripe:** requests use `application/x-www-form-urlencoded`, and `NOQERI_STRIPE_IDEMPOTENCY_KEY` can provide an idempotency key for POST. Set `NOQERI_STRIPE_WEBHOOK_SECRET` for the `stripe_verify_webhook` operation. The host validates the timestamped v1 HMAC-SHA256 signature using a 5-minute tolerance before the caller processes an event. Persistent event-ID deduplication, ledger reconciliation, refund policy, and automatic confirmation of financial effects are NOT handled.
 - **PlanetScale:** set `NOQERI_PLANETSCALE_TOKEN_ID` and `NOQERI_PLANETSCALE_TOKEN`; the Authorization header is `<id>:<token>`.
+- **Vercel:** only `https://api.vercel.com` is permitted; configure `NOQERI_VERCEL_TOKEN` in the host. Calls from a checked-out Noqeri package still require an explicit trusted ABI/IPC adapter.
+- **Turso:** organization-management calls to `api.turso.tech` use `NOQERI_TURSO_TOKEN`. Database calls to a configured `*.turso.io` hostname require **both** `NOQERI_TURSO_HOST` (exact hostname) and a separate `NOQERI_TURSO_DATABASE_TOKEN`. Management tokens are never forwarded to database endpoints.
+- **Upstash:** configure `NOQERI_UPSTASH_HOST` as an exact tenant endpoint such as `region-example.upstash.io` and `NOQERI_UPSTASH_TOKEN`. Suffix matching alone never authorizes forwarding credentials.
 - **Firebase Auth:** the configured API key (`NOQERI_FIREBASE_TOKEN`) is passed in the `key` query parameter to identitytoolkit/securetoken. Firestore uses OAuth bearer tokens.
 - **PostgreSQL:** `NOQERI_POSTGRES_DSN` must be a PostgreSQL URL with `?sslmode=verify-full` and a server identity/certificate that validates. All SQL inputs are bound parameters. Do not embed it in a source file.
 - **SQLite:** `NOQERI_SQLITE_PATH` points to an operator-controlled file; in-memory and `file:` URI modes are intentionally blocked. This does not restrict all symlink attacks; the host must be deployed in a filesystem sandbox.
@@ -76,6 +79,8 @@ Never run privileged service credentials inside a browser, a shared public REPL,
 ## Network security
 
 - HTTPS only, TLS 1.2 minimum, provider-specific DNS name allowlist.
+- Reject decoded `.`/`..` URL path segments, double-encoded `%25` path components and encoded slash/backslash tricks before forwarding scoped credentials.
+- IPC errors are limited to enumerated safe codes; unexpected driver/network errors become `operation_failed`, not a potentially secret-bearing message.
 - Denies literal-IP URLs, private and link-local DNS destinations (including metadata endpoints), non-443 ports, userinfo, and encoded slashes.
 - DNS is resolved at actual connection time and pinned to a public IP (preventing DNS rebinding).
 - Disables automatic redirects and proxy environment forwarding.
