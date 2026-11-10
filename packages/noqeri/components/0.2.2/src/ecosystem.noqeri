@@ -1,0 +1,51 @@
+// SPDX-License-Identifier: MIT
+// Native Noqeri utility functions composed from pinned registry sources.
+// UI component DSL rendering uses NOQERI_WEB_UI_PATH; these utilities are
+// ordinary compiled Noqeri, not a JavaScript DOM binding.
+module noqeri.components.ecosystem
+import "../vendor/noqeri/dom/dom.noqeri"
+import "../vendor/noqeri/html/html.noqeri"
+import "../vendor/noqeri/tailwind/tailwind.noqeri"
+import "../vendor/noqeri/router/router.noqeri"
+import "../vendor/noqeri/json/json.noqeri"
+
+export function uiValidId(data: []u8): bool {
+    return domCssIdValid(data)
+}
+export function uiValidTag(data: []u8): bool {
+    return htmlTagValid(data)
+}
+export function uiValidClass(data: []u8): bool {
+    return tailwindClassValid(data)
+}
+export function uiClassVariantCount(data: []u8): isize {
+    return tailwindVariantCount(data)
+}
+export function uiClassJoin(a: []u8, b: []u8, dst: []u8): isize {
+    return tailwindJoinClasses(a,b,dst)
+}
+export function uiEscapedSize(data: []u8): usize {
+    return htmlEscapedSize(data)
+}
+export function uiEscapeText(data: []u8, dst: []u8): isize {
+    return htmlEscapeText(data,dst)
+}
+export function uiValidAttribute(data: []u8): bool {
+    return htmlAttrNameValid(data)
+}
+
+export function uiValidRoute(path: []u8): bool {
+    return routerPatternValid(path)
+}
+export function uiRouteMatches(pattern: []u8, path: []u8): bool {
+    return routerMatch(pattern,path)
+}
+export function uiValidJsonNumber(data: []u8): bool {
+    return jsonNumberValid(data)
+}
+export function uiJsonQuoteSize(data: []u8): usize {
+    return jsonStringEscapedSize(data)
+}
+export function uiJsonQuote(data: []u8, dst: []u8): isize {
+    return jsonQuoteAscii(data,dst)
+}
