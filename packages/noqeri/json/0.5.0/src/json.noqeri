@@ -1,0 +1,158 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.json
+
+export function jsonIsWhitespace(value: u8): bool { return value == 32 as u8 || value == 9 as u8 || value == 10 as u8 || value == 13 as u8 }
+export function jsonIsDigit(value: u8): bool { return value >= 48 as u8 && value <= 57 as u8 }
+export function jsonIsStructural(value: u8): bool { return value == 123 as u8 || value == 125 as u8 || value == 91 as u8 || value == 93 as u8 || value == 58 as u8 || value == 44 as u8 }
+export function jsonLooksComplete(value: []u8): bool { if len(value) == 0 as usize { return false } let first: u8 = value[0] let last: u8 = value[len(value) - 1] return (first == 123 as u8 && last == 125 as u8) || (first == 91 as u8 && last == 93 as u8) }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function jsonHexDigit(value: u8): bool {
+    return jsonIsDigit(value) || (value >= 65 as u8 && value <= 70 as u8) || (value >= 97 as u8 && value <= 102 as u8)
+}
+export function jsonStringTokenValid(value: []u8): bool {
+    if len(value) < 2 as usize { return false }
+    if value[0] != 34 as u8 || value[len(value) - 1 as usize] != 34 as u8 { return false }
+    let i: usize = 1 as usize
+    while i + 1 as usize < len(value) {
+        let c: u8 = value[i]
+        if c < 32 as u8 || c == 34 as u8 { return false }
+        if c == 92 as u8 {
+            i = i + 1 as usize
+            if i + 1 as usize >= len(value) { return false }
+            c = value[i]
+            if c == 117 as u8 {
+                if i + 4 as usize >= len(value) - 1 as usize { return false }
+                let j: usize = 1 as usize
+                while j <= 4 as usize { if !jsonHexDigit(value[i + j]) { return false } j = j + 1 as usize }
+                i = i + 4 as usize
+            } else if c != 34 as u8 && c != 92 as u8 && c != 47 as u8 && c != 98 as u8 && c != 102 as u8 && c != 110 as u8 && c != 114 as u8 && c != 116 as u8 { return false }
+        }
+        i = i + 1 as usize
+    }
+    return true
+}
+export function jsonSkipWhitespace(value: []u8, start: usize): usize {
+    let i: usize = start
+    if i > len(value) { return len(value) }
+    while i < len(value) && jsonIsWhitespace(value[i]) { i = i + 1 as usize }
+    return i
+}
+
+// v0.5.0: substantive runtime functionality; no Node.js dependency.
+export function jsonStringEnd(input: []u8, start: usize): isize {
+ if start >= len(input) || input[start] != 34 as u8 { return -1 as isize }
+ let i: usize = start + 1 as usize
+ while i < len(input) {
+  let c: u8 = input[i]
+  if c == 34 as u8 { return (i + 1 as usize) as isize }
+  if c < 32 as u8 { return -1 as isize }
+  if c == 92 as u8 {
+   i = i + 1 as usize
+   if i >= len(input) { return -1 as isize }
+   c = input[i]
+   if c == 117 as u8 {
+    if i + 4 as usize >= len(input) { return -1 as isize }
+    let k: usize = 1 as usize
+    while k <= 4 as usize {
+     if !jsonHexDigit(input[i + k]) { return -1 as isize }
+     k = k + 1 as usize
+    }
+    i = i + 4 as usize
+   } else if c != 34 as u8 && c != 92 as u8 && c != 47 as u8 && c != 98 as u8 && c != 102 as u8 && c != 110 as u8 && c != 114 as u8 && c != 116 as u8 { return -1 as isize }
+  }
+  i = i + 1 as usize
+ }
+ return -1 as isize
+}
+export function jsonNumberEnd(input: []u8, start: usize): isize {
+ if start >= len(input) { return -1 as isize }
+ let i: usize = start
+ if input[i] == 45 as u8 { i = i + 1 as usize }
+ if i >= len(input) { return -1 as isize }
+ if input[i] == 48 as u8 { i = i + 1 as usize }
+ else {
+  if input[i] < 49 as u8 || input[i] > 57 as u8 { return -1 as isize }
+  while i < len(input) && jsonIsDigit(input[i]) { i = i + 1 as usize }
+ }
+ if i < len(input) && input[i] == 46 as u8 {
+  i = i + 1 as usize
+  if i >= len(input) || !jsonIsDigit(input[i]) { return -1 as isize }
+  while i < len(input) && jsonIsDigit(input[i]) { i = i + 1 as usize }
+ }
+ if i < len(input) && (input[i] == 101 as u8 || input[i] == 69 as u8) {
+  i = i + 1 as usize
+  if i < len(input) && (input[i] == 45 as u8 || input[i] == 43 as u8) { i = i + 1 as usize }
+  if i >= len(input) || !jsonIsDigit(input[i]) { return -1 as isize }
+  while i < len(input) && jsonIsDigit(input[i]) { i = i + 1 as usize }
+ }
+ return i as isize
+}
+export function jsonLiteralEnd(input: []u8, start: usize, literal: []u8): isize {
+ if start > len(input) || len(literal) > len(input) - start { return -1 as isize }
+ let i: usize = 0 as usize
+ while i < len(literal) {
+  if input[start + i] != literal[i] { return -1 as isize }
+  i = i + 1 as usize
+ }
+ return (start + len(literal)) as isize
+}
+// Returns the index just past the JSON value, or -1. Depth is bounded to 32.
+export function jsonValueEnd(input: []u8, start: usize, depth: usize): isize {
+ if depth > 32 as usize { return -1 as isize }
+ let i: usize = jsonSkipWhitespace(input, start)
+ if i >= len(input) { return -1 as isize }
+ let c: u8 = input[i]
+ if c == 34 as u8 { return jsonStringEnd(input, i) }
+ if c == 45 as u8 || jsonIsDigit(c) { return jsonNumberEnd(input, i) }
+ if c == 116 as u8 {
+  let word: [u8; 4] = [116 as u8,114 as u8,117 as u8,101 as u8]
+  return jsonLiteralEnd(input,i,slice(word))
+ }
+ if c == 102 as u8 {
+  let word: [u8; 5] = [102 as u8,97 as u8,108 as u8,115 as u8,101 as u8]
+  return jsonLiteralEnd(input,i,slice(word))
+ }
+ if c == 110 as u8 {
+  let word: [u8; 4] = [110 as u8,117 as u8,108 as u8,108 as u8]
+  return jsonLiteralEnd(input,i,slice(word))
+ }
+ if c == 91 as u8 {
+  i = jsonSkipWhitespace(input,i + 1 as usize)
+  if i < len(input) && input[i] == 93 as u8 { return (i + 1 as usize) as isize }
+  while i < len(input) {
+   let end: isize = jsonValueEnd(input,i,depth + 1 as usize)
+   if end < 0 as isize { return -1 as isize }
+   i = jsonSkipWhitespace(input,end as usize)
+   if i >= len(input) { return -1 as isize }
+   if input[i] == 93 as u8 { return (i + 1 as usize) as isize }
+   if input[i] != 44 as u8 { return -1 as isize }
+   i = jsonSkipWhitespace(input,i + 1 as usize)
+  }
+  return -1 as isize
+ }
+ if c == 123 as u8 {
+  i = jsonSkipWhitespace(input,i + 1 as usize)
+  if i < len(input) && input[i] == 125 as u8 { return (i + 1 as usize) as isize }
+  while i < len(input) {
+   let keyEnd: isize = jsonStringEnd(input,i)
+   if keyEnd < 0 as isize { return -1 as isize }
+   i = jsonSkipWhitespace(input,keyEnd as usize)
+   if i >= len(input) || input[i] != 58 as u8 { return -1 as isize }
+   let end: isize = jsonValueEnd(input,i + 1 as usize,depth + 1 as usize)
+   if end < 0 as isize { return -1 as isize }
+   i = jsonSkipWhitespace(input,end as usize)
+   if i >= len(input) { return -1 as isize }
+   if input[i] == 125 as u8 { return (i + 1 as usize) as isize }
+   if input[i] != 44 as u8 { return -1 as isize }
+   i = jsonSkipWhitespace(input,i + 1 as usize)
+  }
+ }
+ return -1 as isize
+}
+export function jsonDocumentValid(input: []u8): bool {
+ if len(input) > 8388608 as usize { return false }
+ let end: isize = jsonValueEnd(input,0 as usize,0 as usize)
+ if end < 0 as isize { return false }
+ return jsonSkipWhitespace(input,end as usize) == len(input)
+}
