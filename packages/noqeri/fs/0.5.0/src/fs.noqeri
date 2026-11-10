@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.fs
+
+extern function fsReadText(path: string): string
+extern function fsWriteText(path: string, data: string): bool
+extern function fsExists(path: string): bool
+extern function fsRemove(path: string): bool
+
+export function fsPathByteUnsafe(value: u8): bool { return value == 0 as u8 }
+export function fsPathHasTraversal(path: []u8): bool { let i: usize = 0 as usize while i + 1 < len(path) { if path[i] == 46 as u8 && path[i + 1] == 46 as u8 { return true } i = i + 1 } return false }
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function fsSafeRelativePath(value: []u8): bool {
+    if len(value) == 0 as usize || value[0] == 47 as u8 { return false }
+    let componentStart: usize = 0 as usize
+    let i: usize = 0 as usize
+    while i <= len(value) {
+        if i == len(value) || value[i] == 47 as u8 {
+            let count: usize = i - componentStart
+            if count == 0 as usize { return false }
+            if count == 1 as usize && value[componentStart] == 46 as u8 { return false }
+            if count == 2 as usize && value[componentStart] == 46 as u8 && value[componentStart + 1 as usize] == 46 as u8 { return false }
+            componentStart = i + 1 as usize
+        } else if value[i] == 0 as u8 || value[i] == 92 as u8 { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+
+export function fsPortableRelativePath(value: []u8): bool {
+ if !fsSafeRelativePath(value) { return false }
+ let i: usize = 0 as usize
+ while i < len(value) {
+  let c: u8 = value[i]
+  if c == 58 as u8 || c == 60 as u8 || c == 62 as u8 || c == 34 as u8 || c == 124 as u8 || c == 63 as u8 || c == 42 as u8 { return false }
+  if c < 32 as u8 { return false }
+  i = i + 1 as usize
+ }
+ return true
+}
+export function fsExtensionOffset(value: []u8): isize {
+ if !fsPortableRelativePath(value) { return -1 as isize }
+ let lastSeparator: usize = 0 as usize
+ let extension: usize = 0 as usize
+ let i: usize = 0 as usize
+ while i < len(value) {
+  if value[i] == 47 as u8 { lastSeparator = i + 1 as usize extension = 0 as usize }
+  else if value[i] == 46 as u8 && i > lastSeparator { extension = i }
+  i = i + 1 as usize
+ }
+ if extension == 0 as usize { return -1 as isize }
+ return extension as isize
+}
