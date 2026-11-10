@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+import "../src/planetscale.noqeri"
+function main(): int {
+if !(planetscaleOrganizationsUrl() == "https://api.planetscale.com/v1/organizations") { return 1 }
+    if !(planetscaleDatabasesUrl("org") == "https://api.planetscale.com/v1/organizations/org/databases") { return 2 }
+    if !planetscaleRetryable(503) || planetscaleRetryable(404) { return 3 }
+    let safe: [u8; 3] = [97 as u8,45 as u8,49 as u8]
+    let unsafeId: [u8; 2] = [46 as u8,46 as u8]
+    if !planetscaleIdentifierValid(slice(safe)) || planetscaleIdentifierValid(slice(unsafeId)) { return 4 }
+    if !(planetscaleGet("bad",planetscaleRoot()) == "") { return 5 }
+    return 0
+}
+print(main())
