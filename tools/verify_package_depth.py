@@ -42,11 +42,11 @@ def main():
         if not manifest_file.is_file():
             continue
         manifest = manifest_file.read_text(encoding="utf-8")
-        if not re.search(r'\\bname\\s*:\\s*"' + re.escape(f"{ns}/{name}") + r'"', manifest):
+        if not re.search(r'\bname\s*:\s*"' + re.escape(f"{ns}/{name}") + r'"', manifest):
             problems.append(f"{ns}/{name}: manifest name mismatch")
-        if not re.search(r'\\bversion\\s*:\\s*"0\\.5\\.0"', manifest):
+        if not re.search(r'\bversion\s*:\s*"0\.5\.0"', manifest):
             problems.append(f"{ns}/{name}: manifest version mismatch")
-        entry = re.search(r'\\bentry\\s*:\\s*"([^"]+)"', manifest)
+        entry = re.search(r'\bentry\s*:\s*"([^"]+)"', manifest)
         if not entry:
             problems.append(f"{ns}/{name}: no entry")
             continue
@@ -59,11 +59,11 @@ def main():
             problems.append(f"{ns}/{name}: missing entry source")
             continue
         body = source.read_text(encoding="utf-8")
-        exports = re.findall(r'\\bexport\\s+function\\s+[A-Za-z_][A-Za-z_0-9]*', body)
+        exports = re.findall(r'\bexport\s+function\s+[A-Za-z_][A-Za-z_0-9]*', body)
         if len(exports) < 5:
             problems.append(f"{ns}/{name}: unexpectedly shallow entry ({len(exports)} exports)")
         exports_total += len(exports)
-        hosts += len(re.findall(r'\\bextern\\s+function\\s+', body))
+        hosts += len(re.findall(r'\bextern\s+function\s+', body))
         for path in directory.rglob("*"):
             if path.is_symlink():
                 problems.append(f"{ns}/{name}: symlink forbidden: {path.relative_to(directory)}")
