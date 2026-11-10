@@ -1,0 +1,203 @@
+module noqeri.core
+
+export function identity<T>(value: T): T {
+    return value
+}
+
+export function status_ok(status: isize): bool {
+    return status >= 0
+}
+
+export function status_error(status: isize): bool {
+    return status < 0
+}
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function coreBytesEqual(left: []u8, right: []u8): bool {
+    if len(left) != len(right) { return false }
+    let i: usize = 0 as usize
+    while i < len(left) { if left[i] != right[i] { return false } i = i + 1 as usize }
+    return true
+}
+export function coreBytesIndexOf(data: []u8, needle: u8): isize {
+    let i: usize = 0 as usize
+    while i < len(data) { if data[i] == needle { return i as isize } i = i + 1 as usize }
+    return -1 as isize
+}
+export function coreBytesCopy(source: []u8, destination: []u8): isize {
+    if len(source) > len(destination) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i < len(source) { destination[i] = source[i] i = i + 1 as usize }
+    return len(source) as isize
+}
+export function coreRangeValid(offset: usize, count: usize, length: usize): bool {
+    return offset <= length && count <= length - offset
+}
+
+// Additional authored MIT 0.1.1 helpers; LICENSE-MIT retained.
+export function coreMin(a: int, b: int): int { if a < b { return a } return b }
+
+export function coreMax(a: int, b: int): int { if a > b { return a } return b }
+
+export function coreClamp(value: int, minimum: int, maximum: int): int {
+    if value < minimum { return minimum }
+    if value > maximum { return maximum }
+    return value
+}
+
+export function coreBytesCompare(a: []u8, b: []u8): int {
+    let i: usize = 0 as usize
+    while i < len(a) && i < len(b) {
+        if a[i] < b[i] { return -1 }
+        if a[i] > b[i] { return 1 }
+        i = i + 1 as usize
+    }
+    if len(a) < len(b) { return -1 }
+    if len(a) > len(b) { return 1 }
+    return 0
+}
+
+export function coreBytesLastIndexOf(a: []u8, byte: u8): isize {
+    let i: usize = len(a)
+    while i > 0 as usize {
+        i = i - 1 as usize
+        if a[i] == byte { return i as isize }
+    }
+    return -1 as isize
+}
+
+export function coreBytesFill(dst: []u8, value: u8): usize {
+    let i: usize = 0 as usize
+    while i < len(dst) {
+        dst[i] = value
+        i = i + 1 as usize
+    }
+    return len(dst)
+}
+
+export function coreBytesStartsWith(data: []u8, prefix: []u8): bool {
+    if len(prefix) > len(data) { return false }
+    let i: usize = 0 as usize
+    while i < len(prefix) {
+        if data[i] != prefix[i] { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+
+export function coreBytesEndsWith(data: []u8, suffix: []u8): bool {
+    if len(suffix) > len(data) { return false }
+    let i: usize = 0 as usize
+    let start: usize = len(data) - len(suffix)
+    while i < len(suffix) {
+        if data[start + i] != suffix[i] { return false }
+        i = i + 1 as usize
+    }
+    return true
+}
+
+export function coreBytesFind(data: []u8, needle: []u8): isize {
+    if len(needle) == 0 as usize { return 0 as isize }
+    if len(needle) > len(data) { return -1 as isize }
+    let i: usize = 0 as usize
+    while i <= len(data) - len(needle) {
+        let j: usize = 0 as usize
+        while j < len(needle) && data[i + j] == needle[j] { j = j + 1 as usize }
+        if j == len(needle) { return i as isize }
+        i = i + 1 as usize
+    }
+    return -1 as isize
+}
+
+export function coreAsciiDigit(byte: u8): bool { return byte >= 48 as u8 && byte <= 57 as u8 }
+
+export function coreAsciiAlpha(byte: u8): bool {
+    return (byte >= 65 as u8 && byte <= 90 as u8) || (byte >= 97 as u8 && byte <= 122 as u8)
+}
+
+export function coreAsciiLower(byte: u8): u8 {
+    if byte >= 65 as u8 && byte <= 90 as u8 { return byte + 32 as u8 }
+    return byte
+}
+
+export function coreAsciiUpper(byte: u8): u8 {
+    if byte >= 97 as u8 && byte <= 122 as u8 { return byte - 32 as u8 }
+    return byte
+}
+
+export function coreAsciiWhitespace(byte: u8): bool {
+    return byte == 32 as u8 || byte == 9 as u8 || byte == 10 as u8 || byte == 13 as u8
+}
+
+export function coreAsciiTrimStart(data: []u8): usize {
+    let i: usize = 0 as usize
+    while i < len(data) && coreAsciiWhitespace(data[i]) { i = i + 1 as usize }
+    return i
+}
+
+export function coreAsciiTrimEnd(data: []u8): usize {
+    let i: usize = len(data)
+    while i > 0 as usize && coreAsciiWhitespace(data[i - 1 as usize]) { i = i - 1 as usize }
+    return i
+}
+
+export function coreDecimalParseU64(data: []u8, result: []u64): bool {
+    if len(result) == 0 as usize || len(data) == 0 as usize { return false }
+    let value: u64 = 0 as u64
+    let i: usize = 0 as usize
+    while i < len(data) {
+        let c: u8 = data[i]
+        if !coreAsciiDigit(c) { return false }
+        let digit: u64 = (c - 48 as u8) as u64
+        if value > (18446744073709551615 as u64 - digit) / 10 as u64 { return false }
+        value = value * 10 as u64 + digit
+        i = i + 1 as usize
+    }
+    result[0 as usize] = value
+    return true
+}
+
+export function coreDecimalFormatU64(input: u64, dst: []u8): isize {
+    let value: u64 = input
+    let length: usize = 1 as usize
+    while value >= 10 as u64 {
+        value = value / 10 as u64
+        length = length + 1 as usize
+    }
+    if len(dst) < length { return -1 as isize }
+    value = input
+    let i: usize = length
+    while i > 0 as usize {
+        i = i - 1 as usize
+        dst[i] = (value % 10 as u64) as u8 + 48 as u8
+        value = value / 10 as u64
+    }
+    return length as isize
+}
+
+function coreXor32(a: u32, b: u32): u32 {
+    let left: u64 = a as u64
+    let right: u64 = b as u64
+    let place: u64 = 1 as u64
+    let result: u64 = 0 as u64
+    let i: int = 0
+    while i < 32 {
+        if left % 2 as u64 != right % 2 as u64 { result = result + place }
+        left = left / 2 as u64
+        right = right / 2 as u64
+        place = place * 2 as u64
+        i = i + 1
+    }
+    return result as u32
+}
+
+export function coreFNV1a32(data: []u8): u32 {
+    let value: u32 = 2166136261 as u32
+    let i: usize = 0 as usize
+    while i < len(data) {
+        // Deliberately wrapping through the u32 domain; this is NOT a cryptographic hash.
+        value = ((coreXor32(value,data[i] as u32) as u64 * 16777619 as u64) % 4294967296 as u64) as u32
+        i = i + 1 as usize
+    }
+    return value
+}

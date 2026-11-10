@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/security.noqeri"
+function main(): int {
+ let buffer: [u8; 3] = [1 as u8,2 as u8,3 as u8]
+ if securityZero(slice(buffer)) != 3 as usize { return 1 }
+ if buffer[0] != 0 as u8 || buffer[2] != 0 as u8 { return 2 }
+ if !validRange(2 as usize,1 as usize,3 as usize) { return 3 }
+ let bad: [u8; 2] = [46 as u8,46 as u8]
+ if securityPathSegmentValid(slice(bad)) { return 4 }
+ return 0
+}
+print(main())
