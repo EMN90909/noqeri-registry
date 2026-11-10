@@ -119,20 +119,42 @@ func (e *Engine) Dispatch(ctx context.Context, m Message) Result {
 	result.OK = true
 	return result
 }
+// Only error codes intentionally authored by the bridge can cross the
+// transport boundary. Driver and network errors can be short and still contain
+// passwords, database hosts or access tokens, so length-based redaction is unsafe.
+var safeHostErrorCodes = map[string]bool{
+	"unsupported_database": true, "database_driver_not_linked": true,
+	"database_configuration_missing": true, "postgres_dsn_invalid": true,
+	"postgres_verified_tls_required": true, "sqlite_path_not_allowed": true,
+	"database_open_failed": true, "database_unavailable": true,
+	"too_many_database_handles": true, "invalid_database_handle": true,
+	"transaction_already_open": true, "transaction_begin_failed": true,
+	"no_active_transaction": true, "transaction_finish_failed": true,
+	"too_many_parameters": true, "invalid_parameter": true,
+	"parameter_too_long": true, "invalid_number": true,
+	"unsupported_parameter_type": true, "invalid_sql": true,
+	"database_execution_failed": true, "database_query_failed": true,
+	"database_columns_failed": true, "too_many_result_columns": true,
+	"result_row_limit_exceeded": true, "database_scan_failed": true,
+	"result_cell_too_large": true, "database_iteration_failed": true,
+	"stripe_webhook_oversized": true, "stripe_webhook_secret_missing": true,
+	"stripe_webhook_timestamp_invalid": true, "stripe_webhook_signature_missing": true,
+	"stripe_webhook_timestamp_expired": true, "stripe_webhook_signature_mismatch": true,
+	"invalid_destination": true, "dns_failed": true,
+	"no_public_destination": true, "invalid_method": true,
+	"request_too_large": true, "invalid_url": true,
+	"invalid_port": true, "provider_host_not_allowed": true,
+	"provider_tenant_not_configured": true, "literal_ip_denied": true,
+	"provider_secret_unavailable": true, "invalid_request": true,
+	"planetscale_token_id_missing": true, "upstream_unavailable": true,
+	"invalid_upstream_status": true, "upstream_read_failed": true,
+	"upstream_body_too_large": true,
+}
 func safeError(err error) string {
-	switch {
-	case errors.Is(err, context.DeadlineExceeded):
-		return "timeout"
-	case errors.Is(err, context.Canceled):
-		return "cancelled"
-	default:
-		// Returned errors must be deliberately non-sensitive, never underlying driver/URL/credential errors.
-		code := err.Error()
-		if len(code) > 90 {
-			return "operation_failed"
-		}
-		return code
-	}
+	if errors.Is(err, context.DeadlineExceeded) { return "timeout" }
+	if errors.Is(err, context.Canceled) { return "cancelled" }
+	if safeHostErrorCodes[err.Error()] { return err.Error() }
+	return "operation_failed"
 }
 func (e *Engine) Close() { e.DB.CloseAll() }
 
