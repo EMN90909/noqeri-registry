@@ -1,0 +1,4 @@
+// SPDX-License-Identifier: MIT
+import "../src/jwt.noqeri"
+let token: [u8; 5] = [97 as u8,46 as u8,98 as u8,46 as u8,99 as u8]
+print(jwtCompactValid(slice(token)))

@@ -219,6 +219,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/csv/0.5.0",
+          "quality": "experimental",
+          "evidence": "test-contract",
+          "experimental": true,
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/csv/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -574,6 +582,14 @@
       "name": "jwt",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/jwt/0.5.0",
+          "quality": "experimental",
+          "evidence": "test-contract",
+          "experimental": true,
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/jwt/1.0.0",
           "replacedBy": "0.4.0",
@@ -1992,6 +2008,14 @@
       "name": "rate-limit",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/rate-limit/0.5.0",
+          "quality": "experimental",
+          "evidence": "test-contract",
+          "experimental": true,
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/rate-limit/1.0.0",
           "replacedBy": "0.4.0",

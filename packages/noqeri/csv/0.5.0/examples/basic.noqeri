@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+import "../src/csv.noqeri"
+let input: [u8; 3] = [97 as u8,44 as u8,98 as u8]
+let output: [u8; 5] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+print(csvEncodeCell(slice(input),slice(output),44 as u8))
