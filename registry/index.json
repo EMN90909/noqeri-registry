@@ -7,6 +7,14 @@
       "namespace": "noqeri",
       "versions": [
         {
+          "version": "0.5.0",
+          "path": "packages/noqeri/core/0.5.0",
+          "quality": "experimental",
+          "evidence": "test-contract",
+          "experimental": true,
+          "yanked": false
+        },
+        {
           "path": "packages/noqeri/core/1.0.0",
           "replacedBy": "0.4.0",
           "version": "1.0.0",
@@ -50,6 +58,14 @@
       "name": "std",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/std/0.5.0",
+          "quality": "experimental",
+          "evidence": "test-contract",
+          "experimental": true,
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/std/1.0.0",
           "replacedBy": "0.4.0",
@@ -925,6 +941,14 @@
       "name": "router",
       "namespace": "noqeri",
       "versions": [
+        {
+          "version": "0.5.0",
+          "path": "packages/noqeri/router/0.5.0",
+          "quality": "experimental",
+          "evidence": "test-contract",
+          "experimental": true,
+          "yanked": false
+        },
         {
           "path": "packages/noqeri/router/1.0.0",
           "replacedBy": "0.4.0",

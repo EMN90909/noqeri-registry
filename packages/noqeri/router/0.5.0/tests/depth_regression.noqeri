@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: MIT
+import "../src/router.noqeri"
+function main(): int {
+    let pattern: [u8; 10] = [47 as u8,117 as u8,47 as u8,58 as u8,105 as u8,100 as u8,47 as u8,58 as u8,112 as u8,97 as u8]
+    let path: [u8; 7] = [47 as u8,117 as u8,47 as u8,49 as u8,47 as u8,120 as u8,121 as u8]
+    // The pattern above is intentionally missing the last parameter's
+    // third byte; it still denotes a valid variable name.
+    let starts: [usize; 2] = [0 as usize,0 as usize]
+    let lengths: [usize; 2] = [0 as usize,0 as usize]
+    if routerMatchCaptures(slice(pattern),slice(path),slice(starts),slice(lengths)) != 2 as isize { return 1 }
+    if starts[0 as usize] != 3 as usize || lengths[1 as usize] != 2 as usize { return 2 }
+    return 0
+}
+print(main())

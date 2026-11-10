@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: MIT
+import "../src/core.noqeri"
+function main(): int {
+    let values: [u8; 5] = [1 as u8,2 as u8,3 as u8,4 as u8,5 as u8]
+    if !coreBytesMove(slice(values),0 as usize,1 as usize,4 as usize) { return 1 }
+    if values[0 as usize] != 1 as u8 || values[4 as usize] != 4 as u8 { return 2 }
+    coreBytesReverse(slice(values))
+    if values[0 as usize] != 4 as u8 || values[4 as usize] != 1 as u8 { return 3 }
+    if !coreBytesEqualConstantWork(slice(values),slice(values)) { return 4 }
+    return 0
+}
+print(main())

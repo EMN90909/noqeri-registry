@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: MIT
+import "../src/std.noqeri"
+function main(): int {
+    let minimum: [u8; 20] = [45 as u8,57 as u8,50 as u8,50 as u8,51 as u8,51 as u8,55 as u8,50 as u8,48 as u8,51 as u8,54 as u8,56 as u8,53 as u8,52 as u8,55 as u8,55 as u8,53 as u8,56 as u8,48 as u8,56 as u8]
+    let overflow: [u8; 19] = [57 as u8,50 as u8,50 as u8,51 as u8,51 as u8,55 as u8,50 as u8,48 as u8,51 as u8,54 as u8,56 as u8,53 as u8,52 as u8,55 as u8,55 as u8,53 as u8,56 as u8,48 as u8,56 as u8]
+    let out: [i64; 1] = [0 as i64]
+    if !stdParseI64(slice(minimum),slice(out)) || out[0 as usize] != -9223372036854775807 as i64 - 1 as i64 { return 1 }
+    if stdParseI64(slice(overflow),slice(out)) { return 2 }
+    return 0
+}
+print(main())
