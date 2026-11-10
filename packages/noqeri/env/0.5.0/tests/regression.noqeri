@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: MIT
+import "../src/env.noqeri"
+function main(): int {
+let line: [u8; 7] = [70 as u8,79 as u8,79 as u8,61 as u8,98 as u8,97 as u8,114 as u8]
+    let dst: [u8; 3] = [0 as u8,0 as u8,0 as u8]
+    if envAssignmentSeparator(slice(line)) != 3 as isize { return 1 }
+    if !envAssignmentValid(slice(line)) { return 2 }
+    if envNameCopy(slice(line),slice(dst)) != 3 as isize { return 3 }
+    if dst[0] != 70 as u8 || dst[2] != 79 as u8 { return 4 }
+    if envValueCopy(slice(line),slice(dst)) != 3 as isize || dst[0] != 98 as u8 { return 5 }
+    let bad: [u8; 4] = [49 as u8,70 as u8,61 as u8,65 as u8]
+    if envAssignmentValid(slice(bad)) { return 6 }
+    return 0
+}
+print(main())

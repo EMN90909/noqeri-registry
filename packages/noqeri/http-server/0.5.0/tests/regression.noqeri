@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: MIT
+import "../src/server.noqeri"
+function main(): int {
+if !httpServerPortValid(8080) || httpServerPortValid(0) || httpServerPortValid(65536) { return 1 }
+    if httpServerBodyAllowed(204) || httpServerBodyAllowed(101) || !httpServerBodyAllowed(200) { return 2 }
+    let route: [u8; 4] = [47 as u8,97 as u8,47 as u8,98 as u8]
+    let bad: [u8; 3] = [47 as u8,47 as u8,97 as u8]
+    if !httpServerRouteValid(slice(route)) || httpServerRouteValid(slice(bad)) { return 3 }
+    let val: [u8; 3] = [97 as u8,13 as u8,98 as u8]
+    if httpServerHeaderValueValid(slice(val)) { return 4 }
+    if httpServerStart(0) != 0 as usize { return 5 }
+    if !httpServerRedirectStatusValid(308) || httpServerRedirectStatusValid(200) { return 6 }
+    return 0
+}
+print(main())
