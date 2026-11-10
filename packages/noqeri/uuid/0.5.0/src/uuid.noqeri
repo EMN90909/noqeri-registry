@@ -1,0 +1,92 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.uuid
+
+export function uuidHexByte(value: u8): bool {
+    return (value >= 48 as u8 && value <= 57 as u8) ||
+           (value >= 65 as u8 && value <= 70 as u8) ||
+           (value >= 97 as u8 && value <= 102 as u8)
+}
+
+export function uuidTextValid(value: []u8): bool {
+    if len(value) != 36 as usize { return false }
+    let index: usize = 0 as usize
+    while index < len(value) {
+        let hyphen: bool = index == 8 as usize || index == 13 as usize || index == 18 as usize || index == 23 as usize
+        if hyphen {
+            if value[index] != 45 as u8 { return false }
+        } else if !uuidHexByte(value[index]) { return false }
+        index = index + 1 as usize
+    }
+    return true
+}
+
+export function uuidVersionNibble(value: []u8): int {
+    if !uuidTextValid(value) { return -1 }
+    let byte: u8 = value[14]
+    if byte >= 48 as u8 && byte <= 57 as u8 { return (byte - 48 as u8) as int }
+    if byte >= 65 as u8 && byte <= 70 as u8 { return (byte - 65 as u8 + 10 as u8) as int }
+    return (byte - 97 as u8 + 10 as u8) as int
+}
+
+// REGISTRY_CAPABILITY_UPGRADE_V2
+export function uuidVariantRfc4122(value: []u8): bool {
+    if !uuidTextValid(value) { return false }
+    let c: u8 = value[19]
+    return c == 56 as u8 || c == 57 as u8 || c == 97 as u8 || c == 98 as u8 || c == 65 as u8 || c == 66 as u8
+}
+export function uuidVersionSupported(value: []u8): bool {
+    let v: int = uuidVersionNibble(value)
+    return v >= 1 && v <= 8 && uuidVariantRfc4122(value)
+}
+
+// v0.5.0: substantive runtime functionality; no Node.js dependency.
+export function uuidHexNibble(c: u8): int {
+ if c >= 48 as u8 && c <= 57 as u8 { return (c - 48 as u8) as int }
+ if c >= 65 as u8 && c <= 70 as u8 { return (c - 55 as u8) as int }
+ if c >= 97 as u8 && c <= 102 as u8 { return (c - 87 as u8) as int }
+ return -1
+}
+export function uuidParseBytes(text: []u8, output: []u8): bool {
+ if !uuidTextValid(text) || len(output) < 16 as usize { return false }
+ let pos: usize = 0 as usize
+ let dst: usize = 0 as usize
+ while pos < 36 as usize {
+  if pos == 8 as usize || pos == 13 as usize || pos == 18 as usize || pos == 23 as usize { pos = pos + 1 as usize }
+  let a: int = uuidHexNibble(text[pos])
+  let b: int = uuidHexNibble(text[pos + 1 as usize])
+  output[dst] = (a * 16 + b) as u8
+  pos = pos + 2 as usize
+  dst = dst + 1 as usize
+ }
+ return true
+}
+export function uuidHexLower(value: u8): u8 {
+ if value < 10 as u8 { return 48 as u8 + value }
+ return 97 as u8 + (value - 10 as u8)
+}
+export function uuidFormatBytes(input: []u8, output: []u8): bool {
+ if len(input) != 16 as usize || len(output) < 36 as usize { return false }
+ let i: usize = 0 as usize
+ let j: usize = 0 as usize
+ while i < 16 as usize {
+  if i == 4 as usize || i == 6 as usize || i == 8 as usize || i == 10 as usize {
+   output[j] = 45 as u8
+   j = j + 1 as usize
+  }
+  output[j] = uuidHexLower(input[i] / 16 as u8)
+  output[j + 1 as usize] = uuidHexLower(input[i] % 16 as u8)
+  i = i + 1 as usize
+  j = j + 2 as usize
+ }
+ return true
+}
+// Caller must supply 16 CSPRNG bytes; this does NOT generate randomness.
+export function uuidV4FromRandom(input: []u8, output: []u8): bool {
+ if len(input) != 16 as usize || len(output) < 36 as usize { return false }
+ let bytes: [u8; 16] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+ let i: usize = 0 as usize
+ while i < 16 as usize { bytes[i] = input[i] i = i + 1 as usize }
+ bytes[6] = (bytes[6] % 16 as u8) + 64 as u8
+ bytes[8] = (bytes[8] % 64 as u8) + 128 as u8
+ return uuidFormatBytes(slice(bytes),output)
+}
