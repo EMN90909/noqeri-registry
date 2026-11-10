@@ -1,10 +1,10 @@
 # Noqeri package depth audit — 2026-11-10
 
-This is an audit and implementation ledger, **not** a claim that all packages are production-ready. The current catalog has 57 package names. Existing historical release directories are immutable and may expose APIs with different levels of depth.
+This is an audit and implementation ledger, **not** a claim that all packages are production-ready. The original audit covered 57 package names; the current catalog has 66 after adding nine native AI modules. Existing historical release directories are immutable and may expose APIs with different levels of depth.
 
 ## This implementation pass
 
-Two implementation passes added 54 experimental `0.5.0` packages (13 first, 41 additional). The three special tracks received `pgas@0.1.5`, `ai-framework@0.1.5`, and `components@0.2.2`. All 57 catalog names now have newer versioned sources and regression fixtures; source level changes are not evidence of successful native compilation.
+Two implementation passes added 54 experimental `0.5.0` packages (13 first, 41 additional). The three special tracks received `pgas@0.1.5`, `ai-framework@0.1.5`, and `components@0.2.2`. All 57 original catalog names now have newer versioned sources and regression fixtures; source level changes are not evidence of successful native compilation.
 
 Tests were added as fixtures but **were not executed** on each native SDK target. The quality index remains `experimental`, `test-contract`; production/stable claims require measured evidence.
 
@@ -81,4 +81,4 @@ Tests were added as fixtures but **were not executed** on each native SDK target
 
 ## Priority after the 13 expanded releases
 
-**Next acceptance gates:** Execute native compile and runtime regressions across all 57 packages, then qualify serializers, cryptographic providers, network lifecycle, database transactions, AI runtime, and web/browser behavior. The Go host now explicitly supports Vercel, Turso and Upstash with scoped secrets and tenant-bound destinations, but this does not automatically wire their extern bindings into the Noqeri compiler. Do not promote the experimental releases without executable evidence.
+**Next acceptance gates:** Execute native compile and runtime regressions across all 66 current packages, then qualify serializers, cryptographic providers, network lifecycle, database transactions, AI runtime, and web/browser behavior. The Go host now explicitly supports Vercel, Turso and Upstash with scoped secrets and tenant-bound destinations, but this does not automatically wire their extern bindings into the Noqeri compiler. Do not promote the experimental releases without executable evidence.

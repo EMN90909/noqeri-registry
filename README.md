@@ -55,11 +55,11 @@ Do not treat this as a feature-parity production replacement for NoeSQL.
 
 ## Package depth and quality audit (November 2026)
 
-The catalog has 57 package names, but their implementation maturity differs.
-Thirteen foundational packages now have new `0.5.0` experimental releases
-with deeper Noqeri code and focused regression fixtures. The other 44 have
-not yet been meaningfully expanded. See the
-[all-package capability and acceptance-gate audit](docs/PACKAGE_DEPTH_AUDIT_2026-11.md).
+The catalog now has **66 package names**: the previous 57 have versioned
+experimental upgrades, and nine additional native AI packages are available
+as individually installable modules or via `ai-framework@0.1.6`.
+Their maturity remains uneven. See the [original 57-package depth audit](docs/PACKAGE_DEPTH_AUDIT_2026-11.md)
+and [the AI ecosystem's precise capabilities](docs/AI_ECOSYSTEM.md).
 
 **Do not infer production readiness from version numbers, declared APIs or
 the presence of test files.** These new fixtures require actual execution
@@ -68,7 +68,7 @@ use the packages with the native SDK package manager.
 
 ## Expanded Noqeri packages — November 2026
 
-All 57 registered packages have new experimental releases: 54 baseline libraries use `0.5.0`; PGAS uses `0.1.5`, AI Framework uses `0.1.5` and Components uses `0.2.2`. The implementation preserves the 13 baseline releases already added to `main` and contributes 41 remaining baseline releases plus the three specialist packages. See [package depth, limits and test status](docs/PACKAGE_DEPTH_2026.md); run `python3 tools/verify_package_depth.py` for a **static source audit**. These are not runtime-certified production releases; platform host and native-provider integration still require testing.
+All 57 original registered packages received experimental upgrades: 54 baseline libraries use `0.5.0`; PGAS uses `0.1.5`, AI Framework had `0.1.5` (now `0.1.6` as a bundle), and Components uses `0.2.2`. The implementation preserves the 13 baseline releases already added to `main` and contributes 41 remaining baseline releases plus the three specialist packages. See [package depth, limits and test status](docs/PACKAGE_DEPTH_2026.md); run `python3 tools/verify_package_depth.py` for a **static source audit**. These are not runtime-certified production releases; platform host and native-provider integration still require testing.
 
 ## Catalog
 
