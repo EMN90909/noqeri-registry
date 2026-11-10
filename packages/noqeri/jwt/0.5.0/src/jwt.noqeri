@@ -84,9 +84,10 @@ export function jwtClaimsWindowValid(now: i64, issuedAt: i64, notBefore: i64, ex
     // All four times are required; avoid signed additions/subtractions
     // overflowing during security-sensitive comparisons.
     if leeway < 0 as i64 || leeway > 300 as i64 || maxAgeSeconds <= 0 as i64 { return false }
-    if issuedAt < 0 as i64 || expires <= issuedAt || notBefore > expires { return false }
+    if issuedAt < 0 as i64 || notBefore < 0 as i64 || expires <= issuedAt || notBefore > expires { return false }
     if expires - issuedAt > maxAgeSeconds { return false }
-    if now < 0 as i64 || now < notBefore - leeway { return false }
+    if now < 0 as i64 { return false }
+    if now < notBefore && notBefore - now > leeway { return false }
     if now >= expires { return false }
     // Avoid accepting issued-in-the-future tokens, with bounded skew.
     if issuedAt > now && issuedAt - now > leeway { return false }
