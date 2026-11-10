@@ -166,6 +166,17 @@ func (h *HTTPHost) Execute(ctx context.Context, m Message, env EnvFunc) (int, st
 	if strings.ContainsAny(u.Hostname(), "\\ %\n\r") || strings.Contains(strings.ToLower(u.EscapedPath()), "%2f") || strings.Contains(strings.ToLower(u.EscapedPath()), "%5c") {
 		return 0, "", errors.New("invalid_url")
 	}
+	// Reject path normalization tricks before passing credentials to a
+	// privileged provider endpoint. URL.Path is already percent-decoded,
+	// while %25 could enable a second decode by a proxy or provider.
+	if strings.Contains(u.Path, "\\") || strings.ContainsRune(u.Path, 0) || strings.Contains(strings.ToLower(u.EscapedPath()), "%25") {
+		return 0, "", errors.New("invalid_url")
+	}
+	for _, segment := range strings.Split(u.Path, "/") {
+		if segment == "." || segment == ".." {
+			return 0, "", errors.New("invalid_url")
+		}
+	}
 	envName := "NOQERI_" + strings.ToUpper(strings.ReplaceAll(m.Provider, "-", "_")) + "_TOKEN"
 	// Turso organization-management credentials and per-database JWTs are
 	// independent. Never forward a management token to a database endpoint.
