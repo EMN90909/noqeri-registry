@@ -8,8 +8,8 @@ let next: [u8; 6] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
 if regexTinyFullMatch(slice(pat),slice(txt),slice(prev),slice(next)) != 1 { return 1 }
 let invalid: [u8; 1] = [42 as u8]
 if regexTinyFullMatch(slice(invalid),slice(txt),slice(prev),slice(next)) != -1 { return 2 }
-let empty: [u8; 0] = []
-if regexTinyFullMatch(slice(pat),slice(empty),slice(prev),slice(next)) != 0 { return 3 }
+let single: [u8; 1] = [98 as u8]
+if regexTinyFullMatch(slice(pat),slice(single),slice(prev),slice(next)) != 1 { return 3 }
  return 0
 }
 print(main())
