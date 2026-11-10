@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-only
+import "../src/fs.noqeri"
+function main(): int {
+let good: [u8; 8] = [100 as u8,105 as u8,114 as u8,47 as u8,97 as u8,46 as u8,116 as u8,120 as u8]
+let bad: [u8; 4] = [46 as u8,46 as u8,47 as u8,120 as u8]
+if !fsPortableRelativePath(slice(good)) { return 1 }
+if fsPortableRelativePath(slice(bad)) { return 2 }
+if fsExtensionOffset(slice(good)) != 5 as isize { return 3 }
+ return 0
+}
+print(main())
