@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: MIT
+// All tests are network-independent; external transports require host integration.
+import "../src/base64.noqeri"
+function main(): int {
+    let data: [u8; 3] = [77 as u8,97 as u8,110 as u8]
+    let encoded: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    let decoded: [u8; 3] = [0 as u8,0 as u8,0 as u8]
+    if base64Encode(slice(data),slice(encoded)) != 4 as isize { return 1 }
+    if encoded[0] != 84 as u8 || encoded[1] != 87 as u8 || encoded[2] != 70 as u8 || encoded[3] != 117 as u8 { return 2 }
+    if !base64Valid(slice(encoded)) { return 3 }
+    if base64Decode(slice(encoded),slice(decoded)) != 3 as isize { return 4 }
+    if decoded[0] != 77 as u8 || decoded[1] != 97 as u8 || decoded[2] != 110 as u8 { return 5 }
+    let one: [u8; 1] = [77 as u8]
+    let padded: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    if base64Encode(slice(one),slice(padded)) != 4 as isize { return 6 }
+    if padded[2] != 61 as u8 || padded[3] != 61 as u8 { return 7 }
+    let short: [u8; 2] = [0 as u8,0 as u8]
+    if base64EncodeUrl(slice(one),slice(short),false) != 2 as isize { return 8 }
+    if !base64UrlValid(slice(short),false) || base64UrlValid(slice(short),true) { return 9 }
+    let oneDst: [u8; 1] = [0 as u8]
+    if base64DecodeUrl(slice(short),slice(oneDst)) != 1 as isize || oneDst[0] != 77 as u8 { return 10 }
+    let bad: [u8; 4] = [90 as u8,90 as u8,61 as u8,61 as u8]
+    if base64Valid(slice(bad)) || base64Decode(slice(bad),slice(decoded)) >= 0 as isize { return 11 }
+    return 0
+}
+print(main())

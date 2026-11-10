@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: MIT
+import "../src/hex.noqeri"
+function main(): int {
+let original: [u8; 2] = [0 as u8,255 as u8]
+    let text: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    let result: [u8; 2] = [0 as u8,0 as u8]
+    if hexEncode(slice(original),slice(text),false) != 4 as isize { return 1 }
+    if text[0] != 48 as u8 || text[2] != 102 as u8 { return 2 }
+    if hexDecode(slice(text),slice(result)) != 2 as isize || result[1] != 255 as u8 { return 3 }
+    let bad: [u8; 2] = [122 as u8,48 as u8]
+    if hexValid(slice(bad)) { return 4 }
+    let number: [u64; 1] = [0 as u64]
+    if !hexParseU64(slice(text),slice(number)) || number[0] != 255 as u64 { return 5 }
+    let format: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    if hexFormatU64(255 as u64,slice(format),true) != 2 as isize { return 6 }
+    if format[0] != 70 as u8 || format[1] != 70 as u8 { return 7 }
+    return 0
+}
+print(main())

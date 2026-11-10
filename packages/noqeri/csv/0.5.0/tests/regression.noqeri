@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MIT
+import "../src/csv.noqeri"
+function main(): int {
+let cell: [u8; 4] = [97 as u8,44 as u8,34 as u8,98 as u8]
+    let encoded: [u8; 9] = [0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8,0 as u8]
+    if csvEncodeCell(slice(cell),slice(encoded),44 as u8) != 7 as isize { return 1 }
+    let expected: [u8; 7] = [34 as u8,97 as u8,44 as u8,34 as u8,34 as u8,98 as u8,34 as u8]
+    let decoded: [u8; 4] = [0 as u8,0 as u8,0 as u8,0 as u8]
+    if csvDecodeCell(slice(expected),slice(decoded),44 as u8) != 4 as isize { return 2 }
+    if decoded[0] != 97 as u8 || decoded[2] != 34 as u8 { return 3 }
+    if csvFieldsCount(slice(expected),44 as u8) != 1 as isize { return 4 }
+    let row: [u8; 3] = [97 as u8,44 as u8,98 as u8]
+    if csvFieldsCount(slice(row),44 as u8) != 2 as isize { return 5 }
+    let bad: [u8; 2] = [34 as u8,97 as u8]
+    if csvCellValid(slice(bad),44 as u8) { return 6 }
+    return 0
+}
+print(main())

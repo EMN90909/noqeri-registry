@@ -1,0 +1,154 @@
+// SPDX-License-Identifier: GPL-3.0-only
+module noqeri.glob
+
+// Small allocation-free glob matcher.
+// Supports '*' (zero or more bytes), '?' (one byte), and backslash escaping.
+// glob_match_path keeps '*' and '?' inside a single path segment.
+
+export function glob_has_magic(pattern: []u8): bool {
+    let i: usize = 0 as usize
+    while i < len(pattern) {
+        if pattern[i] == 92 as u8 {
+            if i + 1 as usize < len(pattern) { i = i + 2 as usize }
+            else { return false }
+        } else {
+            if pattern[i] == 42 as u8 || pattern[i] == 63 as u8 { return true }
+            i = i + 1 as usize
+        }
+    }
+    return false
+}
+
+export function glob_literal_prefix_length(pattern: []u8): usize {
+    let i: usize = 0 as usize
+    let count: usize = 0 as usize
+    while i < len(pattern) {
+        let c: u8 = pattern[i]
+        if c == 42 as u8 || c == 63 as u8 { return count }
+        if c == 92 as u8 && i + 1 as usize < len(pattern) { i = i + 2 as usize count = count + 1 as usize }
+        else { i = i + 1 as usize count = count + 1 as usize }
+    }
+    return count
+}
+
+function glob_match_mode(pattern: []u8, value: []u8, pathMode: bool): bool {
+    let p: usize = 0 as usize
+    let v: usize = 0 as usize
+    let starPattern: usize = len(pattern)
+    let starValue: usize = 0 as usize
+
+    while v < len(value) {
+        if p < len(pattern) && pattern[p] == 92 as u8 {
+            if p + 1 as usize < len(pattern) && pattern[p + 1 as usize] == value[v] {
+                p = p + 2 as usize
+                v = v + 1 as usize
+            } else if starPattern < len(pattern) && (!pathMode || value[starValue] != 47 as u8) {
+                starValue = starValue + 1 as usize
+                v = starValue
+                p = starPattern + 1 as usize
+            } else { return false }
+        } else if p < len(pattern) && pattern[p] == 63 as u8 && (!pathMode || value[v] != 47 as u8) {
+            p = p + 1 as usize
+            v = v + 1 as usize
+        } else if p < len(pattern) && pattern[p] == value[v] {
+            p = p + 1 as usize
+            v = v + 1 as usize
+        } else if p < len(pattern) && pattern[p] == 42 as u8 {
+            starPattern = p
+            starValue = v
+            p = p + 1 as usize
+        } else if starPattern < len(pattern) && starValue < len(value) && (!pathMode || value[starValue] != 47 as u8) {
+            starValue = starValue + 1 as usize
+            v = starValue
+            p = starPattern + 1 as usize
+        } else { return false }
+    }
+
+    while p < len(pattern) && pattern[p] == 42 as u8 { p = p + 1 as usize }
+    return p == len(pattern)
+}
+
+export function glob_match(pattern: []u8, value: []u8): bool { return glob_match_mode(pattern, value, false) }
+export function glob_match_path(pattern: []u8, value: []u8): bool { return glob_match_mode(pattern, value, true) }
+
+export function glob_match_literal(pattern: []u8, value: []u8): bool {
+    if glob_has_magic(pattern) { return false }
+    return glob_match(pattern, value)
+}
+
+// MIT-licensed complementary implementations brought forward from v0.1.1.
+export function globMagic(c: u8): bool { return c == 42 as u8 || c == 63 as u8 }
+
+export function globHasWildcard(pattern: []u8): bool {
+    let i: usize = 0 as usize
+    while i < len(pattern) {
+        if pattern[i] == 92 as u8 { i = i + 2 as usize }
+        else {
+            if globMagic(pattern[i]) { return true }
+            i = i + 1 as usize
+        }
+    }
+    return false
+}
+
+export function globPatternValid(pattern: []u8): bool {
+    let i: usize = 0 as usize
+    while i < len(pattern) {
+        if pattern[i] == 92 as u8 {
+            if i + 1 as usize >= len(pattern) { return false }
+            i = i + 2 as usize
+        } else { i = i + 1 as usize }
+    }
+    return true
+}
+
+export function globLiteralPrefix(pattern: []u8): usize {
+    let i: usize = 0 as usize
+    let length: usize = 0 as usize
+    while i < len(pattern) {
+        if pattern[i] == 42 as u8 || pattern[i] == 63 as u8 { return length }
+        if pattern[i] == 92 as u8 && i + 1 as usize < len(pattern) { i = i + 1 as usize }
+        length = length + 1 as usize
+        i = i + 1 as usize
+    }
+    return length
+}
+
+export function globMatchMode(pattern: []u8, input: []u8, slashSafe: bool): bool {
+    if !globPatternValid(pattern) { return false }
+    let p: usize = 0 as usize
+    let i: usize = 0 as usize
+    let star: usize = len(pattern)
+    let nextInput: usize = 0 as usize
+    while i < len(input) {
+        if p < len(pattern) && pattern[p] == 92 as u8 && p + 1 as usize < len(pattern) && pattern[p + 1 as usize] == input[i] {
+            p = p + 2 as usize
+            i = i + 1 as usize
+        } else if p < len(pattern) && pattern[p] == 63 as u8 && (!slashSafe || input[i] != 47 as u8) {
+            p = p + 1 as usize
+            i = i + 1 as usize
+        } else if p < len(pattern) && pattern[p] == input[i] && pattern[p] != 42 as u8 {
+            p = p + 1 as usize
+            i = i + 1 as usize
+        } else if p < len(pattern) && pattern[p] == 42 as u8 {
+            star = p
+            nextInput = i
+            p = p + 1 as usize
+        } else if star < len(pattern) && nextInput < len(input) && (!slashSafe || input[nextInput] != 47 as u8) {
+            nextInput = nextInput + 1 as usize
+            i = nextInput
+            p = star + 1 as usize
+        } else { return false }
+    }
+    while p < len(pattern) && pattern[p] == 42 as u8 { p = p + 1 as usize }
+    return p == len(pattern)
+}
+
+export function globMatch(pattern: []u8, input: []u8): bool { return globMatchMode(pattern,input,false) }
+
+export function globMatchPath(pattern: []u8, input: []u8): bool { return globMatchMode(pattern,input,true) }
+
+export function globMatchLiteral(pattern: []u8, input: []u8): bool {
+    if globHasWildcard(pattern) { return false }
+    return globMatch(pattern,input)
+}
