@@ -5,7 +5,8 @@
 <form id="search"><input id="q" placeholder="Search packages" maxlength="128"><button>Search</button></form><main id="results"></main>
 <script>
 const results=document.querySelector('#results'), form=document.querySelector('#search'), q=document.querySelector('#q');
-function render(items){results.innerHTML=items.map(p=>'<article class="card"><h2>'+p.namespace+'/'+p.name+'</h2><p>'+p.description+'</p><p class="meta">'+p.versions.map(v=>'<code>'+v.version+'</code> · '+v.downloads+' downloads · <a href="'+v.download+'">.ndl</a>').join('<br>')+'</p></article>').join('')||'<p>No packages found.</p>'}
+function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(items){results.innerHTML=items.map(p=>'<article class="card"><h2>'+esc(p.namespace)+'/'+esc(p.name)+'</h2><p>'+esc(p.description)+'</p><p class="meta">'+(p.versions||[]).map(v=>'<code>'+esc(v.version)+'</code> · '+esc(v.downloads)+' downloads · <a href="'+esc(v.download)+'">.ndl</a>').join('<br>')+'</p></article>').join('')||'<p>No packages found.</p>'}
 async function load(url='/v1/packages'){const r=await fetch(url);if(!r.ok)throw Error('catalog unavailable');const d=await r.json();render(d.packages||[])}
 form.addEventListener('submit',async e=>{e.preventDefault();try{await load('/v1/search?q='+encodeURIComponent(q.value))}catch(err){results.textContent=err.message}});
 load().catch(err=>results.textContent=err.message);
