@@ -1,3 +1,0 @@
-// SPDX-License-Identifier: MIT
-import "../src/http.noqeri"
-print(httpSuccess(201))

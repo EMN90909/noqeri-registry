@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Noqeri Registry</title>
+<style>body{font:16px system-ui;background:#101317;color:#eef2f6;max-width:960px;margin:0 auto;padding:32px}a{color:#73d0ff}input,button{font:inherit;padding:10px;border-radius:8px;border:1px solid #3b4652;background:#171d24;color:inherit}button{cursor:pointer}.card{padding:18px;margin:12px 0;background:#171d24;border:1px solid #27313c;border-radius:12px}.meta{color:#a8b4c0;font-size:.92rem}code{color:#ffc978}</style></head>
+<body><h1>Noqeri Registry</h1><p class="meta">The public, read-only Global Package Index for .ndl Noqeri nodules.</p>
+<form id="search"><input id="q" placeholder="Search packages" maxlength="128"><button>Search</button></form><main id="results"></main>
+<script>
+const results=document.querySelector('#results'), form=document.querySelector('#search'), q=document.querySelector('#q');
+function render(items){results.innerHTML=items.map(p=>'<article class="card"><h2>'+p.namespace+'/'+p.name+'</h2><p>'+p.description+'</p><p class="meta">'+p.versions.map(v=>'<code>'+v.version+'</code> · '+v.downloads+' downloads · <a href="'+v.download+'">.ndl</a>').join('<br>')+'</p></article>').join('')||'<p>No packages found.</p>'}
+async function load(url='/v1/packages'){const r=await fetch(url);if(!r.ok)throw Error('catalog unavailable');const d=await r.json();render(d.packages||[])}
+form.addEventListener('submit',async e=>{e.preventDefault();try{await load('/v1/search?q='+encodeURIComponent(q.value))}catch(err){results.textContent=err.message}});
+load().catch(err=>results.textContent=err.message);
+</script></body></html>
+

@@ -1,92 +1,21 @@
-# Noqeri Registry
+# Noqeri Public Registry
 
-## Native AI frameworks — November 2026
+This repository is the public, read-only Global Package Index and Distribution Hub for Noqeri nodules.
 
-Nine new pure-Noqeri AI packages are in the registry: `ai-tensor`, `ai-nn`, `ai-optim`, `ai-autodiff`, `ai-tokenizer`, `ai-eval`, `ai-agent`, `ai-vector`, `ai-data`. The `noqeri/ai-framework@0.1.6` umbrella bundles them as pinned dependencies alongside the existing scalar AI API. These are experimental CPU/agent-policy building blocks, not a finished LLM/GPU runtime. [API map, examples and limitations](docs/AI_ECOSYSTEM.md).
+## Contract
 
+- Anonymous GET and HEAD only; there are no publish or mutation endpoints.
+- registry/index.json is the committed catalog. Only releases with verified sha256 integrity and safe .ndl paths are loaded.
+- .ndl is a deterministic gzip-compressed tar archive containing package.noqeri, .noqeri source, docs, and tests.
+- /v1/search, package metadata, versions, advisory metadata, and archive downloads are available to SDK and CLI clients.
+- Yanked releases disappear from public metadata and downloads.
 
-A **Go + Noqeri** package registry for the Noqeri language.
+The private Supabase registry is the publishing, token, scanning, approval, takedown, and telemetry control plane. This public repository intentionally has no credentials and no write API.
 
-- **Go**: HTTP server, package discovery, deterministic `.nqpkg` tar.gz
-  archives, SHA-256 verification, index validation and tests.
-- **Noqeri**: source policy, routing guards, validation contracts and
-  language-level tests (`src/registry.noqeri`, `tests/*.noqeri`).
-- **Package sources**: `.noqeri`; compiled bytecode: `.nqri`.
-  No compatibility aliases for `.nqr` or `.nqo`.
+## Run locally
 
-## Start
+    go test ./...
+    go run ./cmd/registry -root . -listen :8080
 
-```sh
-go version  # requires 1.23+
-make test
-make verify
-make run
-```
+No GitHub Actions are included.
 
-Open `http://localhost:8080/health` or `/v1/packages`.
-Set `PORT` to override the port. Compile native Noqeri policy with
-`make check-noqeri` when the standalone Noqeri compiler is installed.
-
-The public registry server uses the Go standard library. The separate privileged
-host runtime uses pinned Go PostgreSQL and SQLite drivers. The prior Node.js,
-Python and C++ registry implementation has been removed.
-
-## API
-
-`GET /health`, `/v1/status`, `/v1/index`, `/v1/packages`,
-`/v1/search?q=<term>&offset=0&limit=50`, `/v1/advisories`,
-`/v1/releases`, `/downloads`,
-`/v1/packages/<namespace>/<package>`,
-`/v1/packages/<namespace>/<package>/versions`,
-`/v1/packages/<namespace>/<package>/<version>`,
-`/v1/packages/<namespace>/<package>/<version>/download`.
-`HEAD` is supported for reads.
-
-## Status and intentional incompatibilities
-
-This is a **source-index-backed, read-only service**. The former NoeSQL
-session and writable data store, bootstrap import, persistent counters,
-private-provider workflows and old compiler-download synchronization are
-not implemented in Go yet. The Noqeri policy code is independently compiled
-and checked in CI, not linked into the Go HTTP server yet.
-
-See [architecture and limitations](docs/GO_NOQERI.md) for details.
-Do not treat this as a feature-parity production replacement for NoeSQL.
-
-## Package depth and quality audit (November 2026)
-
-The catalog now has **66 package names**: the previous 57 have versioned
-experimental upgrades, and nine additional native AI packages are available
-as individually installable modules or via `ai-framework@0.1.6`.
-Their maturity remains uneven. See the [original 57-package depth audit](docs/PACKAGE_DEPTH_AUDIT_2026-11.md)
-and [the AI ecosystem's precise capabilities](docs/AI_ECOSYSTEM.md).
-
-**Do not infer production readiness from version numbers, declared APIs or
-the presence of test files.** These new fixtures require actual execution
-against Noqeri native compiler/SDK targets. No Node.js runtime is required to
-use the packages with the native SDK package manager.
-
-## Expanded Noqeri packages — November 2026
-
-All 57 original registered packages received experimental upgrades: 54 baseline libraries use `0.5.0`; PGAS uses `0.1.5`, AI Framework had `0.1.5` (now `0.1.6` as a bundle), and Components uses `0.2.2`. The implementation preserves the 13 baseline releases already added to `main` and contributes 41 remaining baseline releases plus the three specialist packages. See [package depth, limits and test status](docs/PACKAGE_DEPTH_2026.md); run `python3 tools/verify_package_depth.py` for a **static source audit**. These are not runtime-certified production releases; platform host and native-provider integration still require testing.
-
-## Catalog
-
-The committed `registry/index.json` is the current source of truth.
-Versioned package contents are in `packages/noqeri/`. Release identity,
-archive integrity, symlink rules and yanked-release behavior are verified
-by Go tests. Run `make audit` for package counts.
-
-## Forty-two international-preview packages (0.1.1)
-
-Forty-two packages now have independently authored MIT Noqeri `0.1.1` sources, executable regressions, examples and API references. The third release batch adds `http`, `json`, `jwt`, `neon`, `net`, `openai`, `pgas`, `planetscale`, `postgres`, `rate-limit`, `regex-lite`, `resend`, `retry`, `router`, `security`, `semver`, `sentry`, `sqlite`, `std`, `stripe`, `supabase` and `tailwind`. A real, credential-isolated **Go host process** now implements HTTPS transport,
-SQLite/PostgreSQL SQL execution, transaction APIs, and Stripe webhook-signature
-verification through a versioned JSON-lines bridge. Its tested host operations
-can be accessed by a trusted launcher; direct Noqeri Stage-0 ABI service
-registration remains an outstanding compiler integration task. Use the version-qualified package path to choose `0.1.1`; higher-version experimental packages are not implicitly overwritten.
-
-**Licensing:** MIT is the default license for original new work and these forty-two `0.1.1` releases. Older GPL-3.0-only files remain GPL-3.0-only. See [license scope](LICENSES/README.md).
-
-## Privileged API and database host
-
-Use `make host` for the stdin/stdout Go host and `make host-test` for real SQLite integration checks. Provider credentials and database DSNs stay in environment variables, not package source code or messages. See [host runtime, security contract, and integration examples](docs/HOST_RUNTIME.md). Auth0, Clerk, Supabase, Stripe, Firebase, Neon, PlanetScale, Resend, GitHub and other provider operations are restricted to provider-approved HTTPS hosts. Authenticated live tests require operator-supplied scoped secrets and are never run by default.

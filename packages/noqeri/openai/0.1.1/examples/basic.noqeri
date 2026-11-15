@@ -1,3 +1,0 @@
-// SPDX-License-Identifier: MIT
-import "../src/openai.noqeri"
-print(openaiRoot())

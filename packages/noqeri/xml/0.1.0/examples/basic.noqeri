@@ -1,5 +1,0 @@
-import package "noqeri/xml"
-
-function main(): int {
-    return 0
-}

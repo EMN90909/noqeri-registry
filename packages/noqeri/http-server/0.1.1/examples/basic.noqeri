@@ -1,3 +1,0 @@
-// SPDX-License-Identifier: MIT
-import "../src/server.noqeri"
-print(httpServerDefaultPort(true))

@@ -1,2 +1,0 @@
-import package "noqeri/auth0"
-print(auth0ManagementUrl("demo.auth0.com", "users"))
