@@ -1,2 +1,136 @@
-{"schema":1,"releases":[]}
-
+{
+  "schema": 1,
+  "releases": [
+    {
+      "package": "noqeri/cli",
+      "version": "1.0.0",
+      "archive": "distribution/noqeri-cli-1.0.0.ndl",
+      "archiveIntegrity": "sha256:0ef7099fd14d6241841aca22d983cd7553e2a4a8e36bae81e8673abd02ebc79b",
+      "entry": "src/cli.noqeri",
+      "dependencies": {},
+      "bytes": 54807
+    },
+    {
+      "package": "noqeri/std-io",
+      "version": "1.0.0",
+      "archive": "distribution/noqeri-std-io-1.0.0.ndl",
+      "archiveIntegrity": "sha256:a0eaa10d0d9976aba6b38662dd73bc409cde2a673a8a70b0bf64d101e3a94909",
+      "entry": "src/std_io.noqeri",
+      "dependencies": {},
+      "bytes": 20503
+    },
+    {
+      "package": "noqeri/fs",
+      "version": "1.0.0",
+      "archive": "distribution/noqeri-fs-1.0.0.ndl",
+      "archiveIntegrity": "sha256:c274a8b8011b4866fc515f15336ca1b713d740bd7e4e91b48d1d20dbe6e388ca",
+      "entry": "src/fs.noqeri",
+      "dependencies": {
+        "noqeri/std-io": "1.0.0"
+      },
+      "bytes": 20503
+    },
+    {
+      "package": "noqeri/net",
+      "version": "1.0.0",
+      "archive": "distribution/noqeri-net-1.0.0.ndl",
+      "archiveIntegrity": "sha256:a1c6c8b78315efb590157b77d60ad777f86ede10772a2cbfd846d3421d37c934",
+      "entry": "src/net.noqeri",
+      "dependencies": {
+        "noqeri/std-io": "1.0.0"
+      },
+      "bytes": 18455
+    },
+    {
+      "package": "noqeri/http",
+      "version": "1.0.0",
+      "archive": "distribution/noqeri-http-1.0.0.ndl",
+      "archiveIntegrity": "sha256:461273cd51973b633d428d8d972919c4464c015f5dabd6cfc2f3c9710066241c",
+      "entry": "src/http.noqeri",
+      "dependencies": {
+        "noqeri/net": "1.0.0",
+        "noqeri/std-io": "1.0.0"
+      },
+      "bytes": 22039
+    },
+    {
+      "package": "noqeri/json",
+      "version": "1.0.0",
+      "archive": "distribution/noqeri-json-1.0.0.ndl",
+      "archiveIntegrity": "sha256:f74a26696c0fd59cc41b149c2ba08bf51d76388d7669309ce9fa09e87592a06c",
+      "entry": "src/json.noqeri",
+      "dependencies": {},
+      "bytes": 23063
+    },
+    {
+      "package": "noqeri/crypto",
+      "version": "1.0.0",
+      "archive": "distribution/noqeri-crypto-1.0.0.ndl",
+      "archiveIntegrity": "sha256:7d8edb83f4b4d8c89422ea25f4a321665de5eb3f0257556f5add73f277857698",
+      "entry": "src/crypto.noqeri",
+      "dependencies": {},
+      "bytes": 26647
+    },
+    {
+      "package": "noqeri/sync",
+      "version": "1.0.0",
+      "archive": "distribution/noqeri-sync-1.0.0.ndl",
+      "archiveIntegrity": "sha256:40c419e6556f15dc908b893d1a2fefd36bca00cab7da17eed67563d50f508aa8",
+      "entry": "src/sync.noqeri",
+      "dependencies": {},
+      "bytes": 16919
+    },
+    {
+      "package": "noqeri/regex",
+      "version": "1.0.0",
+      "archive": "distribution/noqeri-regex-1.0.0.ndl",
+      "archiveIntegrity": "sha256:e65a6f37f8e63a55f77479dcea547e7663394f0aba7804aa32af9eed0d9e5754",
+      "entry": "src/regex.noqeri",
+      "dependencies": {},
+      "bytes": 18967
+    },
+    {
+      "package": "noqeri/web",
+      "version": "1.0.0",
+      "archive": "distribution/noqeri-web-1.0.0.ndl",
+      "archiveIntegrity": "sha256:ac028963dfdbb2404ab8ec9a02e9adb95a41bdf39414be936af1943de0f80e2e",
+      "entry": "src/web.noqeri",
+      "dependencies": {
+        "noqeri/http": "1.0.0",
+        "noqeri/json": "1.0.0",
+        "noqeri/crypto": "1.0.0"
+      },
+      "bytes": 279595
+    },
+    {
+      "package": "noqeri/sqlite",
+      "version": "1.0.0",
+      "archive": "distribution/noqeri-sqlite-1.0.0.ndl",
+      "archiveIntegrity": "sha256:52307ee364e1b78f7efc50f5fc434dd4b4835aeac815efb9768cbe777b4442ba",
+      "entry": "src/sqlite.noqeri",
+      "dependencies": {
+        "noqeri/fs": "1.0.0",
+        "noqeri/std-io": "1.0.0"
+      },
+      "bytes": 16407
+    },
+    {
+      "package": "noqeri/noesql",
+      "version": "0.9.5",
+      "archive": "distribution/noqeri-noesql-0.9.5.ndl",
+      "archiveIntegrity": "sha256:5c7c7aded72b154359d90ed42b43184f0ba8d10e2311f5634189bd6e46d14c85",
+      "entry": "Database/noesql_api.noqeri",
+      "dependencies": {},
+      "bytes": 848467
+    },
+    {
+      "package": "noqeri/components",
+      "version": "0.2.2",
+      "archive": "distribution/noqeri-components-0.2.2.ndl",
+      "archiveIntegrity": "sha256:83cbc65ee6075b6e894d19fd08a795b4caca302c3cc134934e5bc377eb96a4d1",
+      "entry": "src/components.noqeri",
+      "dependencies": {},
+      "bytes": 109084
+    }
+  ]
+}

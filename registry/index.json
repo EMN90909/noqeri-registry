@@ -2,18 +2,18 @@
   "protocol": "v1",
   "packageFormat": "ndl-1",
   "archiveExtension": ".ndl",
-  "generatedAt": "2026-11-21T00:00:00Z",
+  "generatedAt": "2026-11-23T00:00:00Z",
   "packages": [
     {
       "namespace": "noqeri",
       "name": "cli",
-      "description": "Argument parsing, subcommands, help text, and terminal UI boundaries.",
+      "description": "Argument parsing, subcommands, registry tooling, and CLI helpers.",
       "repository": "https://github.com/EMN90909/noqeri-cli",
       "versions": [
         {
           "version": "1.0.0",
           "archive": "distribution/noqeri-cli-1.0.0.ndl",
-          "archiveIntegrity": "sha256:b399e8f56a1e4b4e129067cea345c5731aaf6cc5b83620e94f7df25db73af48d",
+          "archiveIntegrity": "sha256:0ef7099fd14d6241841aca22d983cd7553e2a4a8e36bae81e8673abd02ebc79b",
           "entry": "src/cli.noqeri",
           "downloads": 0,
           "yanked": false
@@ -22,142 +22,14 @@
     },
     {
       "namespace": "noqeri",
-      "name": "http",
-      "description": "HTTP method, status, header, and host request primitives.",
-      "repository": "https://github.com/EMN90909/noqeri-http",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "archive": "distribution/noqeri-http-1.0.0.ndl",
-          "archiveIntegrity": "sha256:3596ab30d43037c646e48cc250621acfecfc94950c0638a5b1c3a617908804f7",
-          "entry": "src/http.noqeri",
-          "downloads": 0,
-          "yanked": false
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "regex",
-      "description": "Bounded regex compilation, matching, extraction, and validation helpers.",
-      "repository": "https://github.com/EMN90909/noqeri-regex",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "archive": "distribution/noqeri-regex-1.0.0.ndl",
-          "archiveIntegrity": "sha256:b17c35895a703029ac1f869900a5b29732d8829a27acd31a114f31688ed2e6b5",
-          "entry": "src/regex.noqeri",
-          "downloads": 0,
-          "yanked": false
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "json",
-      "description": "Allocation-conscious JSON lexical validation and cursor helpers.",
-      "repository": "https://github.com/EMN90909/noqeri-json",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "archive": "distribution/noqeri-json-1.0.0.ndl",
-          "archiveIntegrity": "sha256:e0806c5d16e3c49863a37fe5f232963f20c26bc843c9f8795a75564b7805a707",
-          "entry": "src/json.noqeri",
-          "downloads": 0,
-          "yanked": false
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "fs",
-      "description": "Safe, bounded filesystem operations and path validation.",
-      "repository": "https://github.com/EMN90909/noqeri-fs",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "archive": "distribution/noqeri-fs-1.0.0.ndl",
-          "archiveIntegrity": "sha256:7ef472bdeaabe149f2956c16480e8d0e3781a60d5c8bbcbed0b17bb3f34757b6",
-          "entry": "src/fs.noqeri",
-          "downloads": 0,
-          "yanked": false
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "std-io",
-      "description": "Validated terminal input/output and console status helpers.",
-      "repository": "https://github.com/EMN90909/noqeri-std-io",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "archive": "distribution/noqeri-std-io-1.0.0.ndl",
-          "archiveIntegrity": "sha256:2bed021352db388a4eec2ffff6b7ebd4dea7f5dcf8250f4d1603bfee20aaf78e",
-          "entry": "src/std_io.noqeri",
-          "downloads": 0,
-          "yanked": false
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "net",
-      "description": "Validated TCP and UDP handle boundaries and network address helpers.",
-      "repository": "https://github.com/EMN90909/noqeri-net",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "archive": "distribution/noqeri-net-1.0.0.ndl",
-          "archiveIntegrity": "sha256:e889168e9669425d700a3abbb21239601ad2d4f3bf9645fa81e9daec85fad0fd",
-          "entry": "src/net.noqeri",
-          "downloads": 0,
-          "yanked": false
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "sync",
-      "description": "Mutex, channel, and worker coordination boundaries.",
-      "repository": "https://github.com/EMN90909/noqeri-sync",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "archive": "distribution/noqeri-sync-1.0.0.ndl",
-          "archiveIntegrity": "sha256:e0318227ff846de4005fc7222d8d34180660b828601c8be8d045182ff4981068",
-          "entry": "src/sync.noqeri",
-          "downloads": 0,
-          "yanked": false
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
-      "name": "crypto",
-      "description": "Hashing, HMAC, AES-GCM, and random-byte host primitives.",
-      "repository": "https://github.com/EMN90909/noqeri-crypto",
-      "versions": [
-        {
-          "version": "1.0.0",
-          "archive": "distribution/noqeri-crypto-1.0.0.ndl",
-          "archiveIntegrity": "sha256:05558c3e3804e1c3f718f0e0ea0ff11196617ae8f8267ad62a863e5bdf4f362f",
-          "entry": "src/crypto.noqeri",
-          "downloads": 0,
-          "yanked": false
-        }
-      ]
-    },
-    {
-      "namespace": "noqeri",
       "name": "components",
-      "description": "Native, semantic, JavaScript-free Noqeri UI components.",
-      "repository": "https://github.com/EMN90909/noqeri-ui",
+      "description": "Zero-JavaScript native Noqeri UI component library and security alerts.",
+      "repository": "https://github.com/EMN90909/Noqeri-UI",
       "versions": [
         {
-          "version": "0.2.1",
-          "archive": "distribution/noqeri-components-0.2.1.ndl",
-          "archiveIntegrity": "sha256:f42914243c874f8d9fb69e66d2f1b33cf1ca340f8433ff170069fd71bef3b686",
+          "version": "0.2.2",
+          "archive": "distribution/noqeri-components-0.2.2.ndl",
+          "archiveIntegrity": "sha256:83cbc65ee6075b6e894d19fd08a795b4caca302c3cc134934e5bc377eb96a4d1",
           "entry": "src/components.noqeri",
           "downloads": 0,
           "yanked": false
@@ -166,15 +38,194 @@
     },
     {
       "namespace": "noqeri",
+      "name": "crypto",
+      "description": "FIPS 180-4 SHA-256, RFC-2104 HMAC-SHA256, constant-time compare, and PRNG.",
+      "repository": "https://github.com/EMN90909/noqeri-crypto",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "archive": "distribution/noqeri-crypto-1.0.0.ndl",
+          "archiveIntegrity": "sha256:7d8edb83f4b4d8c89422ea25f4a321665de5eb3f0257556f5add73f277857698",
+          "entry": "src/crypto.noqeri",
+          "downloads": 0,
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "fs",
+      "description": "Safe relative paths, traversal checks, path manipulation, and in-memory VFS.",
+      "repository": "https://github.com/EMN90909/noqeri-fs",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "archive": "distribution/noqeri-fs-1.0.0.ndl",
+          "archiveIntegrity": "sha256:c274a8b8011b4866fc515f15336ca1b713d740bd7e4e91b48d1d20dbe6e388ca",
+          "entry": "src/fs.noqeri",
+          "dependencies": {
+            "noqeri/std-io": "1.0.0"
+          },
+          "downloads": 0,
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "http",
+      "description": "HTTP/1.1 request parser, header CRLF guards, and parameterized route matcher.",
+      "repository": "https://github.com/EMN90909/noqeri-http",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "archive": "distribution/noqeri-http-1.0.0.ndl",
+          "archiveIntegrity": "sha256:461273cd51973b633d428d8d972919c4464c015f5dabd6cfc2f3c9710066241c",
+          "entry": "src/http.noqeri",
+          "dependencies": {
+            "noqeri/net": "1.0.0",
+            "noqeri/std-io": "1.0.0"
+          },
+          "downloads": 0,
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "json",
+      "description": "RFC-8259 recursive JSON validator, tokenizer, key lookup, and integer parser.",
+      "repository": "https://github.com/EMN90909/noqeri-json",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "archive": "distribution/noqeri-json-1.0.0.ndl",
+          "archiveIntegrity": "sha256:f74a26696c0fd59cc41b149c2ba08bf51d76388d7669309ce9fa09e87592a06c",
+          "entry": "src/json.noqeri",
+          "downloads": 0,
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "net",
+      "description": "IPv4/CIDR matching, RFC hostname validation, and framed socket buffers.",
+      "repository": "https://github.com/EMN90909/noqeri-net",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "archive": "distribution/noqeri-net-1.0.0.ndl",
+          "archiveIntegrity": "sha256:a1c6c8b78315efb590157b77d60ad777f86ede10772a2cbfd846d3421d37c934",
+          "entry": "src/net.noqeri",
+          "dependencies": {
+            "noqeri/std-io": "1.0.0"
+          },
+          "downloads": 0,
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
       "name": "noesql",
-      "description": "Noqeri-native embedded database engine and typed storage APIs.",
+      "description": "Capability-verified NoeSQL query boundary, IR validator, and WAL engine.",
       "repository": "https://github.com/EMN90909/NoeSQL",
       "versions": [
         {
           "version": "0.9.5",
           "archive": "distribution/noqeri-noesql-0.9.5.ndl",
-          "archiveIntegrity": "sha256:f7511947d12b3b9a776af964a9125954d4100923565d5c6096625b4df54c054a",
+          "archiveIntegrity": "sha256:5c7c7aded72b154359d90ed42b43184f0ba8d10e2311f5634189bd6e46d14c85",
           "entry": "Database/noesql_api.noqeri",
+          "downloads": 0,
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "regex",
+      "description": "ReDoS-safe step-budgeted regex compiler and matcher for byte slices.",
+      "repository": "https://github.com/EMN90909/noqeri-regex",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "archive": "distribution/noqeri-regex-1.0.0.ndl",
+          "archiveIntegrity": "sha256:e65a6f37f8e63a55f77479dcea547e7663394f0aba7804aa32af9eed0d9e5754",
+          "entry": "src/regex.noqeri",
+          "downloads": 0,
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "sqlite",
+      "description": "Pure-Noqeri SQLite header codec, query classifier, and indexed CRUD store.",
+      "repository": "https://github.com/EMN90909/noqeri-sqlite",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "archive": "distribution/noqeri-sqlite-1.0.0.ndl",
+          "archiveIntegrity": "sha256:52307ee364e1b78f7efc50f5fc434dd4b4835aeac815efb9768cbe777b4442ba",
+          "entry": "src/sqlite.noqeri",
+          "dependencies": {
+            "noqeri/fs": "1.0.0",
+            "noqeri/std-io": "1.0.0"
+          },
+          "downloads": 0,
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "std-io",
+      "description": "Pure-Noqeri binary cursors, ring buffers, LEB128 varints, and stream primitives.",
+      "repository": "https://github.com/EMN90909/noqeri-std-io",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "archive": "distribution/noqeri-std-io-1.0.0.ndl",
+          "archiveIntegrity": "sha256:a0eaa10d0d9976aba6b38662dd73bc409cde2a673a8a70b0bf64d101e3a94909",
+          "entry": "src/std_io.noqeri",
+          "downloads": 0,
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "sync",
+      "description": "Lock-free SpinLock, Once, Semaphore, SeqLock, and RingQueue primitives.",
+      "repository": "https://github.com/EMN90909/noqeri-sync",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "archive": "distribution/noqeri-sync-1.0.0.ndl",
+          "archiveIntegrity": "sha256:40c419e6556f15dc908b893d1a2fefd36bca00cab7da17eed67563d50f508aa8",
+          "entry": "src/sync.noqeri",
+          "downloads": 0,
+          "yanked": false
+        }
+      ]
+    },
+    {
+      "namespace": "noqeri",
+      "name": "web",
+      "description": "Hardened web security policies, rate limiters, HTML escaper, and origin checks.",
+      "repository": "https://github.com/EMN90909/noqeri-web",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "archive": "distribution/noqeri-web-1.0.0.ndl",
+          "archiveIntegrity": "sha256:ac028963dfdbb2404ab8ec9a02e9adb95a41bdf39414be936af1943de0f80e2e",
+          "entry": "src/web.noqeri",
+          "dependencies": {
+            "noqeri/http": "1.0.0",
+            "noqeri/json": "1.0.0",
+            "noqeri/crypto": "1.0.0"
+          },
           "downloads": 0,
           "yanked": false
         }
